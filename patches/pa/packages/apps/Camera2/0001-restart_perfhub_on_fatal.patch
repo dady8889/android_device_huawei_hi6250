@@ -1,0 +1,58 @@
+From 011110e139476466cf7a44efde9a5950de834952 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Wed, 9 Nov 2016 11:09:38 -0600
+Subject: [PATCH] restart_perfhub_on_fatal
+
+Change-Id: I6dc0c9e527ee8b2557cd835d1beb6e63f183f04c
+---
+ src/com/android/camera/FatalErrorHandlerImpl.java | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/camera/FatalErrorHandlerImpl.java b/src/com/android/camera/FatalErrorHandlerImpl.java
+index 802abc6..d3c41c3 100644
+--- a/src/com/android/camera/FatalErrorHandlerImpl.java
++++ b/src/com/android/camera/FatalErrorHandlerImpl.java
+@@ -17,7 +17,7 @@
+ package com.android.camera;
+ 
+ import android.app.Activity;
+-
++import android.os.SystemProperties;
+ import com.android.camera.debug.Log;
+ import com.android.camera.stats.UsageStatistics;
+ import com.android.camera.util.CameraUtil;
+@@ -49,6 +49,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onCameraOpenFailure() {
++	SystemProperties.set("sys.restart_perfub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Open Failure:", ex);
+@@ -65,6 +66,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onCameraReconnectFailure() {
++	SystemProperties.set("sys.restart_perfub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Reconnect Failure:", ex);
+@@ -81,6 +83,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onGenericCameraAccessFailure() {
++	SystemProperties.set("sys.restart_perfub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Access Failure:", ex);
+@@ -114,6 +117,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void handleFatalError(Reason reason) {
++	SystemProperties.set("sys.restart_perfub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Fatal Error:", ex);
+-- 
+1.9.1
+

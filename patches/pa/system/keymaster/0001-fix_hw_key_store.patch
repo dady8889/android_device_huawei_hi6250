@@ -1,0 +1,49 @@
+From 63ddc8239de69302fa92ea52073d22d4b2e7fbcd Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Wed, 2 Nov 2016 10:43:10 -0500
+Subject: [PATCH] 0001-fix_hw_key_store
+
+Change-Id: I547b5aca6dbff486bff4f28f4d49d5b1aa52170b
+---
+ soft_keymaster_device.cpp | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/soft_keymaster_device.cpp b/soft_keymaster_device.cpp
+index 9f3418e..11a2730 100644
+--- a/soft_keymaster_device.cpp
++++ b/soft_keymaster_device.cpp
+@@ -71,6 +71,13 @@ static keymaster_error_t add_digests(keymaster1_device_t* dev, keymaster_algorit
+                                      keymaster_purpose_t purpose, DigestMap* map) {
+     auto key = std::make_pair(algorithm, purpose);
+ 
++    /*LOG_E("Meticulus: algorithm %d purpose %d",algorithm, purpose);
++
++    if(algorithm == 1 && purpose == 0)
++	return KM_ERROR_OK;
++    else if (algorithm == 1 && purpose == 1)
++	return KM_ERROR_OK;*/
++
+     keymaster_digest_t* digests;
+     size_t digests_length;
+     keymaster_error_t error =
+@@ -96,7 +103,7 @@ static keymaster_error_t map_digests(keymaster1_device_t* dev, DigestMap* map) {
+             if (error != KM_ERROR_OK)
+                 return error;
+         }
+-
++    /*
+     keymaster_algorithm_t crypt_algorithms[] = {KM_ALGORITHM_RSA};
+     keymaster_purpose_t crypt_purposes[] = {KM_PURPOSE_ENCRYPT, KM_PURPOSE_DECRYPT};
+     for (auto algorithm : crypt_algorithms)
+@@ -105,7 +112,7 @@ static keymaster_error_t map_digests(keymaster1_device_t* dev, DigestMap* map) {
+             if (error != KM_ERROR_OK)
+                 return error;
+         }
+-
++    */
+     return KM_ERROR_OK;
+ }
+ 
+-- 
+1.9.1
+
