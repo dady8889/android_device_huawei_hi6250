@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-# Inherit CM common Phone stuff.
-$(call inherit-product-if-exists, vendor/cm/config/common_full_phone.mk)
+# Inherit AOSPA Stuff
+TARGET_BOOT_ANIMATION_RES := 1080
+$(call inherit-product-if-exists, vendor/pa/main.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/huawei/hi6250/device.mk)
