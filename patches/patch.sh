@@ -4,9 +4,9 @@ ROM=${1}
 CLEAR=${2}
 TOPDIR="$THISDIR/../../../../"
 if [[ "$ROM" == "" ]]; then
-	echo "ROM not specified, assuming cm!"
+	echo "ROM not specified, assuming pa!"
 	sleep 1
-	ROM="cm"
+	ROM="pa"
 fi
 if [[ "$CLEAR" == "" ]]; then
 	./clearpatches.sh $ROM
@@ -66,7 +66,7 @@ do
 	cd $THISDIR
 done
 
-cd $ROM
+cd $THISDIR/$ROM
 for LINE in $(find -name *.apply | sort )
 do
 	PATCH=$THISDIR/$ROM/$LINE
@@ -96,8 +96,8 @@ do
 	cd $THISDIR
 done
 cd $THISDIR
-if [[ "$ROM" == "cm" ]];then
+if [[ "$ROM" == "pa" ]];then
 	./patch.sh common false
 elif [[ "$ROM" == "meticulus" ]]; then
-	./patch.sh cm false
+	./patch.sh pa false
 fi
