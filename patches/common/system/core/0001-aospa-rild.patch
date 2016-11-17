@@ -1,0 +1,72 @@
+From 5a95edb3581b8135f8ca95cef992e8660bbcda85 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Thu, 17 Nov 2016 15:47:41 -0600
+Subject: [PATCH 1/2] rild patch
+
+Change-Id: I9019d971aa5a040b114de66ed28a6eabb8c2b523
+---
+ rootdir/init.rc | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index 48b6cdc..99feb71 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -649,13 +649,20 @@ service debuggerd64 /system/bin/debuggerd64
+     class main
+     writepid /dev/cpuset/system-background/tasks
+ 
+-service ril-daemon /system/bin/rild
+-    class main
+-    socket rild stream 660 root radio
+-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
+-    socket rild-debug stream 660 radio system
+-    user root
+-    group radio cache inet misc audio log
++ service ril-daemon /system/bin/rild
++     class late_start
++     socket rild stream 660 root radio
++     socket rild-ims stream 660 root radio
++     socket rildm2 stream 660 root radio
++     socket rildm3 stream 660 root radio
++     socket rildc1 stream 660 radio system
++     socket rildc2 stream 660 radio system
++     socket rildc3 stream 660 radio system
++     socket sap_uim_socket1 stream 660 bluetooth bluetooth
++     socket rild-debug stream 660 radio system
++     user root
++     group radio cache inet misc audio log qcom_diag
++     disabled
+ 
+ service surfaceflinger /system/bin/surfaceflinger
+     class core
+-- 
+2.1.4
+
+
+From f4f04378f62f08b920f3dcce591a8fc0581c3794 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Thu, 17 Nov 2016 15:49:42 -0600
+Subject: [PATCH 2/2] rild patch
+
+Change-Id: Ia1608f553f410995fcc5331471869283732a5eb3
+---
+ rootdir/init.rc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index 99feb71..c83e867 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -661,7 +661,7 @@ service debuggerd64 /system/bin/debuggerd64
+      socket sap_uim_socket1 stream 660 bluetooth bluetooth
+      socket rild-debug stream 660 radio system
+      user root
+-     group radio cache inet misc audio log qcom_diag
++     group radio cache inet misc audio log
+      disabled
+ 
+ service surfaceflinger /system/bin/surfaceflinger
+-- 
+2.1.4
+

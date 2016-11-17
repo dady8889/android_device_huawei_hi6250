@@ -33,9 +33,11 @@ index 58d7d34..fa97052 100644
  
      // Don't mount filesystems or start core system services in charger mode.
 -    char bootmode[PROP_VALUE_MAX];
-     if (((property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) ||
-          strcmp(battchg_pause, BOARD_CHARGING_CMDLINE_VALUE) == 0)
-                || charging_mode_booting()) {
+     if (property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) {
+         action_for_each_trigger("charger", action_add_queue_tail);
+     } else {
+         action_for_each_trigger("late-init", action_add_queue_tail);
+     }
 -- 
 1.9.1
 
