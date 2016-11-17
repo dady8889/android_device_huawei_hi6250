@@ -20,6 +20,7 @@ $(call inherit-product-if-exists, vendor/pa/main.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/huawei/hi6250/device.mk)
+$(call inherit-product, device/huawei/hi6250/BoardConfig.mk)
 
 # Device identifier
 PRODUCT_DEVICE := hi6250
