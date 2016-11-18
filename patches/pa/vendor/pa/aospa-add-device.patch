@@ -1,15 +1,15 @@
-From 8eda8b50719a3155661d130d5572224fdc022a35 Mon Sep 17 00:00:00 2001
+From 52206c2891c1af551f7526da00ac32e4806a0729 Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Thu, 17 Nov 2016 18:11:57 -0600
-Subject: [PATCH] patch
+Date: Fri, 18 Nov 2016 06:30:54 -0600
+Subject: [PATCH 3/3] lunch
 
-Change-Id: I49088b79070115ec103a122c5d7414fda3716653
+Change-Id: I92ce55358c3d6393802603a5be4a40adad70af83
 ---
  products/AndroidProducts.mk     |  5 +++++
- products/hi6250/pa.dependencies | 20 ++++++++++++++++++++
- products/hi6250/pa_hi6250.mk    |  4 ++++
+ products/hi6250/pa.dependencies | 20 ++++++++++++++++++
+ products/hi6250/pa_hi6250.mk    | 46 +++++++++++++++++++++++++++++++++++++++++
  vendorsetup.sh                  |  4 ++++
- 4 files changed, 33 insertions(+)
+ 4 files changed, 75 insertions(+)
  create mode 100644 products/hi6250/pa.dependencies
  create mode 100644 products/hi6250/pa_hi6250.mk
 
@@ -54,16 +54,58 @@ index 0000000..408e331
 +]
 diff --git a/products/hi6250/pa_hi6250.mk b/products/hi6250/pa_hi6250.mk
 new file mode 100644
-index 0000000..8ec62e8
+index 0000000..2c72b76
 --- /dev/null
 +++ b/products/hi6250/pa_hi6250.mk
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,46 @@
++#
++# Copyright (C) 2016 Jonathan Jason Dennis (theonejohnnyd@gmail.com)
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
 +# Check for target product
 +ifeq (pa_hi6250,$(TARGET_PRODUCT))
-+include device/huawei/hi6250/pa.mk
++
++# Inherit AOSPA Stuff
++TARGET_BOOT_ANIMATION_RES := 1080
++include vendor/pa/main.mk
++
++# Inherit device configuration
++$(call inherit-product, device/huawei/hi6250/device.mk)
++$(call inherit-product, device/huawei/hi6250/BoardConfig.mk)
++
++# Device identifier
++PRODUCT_NAME := pa_hi6250
++PRODUCT_DEVICE := hi6250
++PRODUCT_BRAND := huawei
++PRODUCT_MODEL := P9-Lite
++PRODUCT_MANUFACTURER := huawei
++
++TARGET_SCREEN_HEIGHT := 1920
++TARGET_SCREEN_WIDTH := 1080
++
++ADDITIONAL_DEFAULT_PROPERTIES += \
++    ro.zygote=zygote64_32 \
++    ro.adb.secure=0 \
++    ro.secure=0
++
++PRODUCT_BUILD_PROP_OVERRIDES += \
++	PRODUCT_NAME=pa_hi6250
++
 +endif
 diff --git a/vendorsetup.sh b/vendorsetup.sh
-index b373041..938a038 100644
+index b373041..c5f2887 100644
 --- a/vendorsetup.sh
 +++ b/vendorsetup.sh
 @@ -40,3 +40,7 @@ add_lunch_combo pa_suzuran-userdebug
@@ -72,7 +114,7 @@ index b373041..938a038 100644
  add_lunch_combo pa_dragon-userdebug
 +
 +# Huawei P9 Lite
-+add_lunch_combo cm_hi6250-userdebug
++add_lunch_combo pa_hi6250-userdebug
 +
 -- 
 2.1.4
