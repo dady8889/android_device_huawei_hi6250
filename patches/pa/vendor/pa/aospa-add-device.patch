@@ -1,17 +1,31 @@
-From 07830abf769133bbdbfa23d37426f27461736553 Mon Sep 17 00:00:00 2001
+From 8eda8b50719a3155661d130d5572224fdc022a35 Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Thu, 17 Nov 2016 17:34:09 -0600
-Subject: [PATCH 1/2] Add device to lunch
+Date: Thu, 17 Nov 2016 18:11:57 -0600
+Subject: [PATCH] patch
 
-Change-Id: I01f244124092202f5f72498c2497953389cf6bf3
+Change-Id: I49088b79070115ec103a122c5d7414fda3716653
 ---
+ products/AndroidProducts.mk     |  5 +++++
  products/hi6250/pa.dependencies | 20 ++++++++++++++++++++
- products/hi6250/pa_hi6250.mk    | 24 ++++++++++++++++++++++++
+ products/hi6250/pa_hi6250.mk    |  4 ++++
  vendorsetup.sh                  |  4 ++++
- 3 files changed, 48 insertions(+)
+ 4 files changed, 33 insertions(+)
  create mode 100644 products/hi6250/pa.dependencies
  create mode 100644 products/hi6250/pa_hi6250.mk
 
+diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
+index 1a7df61..2a8c0a9 100644
+--- a/products/AndroidProducts.mk
++++ b/products/AndroidProducts.mk
+@@ -119,3 +119,8 @@ endif
+ ifeq (pa_dragon,$(TARGET_PRODUCT))
+     PRODUCT_MAKEFILES += $(LOCAL_DIR)/dragon/pa_dragon.mk
+ endif
++
++# Huawei P9 Lite
++ifeq (pa_hi6250,$(TARGET_PRODUCT))
++    PRODUCT_MAKEFILES += $(LOCAL_DIR)/hi6250/pa_hi6250.mk
++endif
 diff --git a/products/hi6250/pa.dependencies b/products/hi6250/pa.dependencies
 new file mode 100644
 index 0000000..408e331
@@ -40,33 +54,16 @@ index 0000000..408e331
 +]
 diff --git a/products/hi6250/pa_hi6250.mk b/products/hi6250/pa_hi6250.mk
 new file mode 100644
-index 0000000..59a6cb1
+index 0000000..8ec62e8
 --- /dev/null
 +++ b/products/hi6250/pa_hi6250.mk
-@@ -0,0 +1,24 @@
-+# Copyright (C) 2015 ParanoidAndroid Project
-+#
-+# Licensed under the Apache License, Version 2.0 (the "License");
-+# you may not use this file except in compliance with the License.
-+# You may obtain a copy of the License at
-+#
-+#      http://www.apache.org/licenses/LICENSE-2.0
-+#
-+# Unless required by applicable law or agreed to in writing, software
-+# distributed under the License is distributed on an "AS IS" BASIS,
-+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-+# See the License for the specific language governing permissions and
-+# limitations under the License.
-+
+@@ -0,0 +1,4 @@
 +# Check for target product
 +ifeq (pa_hi6250,$(TARGET_PRODUCT))
-+
-+# Include device information
 +include device/huawei/hi6250/pa.mk
-+
 +endif
 diff --git a/vendorsetup.sh b/vendorsetup.sh
-index b373041..e8ee71b 100644
+index b373041..938a038 100644
 --- a/vendorsetup.sh
 +++ b/vendorsetup.sh
 @@ -40,3 +40,7 @@ add_lunch_combo pa_suzuran-userdebug
@@ -74,36 +71,9 @@ index b373041..e8ee71b 100644
  # CAF
  add_lunch_combo pa_dragon-userdebug
 +
-+#Huawei P9 Lite
++# Huawei P9 Lite
 +add_lunch_combo cm_hi6250-userdebug
 +
--- 
-2.1.4
-
-
-From 094fa6cc9cc1c4073ad2e42b50a381ee90334fee Mon Sep 17 00:00:00 2001
-From: Daniel <dady8889@gmail.com>
-Date: Thu, 17 Nov 2016 17:37:51 -0600
-Subject: [PATCH 2/2] Add device to lunch
-
-Change-Id: Ibca0bbf897d85e61bb5ea5035b18ebb4165d3124
----
- products/AndroidProducts.mk | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
-index 1a7df61..2a8c0a9 100644
---- a/products/AndroidProducts.mk
-+++ b/products/AndroidProducts.mk
-@@ -119,3 +119,8 @@ endif
- ifeq (pa_dragon,$(TARGET_PRODUCT))
-     PRODUCT_MAKEFILES += $(LOCAL_DIR)/dragon/pa_dragon.mk
- endif
-+
-+# Huawei P9 Lite
-+ifeq (pa_hi6250,$(TARGET_PRODUCT))
-+    PRODUCT_MAKEFILES += $(LOCAL_DIR)/hi6250/pa_hi6250.mk
-+endif
 -- 
 2.1.4
 
