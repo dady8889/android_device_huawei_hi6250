@@ -1,0 +1,37 @@
+From 1a623bd192a7344f2efc84bb59171e0408a7c1e4 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Thu, 17 Nov 2016 15:28:06 -0600
+Subject: [PATCH] PackageManagerService: allow Signature mismatch
+
+-Allows gnssupl20service_hisi.apk to run
+
+Change-Id: I50a260cf594b38e268e2fce2c2f3a95883d06496
+---
+ services/core/java/com/android/server/pm/PackageManagerService.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index 920a850..5e14e14 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -7096,7 +7096,7 @@ public class PackageManagerService extends IPackageManager.Stub {
+                     // What this means is that you can't change the signatures
+                     // associated with an overall shared user, which doesn't seem all
+                     // that unreasonable.
+-                    if (pkgSetting.sharedUser != null) {
++                    /*if (pkgSetting.sharedUser != null) {
+                         if (compareSignatures(pkgSetting.sharedUser.signatures.mSignatures,
+                                               pkg.mSignatures) != PackageManager.SIGNATURE_MATCH) {
+                             throw new PackageManagerException(
+@@ -7108,7 +7108,7 @@ public class PackageManagerService extends IPackageManager.Stub {
+                     // File a report about this.
+                     String msg = "System package " + pkg.packageName
+                         + " signature changed; retaining data.";
+-                    reportSettingsProblem(Log.WARN, msg);
++                    reportSettingsProblem(Log.WARN, msg);*/
+                 }
+             }
+             // Verify that this new package doesn't have any content providers
+-- 
+1.9.1
+
