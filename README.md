@@ -94,17 +94,20 @@ Execute the following commands in a linux terminal:
 cd ~/Desktop/AOSPA
 ./rom-build.sh hi6250
 ```
-NOTE: For some reason, sometimes it shows that it cant find bacon makefile. To fix it, do this:
+
+### Step 5: What if I got an error?
+
+#### Bacon Makefile Missing
+
+For some reason, sometimes it shows that it cant find bacon makefile. To fix it, do this:
 ```bash
 cd ~/Desktop/AOSPA
 . build/envsetup.sh
 breakfast hi6250
 brunch hi6250
 ```
-NOTE: If you get this error (or similiar):
-```bash
-make: *** [out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex] Error 41
-```
+
+#### make: *** [out/blabla/classes.dex] Error 41
 
 Fix it by
 ```bash
