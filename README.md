@@ -101,4 +101,14 @@ cd ~/Desktop/AOSPA
 breakfast hi6250
 brunch hi6250
 ```
+NOTE: If you get this error (or similiar):
+```bash
+make: *** [out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex] Error 41
+```
+
+Fix it by
+```bash
+chmod 777 ~/.jack
+```
+
 ### Please let me know if there are mistakes,typos, mis/outdated - information in these instructions by creating an "issue".
