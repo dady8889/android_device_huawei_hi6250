@@ -86,7 +86,7 @@ Now we need to build kernel:
 cd ~/Desktop/AOSPA/kernel/huawei/hi6250
 ```
 Read README_Kernel.txt and build the kernel with those instructions.
-When its built, copy the out folder to ~/Desktop/AOSPA/out/target/product/hi6250 and rename it to kernel. Or probably you can just symlink it but I didn't try it.
+After it's built, continue with building AOSPA.
 
 NOTE: It may take anywhere from 5 hours to 15 hours depending on system specs for a complete build.
 Execute the following commands in a linux terminal:
@@ -101,4 +101,14 @@ cd ~/Desktop/AOSPA
 breakfast hi6250
 brunch hi6250
 ```
+NOTE: If you get this error (or similiar):
+```bash
+make: *** [out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex] Error 41
+```
+
+Fix it by
+```bash
+chmod 777 ~/.jack
+```
+
 ### Please let me know if there are mistakes,typos, mis/outdated - information in these instructions by creating an "issue".
