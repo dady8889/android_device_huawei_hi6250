@@ -1,15 +1,15 @@
-From 52206c2891c1af551f7526da00ac32e4806a0729 Mon Sep 17 00:00:00 2001
+From a651afda6f82a0403c0263792aaadd57a4e4b65d Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Fri, 18 Nov 2016 06:30:54 -0600
-Subject: [PATCH 3/3] lunch
+Date: Sat, 19 Nov 2016 22:20:54 +0100
+Subject: [PATCH] aospa-device-lunch
 
-Change-Id: I92ce55358c3d6393802603a5be4a40adad70af83
+Change-Id: I972e7a1aa1a931313ef28d05d53f26dcfc261d5b
 ---
  products/AndroidProducts.mk     |  5 +++++
- products/hi6250/pa.dependencies | 20 ++++++++++++++++++
- products/hi6250/pa_hi6250.mk    | 46 +++++++++++++++++++++++++++++++++++++++++
+ products/hi6250/pa.dependencies |  1 +
+ products/hi6250/pa_hi6250.mk    | 45 +++++++++++++++++++++++++++++++++++++++++
  vendorsetup.sh                  |  4 ++++
- 4 files changed, 75 insertions(+)
+ 4 files changed, 55 insertions(+)
  create mode 100644 products/hi6250/pa.dependencies
  create mode 100644 products/hi6250/pa_hi6250.mk
 
@@ -28,36 +28,17 @@ index 1a7df61..2a8c0a9 100644
 +endif
 diff --git a/products/hi6250/pa.dependencies b/products/hi6250/pa.dependencies
 new file mode 100644
-index 0000000..408e331
+index 0000000..fe51488
 --- /dev/null
 +++ b/products/hi6250/pa.dependencies
-@@ -0,0 +1,20 @@
-+[
-+    {
-+        "remote":       "github",
-+        "repository":   "Meticulus/android_kernel_huawei_hi6250",
-+        "target_path":  "kernel/huawei/hi6250",
-+        "revision":     "master"
-+    },
-+    {
-+        "remote":       "github",
-+        "repository":   "Meticulus/android_vendor_huawei_hi6250",
-+        "target_path":  "vendor/huawei/hi6250",
-+        "revision":     "master"
-+    },
-+    {
-+        "remote":       "github",
-+        "repository":   "dady8889/android_device_huawei_hi6250",
-+        "target_path":  "device/huawei/hi6250",
-+        "revision":     "master"
-+    }
-+]
+@@ -0,0 +1 @@
++[]
 diff --git a/products/hi6250/pa_hi6250.mk b/products/hi6250/pa_hi6250.mk
 new file mode 100644
-index 0000000..2c72b76
+index 0000000..c3c1d06
 --- /dev/null
 +++ b/products/hi6250/pa_hi6250.mk
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,45 @@
 +#
 +# Copyright (C) 2016 Jonathan Jason Dennis (theonejohnnyd@gmail.com)
 +#
@@ -83,7 +64,6 @@ index 0000000..2c72b76
 +
 +# Inherit device configuration
 +$(call inherit-product, device/huawei/hi6250/device.mk)
-+$(call inherit-product, device/huawei/hi6250/BoardConfig.mk)
 +
 +# Device identifier
 +PRODUCT_NAME := pa_hi6250
@@ -117,5 +97,5 @@ index b373041..c5f2887 100644
 +add_lunch_combo pa_hi6250-userdebug
 +
 -- 
-2.1.4
+1.9.1
 

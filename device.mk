@@ -155,3 +155,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=HuaweiRIL
+
+# Kernel
+ifeq ($(TARGET_PREBUILT_KERNEL),)
+LOCAL_KERNEL := kernel/huawei/out/arch/arm64/boot/Image
+else
+LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
+endif
+PRODUCT_COPY_FILES += \
+	$(LOCAL_KERNEL):kernel

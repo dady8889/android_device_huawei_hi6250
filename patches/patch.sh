@@ -30,7 +30,7 @@ do
 	fi
 	cd $REPO
 	RESULT=$(patch -p1 --follow-symlinks --no-backup-if-mismatch < $PATCH)
-	echo -e "${RESULT}"
+	#echo -e "${RESULT}"
 	if [[ $(echo $RESULT | grep -c FAILED) -gt 0 ]] ; then
 		echo ""
 		echo "Fail!"
@@ -66,7 +66,7 @@ do
 	cd $THISDIR
 done
 
-cd $ROM
+cd $THISDIR/$ROM
 for LINE in $(find -name *.apply | sort )
 do
 	PATCH=$THISDIR/$ROM/$LINE
@@ -98,6 +98,3 @@ done
 cd $THISDIR
 if [[ "$ROM" == "pa" ]];then
 	./patch.sh common false
-elif [[ "$ROM" == "meticulus" ]]; then
-	./patch.sh pa false
-fi

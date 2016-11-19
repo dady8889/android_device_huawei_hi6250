@@ -91,20 +91,6 @@ static void power_set_interactive(struct power_module *module, int on) {
 	}
 }
 
-static void power_hint_cpu_boost(int dur) {
-    char sdur[255];
-
-    if(!(* profile).cpu0_should_boost)
-	return;
-
-    if(!dur)
-	dur = (* profile).cpu0_boost_p_dur_def;
-	
-    sprintf(sdur, "%d\n", dur);
-    write_string(CPU0_BOOST_P_DUR_PATH,sdur); 
-    write_string(CPU0_BOOST_PULSE_PATH,"1\n"); 
-}
-
 static void power_hint_interactive(int on) {
 	if(!(* profile).gpu_should_boost)
 	    return;
@@ -207,34 +193,6 @@ static void power_hint(struct power_module *module, power_hint_t hint,
 		DEBUG_LOG("POWER_HINT_LOW_POWER %d", var);
 		power_hint_low_power(var);
 		break;
-	case POWER_HINT_CPU_BOOST:
-		if(data != NULL)
-		    var = *(int *) data;
-		DEBUG_LOG("POWER_HINT_CPU_BOOST %d", var);
-		if(!low_power)
-		    power_hint_cpu_boost(var);
-		break;
-	case POWER_HINT_LAUNCH_BOOST:
-		packageName = ((launch_boost_info_t *)data)->packageName;
-		pid = ((launch_boost_info_t *)data)->pid;
-
-		/* Meticulus: not quite sure what to do with this info?
-		 * Set thread prio on the app???
-		 */
-		DEBUG_LOG("POWER_HINT_LAUNCH_BOOST app=%s pid=%d", packageName,pid);
-		if(!low_power)
-		    power_hint_interactive(0);
-		break;
-	case POWER_HINT_AUDIO:
-		DEBUG_LOG("POWER_HINT_AUDIO %d", var);
-		ALOGI("Meticulus: POWER_HINT_AUDIO is used! Implement!");
-		break;
-	case POWER_HINT_SET_PROFILE:
-		if(data != NULL)
-		    var = *(int *) data;
-		DEBUG_LOG("POWER_HINT_PROFILE %d", var);	
-                power_hint_set_profile(module,var);
-		break;
         default:
 		ALOGE("Unknown power hint %d", hint);
         	break;
@@ -249,31 +207,11 @@ static void set_dt2w(int on) {
 	write_string(WAKE_CONF_PATH,"0\n");
 }
 
-static int get_feature(struct power_module *module, feature_t feature) {
-
-    int retval = 0;
-    switch(feature) {
-	case POWER_FEATURE_DOUBLE_TAP_TO_WAKE:
-	    retval = 1;
-	    break;
-	case POWER_FEATURE_SUPPORTED_PROFILES:
-	    retval = 3;
-	    break;
-        default:
-	    ALOGE("Unknown feature %d", feature);
-            break;
-    }
-    return retval;
-}
-
 static void set_feature(struct power_module *module, feature_t feature, int state) {
     
     switch(feature) {
 	case POWER_FEATURE_DOUBLE_TAP_TO_WAKE:
 	    set_dt2w(state);
-	    break;
-	case POWER_FEATURE_SUPPORTED_PROFILES:
-	    ALOGI("POWER_FEATURE_SUPPORTED_PROFILES: %d",state);
 	    break;
         default:
 	    ALOGE("Unknown feature %d", feature);
@@ -299,6 +237,5 @@ struct power_module HAL_MODULE_INFO_SYM = {
     .init = power_init,
     .setInteractive = power_set_interactive,
     .powerHint = power_hint,
-    .setFeature = set_feature,
-    .getFeature = get_feature,
+    .setFeature = set_feature
 };
