@@ -1,0 +1,115 @@
+From 49cdca24b4a7841c3e81679d645910ff713c445a Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 20 Nov 2016 00:43:52 +0100
+Subject: [PATCH] aospa-system-core
+
+Change-Id: I9a8692323544a6f8b7b5ee8cc2189bd6d1064f61
+---
+ init/init.cpp       |  8 ++++++--
+ liblog/Android.mk   |  6 +++---
+ liblog/logd_write.c | 11 +++++++++++
+ rootdir/init.rc     |  9 ++++++++-
+ 4 files changed, 28 insertions(+), 6 deletions(-)
+
+diff --git a/init/init.cpp b/init/init.cpp
+index 963db7f..accdba1 100644
+--- a/init/init.cpp
++++ b/init/init.cpp
+@@ -1081,7 +1081,12 @@ int main(int argc, char** argv) {
+     property_load_boot_defaults();
+     start_property_service();
+ 
+-    init_parse_config_file("/init.rc");
++    char bootmode[PROP_VALUE_MAX];
++    if (((property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) {
++    	init_parse_config_file("/lpm.rc");
++    } else {
++    	init_parse_config_file("/init.rc");
++    }
+ 
+     action_for_each_trigger("early-init", action_add_queue_tail);
+ 
+@@ -1100,7 +1105,6 @@ int main(int argc, char** argv) {
+     queue_builtin_action(mix_hwrng_into_linux_rng_action, "mix_hwrng_into_linux_rng");
+ 
+     // Don't mount filesystems or start core system services in charger mode.
+-    char bootmode[PROP_VALUE_MAX];
+     if (property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) {
+         action_for_each_trigger("charger", action_add_queue_tail);
+     } else {
+diff --git a/liblog/Android.mk b/liblog/Android.mk
+index 115dd79..4e8a2ec 100644
+--- a/liblog/Android.mk
++++ b/liblog/Android.mk
+@@ -57,7 +57,7 @@ endif
+ # ========================================================
+ LOCAL_MODULE := liblog
+ LOCAL_SRC_FILES := $(liblog_host_sources)
+-LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 -Werror $(liblog_cflags)
++LOCAL_CFLAGS := -DFAKE_LOG_DEVICE=1 $(liblog_cflags)
+ LOCAL_MULTILIB := both
+ include $(BUILD_HOST_STATIC_LIBRARY)
+ 
+@@ -76,13 +76,13 @@ include $(BUILD_HOST_SHARED_LIBRARY)
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := liblog
+ LOCAL_SRC_FILES := $(liblog_target_sources)
+-LOCAL_CFLAGS := -Werror $(liblog_cflags)
++LOCAL_CFLAGS := $(liblog_cflags)
+ include $(BUILD_STATIC_LIBRARY)
+ 
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := liblog
+ LOCAL_WHOLE_STATIC_LIBRARIES := liblog
+-LOCAL_CFLAGS := -Werror $(liblog_cflags)
++LOCAL_CFLAGS := $(liblog_cflags)
+ 
+ # TODO: This is to work around b/19059885. Remove after root cause is fixed
+ LOCAL_LDFLAGS_arm := -Wl,--hash-style=both
+diff --git a/liblog/logd_write.c b/liblog/logd_write.c
+index bdee28f..e8c324a 100644
+--- a/liblog/logd_write.c
++++ b/liblog/logd_write.c
+@@ -513,3 +513,14 @@ int __android_log_bswrite(int32_t tag, const char *payload)
+ 
+     return write_to_log(LOG_ID_EVENTS, vec, 4);
+ }
++
++extern int __hi_log_print() __attribute__((alias("__android_log_print")));
++extern int __android_janklog_print() {
++    return 0;
++}
++extern int __android_logPower_print() {
++    return 0;
++}
++extern int __android_log_exception_write() {
++    return 0;
++}
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index a7c2200..354aa35 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -648,12 +648,19 @@ service debuggerd64 /system/bin/debuggerd64
+     class main
+ 
+ service ril-daemon /system/bin/rild
+-    class main
++    class late_start
+     socket rild stream 660 root radio
++    socket rild-ims stream 660 root radio
++    socket rildm2 stream 660 root radio
++    socket rildm3 stream 660 root radio
++    socket rildc1 stream 660 radio system
++    socket rildc2 stream 660 radio system
++    socket rildc3 stream 660 radio system
+     socket sap_uim_socket1 stream 660 bluetooth bluetooth
+     socket rild-debug stream 660 radio system
+     user root
+     group radio cache inet misc audio log
++    disabled
+ 
+ service surfaceflinger /system/bin/surfaceflinger
+     class core
+-- 
+1.9.1
+
