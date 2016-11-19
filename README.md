@@ -1,4 +1,4 @@
-# AOSPA for the Huawei P9 Lite (hi6250)
+# AOSPA (Paranoid Android) for the Huawei P9 Lite (hi6250)
 
 ### Kernel
 This device tree is intended to be used with this kernel repo:
@@ -16,7 +16,9 @@ branch: master
 
 ### Step 1: Setting up the Build Environment.
 
-You'll need Linux to be able to build Cyanogenmod. You have three choices here; you can:
+NOTE: Final size of downloaded + built files was around 120 GB. So I recommend allocating at least 150 GB for the drive.
+
+You'll need Linux to be able to build AOSPA. You have three choices here; you can:
 
 1. Install Linux natively on your computer.
 2. Dual boot Linux and Windows.
@@ -94,19 +96,23 @@ Execute the following commands in a linux terminal:
 cd ~/Desktop/AOSPA
 ./rom-build.sh hi6250
 ```
-NOTE: For some reason, sometimes it shows that it cant find bacon makefile. To fix it, do this:
+
+### Step 5: What if I got an error?
+
+#### Bacon Makefile Missing
+
+For some reason, sometimes it shows that it cant find bacon makefile. 
+Execute the following commands in a linux terminal:
 ```bash
 cd ~/Desktop/AOSPA
 . build/envsetup.sh
 breakfast hi6250
 brunch hi6250
 ```
-NOTE: If you get this error (or similiar):
-```bash
-make: *** [out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/with-local/classes.dex] Error 41
-```
 
-Fix it by
+#### make: *** [out/blabla/classes.dex] Error 41
+
+Execute the following commands in a linux terminal:
 ```bash
 chmod 777 ~/.jack
 ```
