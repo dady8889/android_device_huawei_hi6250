@@ -21,7 +21,7 @@ index 963db7f..accdba1 100644
  
 -    init_parse_config_file("/init.rc");
 +    char bootmode[PROP_VALUE_MAX];
-+    if (((property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) {
++    if (property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) {
 +    	init_parse_config_file("/lpm.rc");
 +    } else {
 +    	init_parse_config_file("/init.rc");

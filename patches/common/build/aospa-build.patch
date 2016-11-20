@@ -58,17 +58,6 @@ diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ot
 index 33ef2d8..57dd9ab 100755
 --- a/tools/releasetools/ota_from_target_files.py
 +++ b/tools/releasetools/ota_from_target_files.py
-@@ -638,8 +638,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-   else:
-     script.FormatPartition("/system")
-     script.Mount("/system", recovery_mount_options)
--    if not has_recovery_patch:
--      script.UnpackPackageDir("recovery", "/system")
-+    #if not has_recovery_patch:
-+    #  script.UnpackPackageDir("recovery", "/system")
-     script.UnpackPackageDir("system", "/system")
- 
-     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
 @@ -679,7 +679,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
        vendor_items.GetMetadata(input_zip)
        vendor_items.Get("vendor").SetPermissions(script)
@@ -80,4 +69,68 @@ index 33ef2d8..57dd9ab 100755
    if OPTIONS.backuptool:
 -- 
 1.9.1
+
+From 860ced4425c717c6fd82bc3c47aee0ecb9672412 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 20 Nov 2016 11:22:47 +0100
+Subject: [PATCH] aospa-build
+
+Change-Id: Ib0342bf7890fbc587a32d48b3d5fa8bd97155ce0
+---
+ tools/releasetools/ota_from_target_files.py | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 33ef2d8..b93b9b8 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -609,7 +609,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+ 
+   script.ShowProgress(0.1, 10 if OPTIONS.backuptool else 0)
+   if OPTIONS.backuptool:
+-    script.Print("- Backing up installed apps")
++    script.Print("- Backing up addon.d folder")
+     script.Mount("/system")
+     if has_vendor_partition:
+       script.Mount("/vendor")
+@@ -636,10 +636,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+     system_diff = common.BlockDifference("system", system_tgt, src=None)
+     system_diff.WriteScript(script, output_zip)
+   else:
++    script.Print("- Formatting /system")
+     script.FormatPartition("/system")
+     script.Mount("/system", recovery_mount_options)
+-    if not has_recovery_patch:
+-      script.UnpackPackageDir("recovery", "/system")
++    #if not has_recovery_patch:
++    #  script.UnpackPackageDir("recovery", "/system")
++    script.Print("- Unpacking /system")
+     script.UnpackPackageDir("system", "/system")
+ 
+     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
+@@ -684,17 +686,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+ 
+   if OPTIONS.backuptool:
+     script.ShowProgress(0.1, 10)
+-    script.Mount("/system")
++   #script.Mount("/system")
+     if has_vendor_partition:
+       script.Mount("/vendor")
+-    script.Print("- Restoring installed apps from backup")
++    script.Print("- Restoring addon.d from backup")
+     script.RunBackup("restore")
+-    script.Unmount("/system")
++    #script.Unmount("/system")
+     if has_vendor_partition:
+       script.Unmount("/vendor")
+ 
+   script.ShowProgress(0.2 if OPTIONS.backuptool else 0.3, 20 if OPTIONS.wipe_user_data else 10)
+ 
++  script.Print("- Flashing boot.img")
+   script.WriteRawImage("/boot", "boot.img")
+ 
+   device_specific.FullOTA_InstallEnd()
+-- 
+1.9.1
+
 

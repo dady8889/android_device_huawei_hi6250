@@ -98,3 +98,4 @@ done
 cd $THISDIR
 if [[ "$ROM" == "pa" ]];then
 	./patch.sh common false
+fi
