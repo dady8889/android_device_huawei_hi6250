@@ -168,6 +168,6 @@ PRODUCT_COPY_FILES += \
 # Essential packages
 PRODUCT_PACKAGES += \
     Stk \
-    Browser \ 
+    Browser \
     libemoji
 
