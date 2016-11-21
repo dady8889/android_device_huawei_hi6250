@@ -25,7 +25,7 @@ index 802abc6..d3c41c3 100644
  
      @Override
      public void onCameraOpenFailure() {
-+	SystemProperties.set("sys.restart_perfub","true");
++	SystemProperties.set("sys.restart_perfhub","true");
          Exception ex = new Exception();
          // Log a stack trace to be sure we can track the source.
          Log.e(TAG, "Handling Camera Open Failure:", ex);
@@ -33,7 +33,7 @@ index 802abc6..d3c41c3 100644
  
      @Override
      public void onCameraReconnectFailure() {
-+	SystemProperties.set("sys.restart_perfub","true");
++	SystemProperties.set("sys.restart_perfhub","true");
          Exception ex = new Exception();
          // Log a stack trace to be sure we can track the source.
          Log.e(TAG, "Handling Camera Reconnect Failure:", ex);
@@ -41,7 +41,7 @@ index 802abc6..d3c41c3 100644
  
      @Override
      public void onGenericCameraAccessFailure() {
-+	SystemProperties.set("sys.restart_perfub","true");
++	SystemProperties.set("sys.restart_perfhub","true");
          Exception ex = new Exception();
          // Log a stack trace to be sure we can track the source.
          Log.e(TAG, "Handling Camera Access Failure:", ex);
@@ -49,7 +49,7 @@ index 802abc6..d3c41c3 100644
  
      @Override
      public void handleFatalError(Reason reason) {
-+	SystemProperties.set("sys.restart_perfub","true");
++	SystemProperties.set("sys.restart_perfhub","true");
          Exception ex = new Exception();
          // Log a stack trace to be sure we can track the source.
          Log.e(TAG, "Handling Fatal Error:", ex);

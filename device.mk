@@ -149,7 +149,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.google.locationfeatures=1 \
     ro.setupwizard.mode=OPTIONAL \
     ro.setupwizard.enable_bypass=1 \
-    ro.config.sync=yees \
+    ro.config.sync=yes \
     persist.sys.usb.config=mtp
 
 
@@ -164,3 +164,10 @@ LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 PRODUCT_COPY_FILES += \
 	$(LOCAL_KERNEL):kernel
+
+# Essential packages
+PRODUCT_PACKAGES += \
+    Stk \
+    Browser \ 
+    libemoji
+

@@ -6,4 +6,4 @@ on fs
 
 on property:sys.restart_perfhub=true
     restart perfhub
-    setprop sys.restart_perfhub=false
+    setprop sys.restart_perfhub false

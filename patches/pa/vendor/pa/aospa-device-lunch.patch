@@ -1,145 +1,101 @@
-From e1d1ffb2518c91b60426c2b5dbda9266e5211b73 Mon Sep 17 00:00:00 2001
+From a651afda6f82a0403c0263792aaadd57a4e4b65d Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Sat, 19 Nov 2016 22:13:02 +0100
-Subject: [PATCH 1/2] aospa-no-recovery-no-block
+Date: Sat, 19 Nov 2016 22:20:54 +0100
+Subject: [PATCH] aospa-device-lunch
 
-Change-Id: I71c271f26a1117728735bc89892005c30c1f48c0
+Change-Id: I972e7a1aa1a931313ef28d05d53f26dcfc261d5b
 ---
- core/Makefile                               | 4 ----
- core/envsetup.mk                            | 4 ++--
- tools/releasetools/ota_from_target_files.py | 6 +++---
- 3 files changed, 5 insertions(+), 9 deletions(-)
+ products/AndroidProducts.mk     |  5 +++++
+ products/hi6250/pa.dependencies |  1 +
+ products/hi6250/pa_hi6250.mk    | 45 +++++++++++++++++++++++++++++++++++++++++
+ vendorsetup.sh                  |  4 ++++
+ 4 files changed, 55 insertions(+)
+ create mode 100644 products/hi6250/pa.dependencies
+ create mode 100644 products/hi6250/pa_hi6250.mk
 
-diff --git a/core/Makefile b/core/Makefile
-index 6bfcddb..587a897 100644
---- a/core/Makefile
-+++ b/core/Makefile
-@@ -1533,8 +1533,6 @@ ifneq ($(OEM_THUMBPRINT_PROPERTIES),)
- 	$(hide) echo "oem_fingerprint_properties=$(OEM_THUMBPRINT_PROPERTIES)" >> $(zip_root)/META/misc_info.txt
+diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
+index 1a7df61..2a8c0a9 100644
+--- a/products/AndroidProducts.mk
++++ b/products/AndroidProducts.mk
+@@ -119,3 +119,8 @@ endif
+ ifeq (pa_dragon,$(TARGET_PRODUCT))
+     PRODUCT_MAKEFILES += $(LOCAL_DIR)/dragon/pa_dragon.mk
  endif
- 	$(call generate-userimage-prop-dictionary, $(zip_root)/META/misc_info.txt)
--	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
--	    ./build/tools/releasetools/make_recovery_patch $(zip_root) $(zip_root)
- 	@# Zip everything up, preserving symlinks
- 	$(hide) (cd $(zip_root) && zip -qry ../$(notdir $@) .)
- 	@# Run fs_config on all the system, vendor, boot ramdisk,
-@@ -1542,7 +1540,6 @@ endif
- 	$(hide) zipinfo -1 $@ | awk 'BEGIN { FS="SYSTEM/" } /^SYSTEM\// {print "system/" $$2}' | $(HOST_OUT_EXECUTABLES)/fs_config -C -D $(TARGET_OUT) -S $(SELINUX_FC) > $(zip_root)/META/filesystem_config.txt
- 	$(hide) zipinfo -1 $@ | awk 'BEGIN { FS="VENDOR/" } /^VENDOR\// {print "vendor/" $$2}' | $(HOST_OUT_EXECUTABLES)/fs_config -C -D $(TARGET_OUT) -S $(SELINUX_FC) > $(zip_root)/META/vendor_filesystem_config.txt
- 	$(hide) zipinfo -1 $@ | awk 'BEGIN { FS="BOOT/RAMDISK/" } /^BOOT\/RAMDISK\// {print $$2}' | $(HOST_OUT_EXECUTABLES)/fs_config -C -D $(TARGET_OUT) -S $(SELINUX_FC) > $(zip_root)/META/boot_filesystem_config.txt
--	$(hide) zipinfo -1 $@ | awk 'BEGIN { FS="RECOVERY/RAMDISK/" } /^RECOVERY\/RAMDISK\// {print $$2}' | $(HOST_OUT_EXECUTABLES)/fs_config -C -D $(TARGET_OUT) -S $(SELINUX_FC) > $(zip_root)/META/recovery_filesystem_config.txt
- 	$(hide) (cd $(zip_root) && zip -q ../$(notdir $@) META/*filesystem_config.txt)
- 	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
- 	    ./build/tools/releasetools/add_img_to_target_files -p $(HOST_OUT) $@
-@@ -1575,7 +1572,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
- 	@echo -e ${CL_YLW}"Package OTA:"${CL_RST}" $@"
- 	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
- 	   ./build/tools/releasetools/ota_from_target_files -v \
--	   --block \
- 	   -no_prereq \
- 	   -p $(HOST_OUT) \
- 	   -k $(KEY_CERT_PAIR) \
-diff --git a/core/envsetup.mk b/core/envsetup.mk
-index 2630849..5d0dd0b 100644
---- a/core/envsetup.mk
-+++ b/core/envsetup.mk
-@@ -158,8 +158,8 @@ SDK_HOST_ARCH := x86
- board_config_mk := \
- 	$(strip $(wildcard \
- 		$(SRC_TARGET_DIR)/board/$(TARGET_DEVICE)/BoardConfig.mk \
--		$(shell test -d device && find device -maxdepth 4 -path '*/$(TARGET_DEVICE)/BoardConfig.mk') \
--		$(shell test -d vendor && find vendor -maxdepth 4 -path '*/$(TARGET_DEVICE)/BoardConfig.mk') \
-+		$(shell test -d device && find device -follow -maxdepth 4 -path '*/$(TARGET_DEVICE)/BoardConfig.mk') \
-+		$(shell test -d vendor && find vendor -follow -maxdepth 4 -path '*/$(TARGET_DEVICE)/BoardConfig.mk') \
- 	))
- ifeq ($(board_config_mk),)
-   $(error No config file found for TARGET_DEVICE $(TARGET_DEVICE))
-diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index 33ef2d8..57dd9ab 100755
---- a/tools/releasetools/ota_from_target_files.py
-+++ b/tools/releasetools/ota_from_target_files.py
-@@ -638,8 +638,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-   else:
-     script.FormatPartition("/system")
-     script.Mount("/system", recovery_mount_options)
--    if not has_recovery_patch:
--      script.UnpackPackageDir("recovery", "/system")
-+    #if not has_recovery_patch:
-+    #  script.UnpackPackageDir("recovery", "/system")
-     script.UnpackPackageDir("system", "/system")
++
++# Huawei P9 Lite
++ifeq (pa_hi6250,$(TARGET_PRODUCT))
++    PRODUCT_MAKEFILES += $(LOCAL_DIR)/hi6250/pa_hi6250.mk
++endif
+diff --git a/products/hi6250/pa.dependencies b/products/hi6250/pa.dependencies
+new file mode 100644
+index 0000000..fe51488
+--- /dev/null
++++ b/products/hi6250/pa.dependencies
+@@ -0,0 +1 @@
++[]
+diff --git a/products/hi6250/pa_hi6250.mk b/products/hi6250/pa_hi6250.mk
+new file mode 100644
+index 0000000..c3c1d06
+--- /dev/null
++++ b/products/hi6250/pa_hi6250.mk
+@@ -0,0 +1,45 @@
++#
++# Copyright (C) 2016 Jonathan Jason Dennis (theonejohnnyd@gmail.com)
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++# Check for target product
++ifeq (pa_hi6250,$(TARGET_PRODUCT))
++
++# Inherit AOSPA Stuff
++TARGET_BOOT_ANIMATION_RES := 1080
++include vendor/pa/main.mk
++
++# Inherit device configuration
++$(call inherit-product, device/huawei/hi6250/device.mk)
++
++# Device identifier
++PRODUCT_NAME := pa_hi6250
++PRODUCT_DEVICE := hi6250
++PRODUCT_BRAND := huawei
++PRODUCT_MODEL := P9-Lite
++PRODUCT_MANUFACTURER := huawei
++
++TARGET_SCREEN_HEIGHT := 1920
++TARGET_SCREEN_WIDTH := 1080
++
++ADDITIONAL_DEFAULT_PROPERTIES += \
++    ro.zygote=zygote64_32 \
++    ro.adb.secure=0 \
++    ro.secure=0
++
++PRODUCT_BUILD_PROP_OVERRIDES += \
++	PRODUCT_NAME=pa_hi6250
++
++endif
+diff --git a/vendorsetup.sh b/vendorsetup.sh
+index b373041..c5f2887 100644
+--- a/vendorsetup.sh
++++ b/vendorsetup.sh
+@@ -40,3 +40,7 @@ add_lunch_combo pa_suzuran-userdebug
  
-     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
-@@ -679,7 +679,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-       vendor_items.GetMetadata(input_zip)
-       vendor_items.Get("vendor").SetPermissions(script)
- 
--  common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
-+  #common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
-   common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
- 
-   if OPTIONS.backuptool:
--- 
-1.9.1
-
-
-From 3bd3cd191e86b7a543eb508eec4db62ea1d034a2 Mon Sep 17 00:00:00 2001
-From: Daniel <dady8889@gmail.com>
-Date: Sun, 20 Nov 2016 00:31:23 +0100
-Subject: [PATCH 2/2] patch
-
-Change-Id: I8cccf81dffbaee15a8c469c90e40a4550299eab7
----
- tools/releasetools/ota_from_target_files.py | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index 57dd9ab..0329dd1 100755
---- a/tools/releasetools/ota_from_target_files.py
-+++ b/tools/releasetools/ota_from_target_files.py
-@@ -609,7 +609,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
- 
-   script.ShowProgress(0.1, 10 if OPTIONS.backuptool else 0)
-   if OPTIONS.backuptool:
--    script.Print("- Backing up installed apps")
-+    script.Print("- Backing up addon.d")
-     script.Mount("/system")
-     if has_vendor_partition:
-       script.Mount("/vendor")
-@@ -636,10 +636,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-     system_diff = common.BlockDifference("system", system_tgt, src=None)
-     system_diff.WriteScript(script, output_zip)
-   else:
-+    script.Print("- Formatting /system")
-     script.FormatPartition("/system")
-     script.Mount("/system", recovery_mount_options)
-     #if not has_recovery_patch:
-     #  script.UnpackPackageDir("recovery", "/system")
-+    script.Print("- Unpacking /system")
-     script.UnpackPackageDir("system", "/system")
- 
-     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
-@@ -684,17 +686,17 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
- 
-   if OPTIONS.backuptool:
-     script.ShowProgress(0.1, 10)
--    script.Mount("/system")
-+    #script.Mount("/system")
-     if has_vendor_partition:
-       script.Mount("/vendor")
--    script.Print("- Restoring installed apps from backup")
-+    script.Print("- Restoring addon.d from backup")
-     script.RunBackup("restore")
--    script.Unmount("/system")
-+    #script.Unmount("/system")
-     if has_vendor_partition:
-       script.Unmount("/vendor")
- 
-   script.ShowProgress(0.2 if OPTIONS.backuptool else 0.3, 20 if OPTIONS.wipe_user_data else 10)
--
-+  script.Print("- Flashing boot.img")
-   script.WriteRawImage("/boot", "boot.img")
- 
-   device_specific.FullOTA_InstallEnd()
+ # CAF
+ add_lunch_combo pa_dragon-userdebug
++
++# Huawei P9 Lite
++add_lunch_combo pa_hi6250-userdebug
++
 -- 
 1.9.1
 

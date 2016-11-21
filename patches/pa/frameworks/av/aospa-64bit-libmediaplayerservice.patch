@@ -1,0 +1,26 @@
+From 2485668440271e10090e2d4fd9f3cfbd767072a4 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 20 Nov 2016 22:57:45 +0100
+Subject: [PATCH] allow 64 bit MediaService
+
+Change-Id: Ie06068c7dd5f569bdec617e48988128d0fafee03
+---
+ media/libmediaplayerservice/Android.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/media/libmediaplayerservice/Android.mk b/media/libmediaplayerservice/Android.mk
+index 4d1b587..f4b2a89 100644
+--- a/media/libmediaplayerservice/Android.mk
++++ b/media/libmediaplayerservice/Android.mk
+@@ -59,7 +59,7 @@ LOCAL_CLANG := true
+ 
+ LOCAL_MODULE:= libmediaplayerservice
+ 
+-LOCAL_32_BIT_ONLY := true
++#LOCAL_32_BIT_ONLY := true
+ 
+ include $(BUILD_SHARED_LIBRARY)
+ 
+-- 
+1.9.1
+

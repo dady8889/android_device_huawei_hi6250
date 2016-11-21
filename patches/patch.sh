@@ -30,7 +30,7 @@ do
 	fi
 	cd $REPO
 	RESULT=$(patch -p1 --follow-symlinks --no-backup-if-mismatch < $PATCH)
-	#echo -e "${RESULT}"
+	echo -e "${RESULT}"
 	if [[ $(echo $RESULT | grep -c FAILED) -gt 0 ]] ; then
 		echo ""
 		echo "Fail!"
@@ -98,3 +98,4 @@ done
 cd $THISDIR
 if [[ "$ROM" == "pa" ]];then
 	./patch.sh common false
+fi

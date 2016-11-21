@@ -1,0 +1,113 @@
+From cf3ed9c64f087855a31b9b90e4d2234c91e572da Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 20 Nov 2016 17:31:54 +0100
+Subject: [PATCH] patch
+
+Change-Id: I475a169019c96f42298deb57a97e9215501247a4
+---
+ include/radio/Radio.h               | 2 +-
+ include/soundtrigger/SoundTrigger.h | 2 +-
+ radio/Radio.cpp                     | 6 +++---
+ soundtrigger/SoundTrigger.cpp       | 8 ++++----
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/radio/Radio.h b/include/radio/Radio.h
+index 302bf16..a4dfdd1 100644
+--- a/include/radio/Radio.h
++++ b/include/radio/Radio.h
+@@ -75,7 +75,7 @@ public:
+ private:
+             Radio(radio_handle_t handle,
+                             const sp<RadioCallback>&);
+-            static const sp<IRadioService>& getRadioService();
++            static const sp<IRadioService> getRadioService();
+ 
+             Mutex                   mLock;
+             sp<IRadio>              mIRadio;
+diff --git a/include/soundtrigger/SoundTrigger.h b/include/soundtrigger/SoundTrigger.h
+index bf5e1de..9a05cac 100644
+--- a/include/soundtrigger/SoundTrigger.h
++++ b/include/soundtrigger/SoundTrigger.h
+@@ -68,7 +68,7 @@ public:
+ private:
+             SoundTrigger(sound_trigger_module_handle_t module,
+                             const sp<SoundTriggerCallback>&);
+-            static const sp<ISoundTriggerHwService>& getSoundTriggerHwService();
++            static const sp<ISoundTriggerHwService> getSoundTriggerHwService();
+ 
+             Mutex                               mLock;
+             sp<ISoundTrigger>                   mISoundTrigger;
+diff --git a/radio/Radio.cpp b/radio/Radio.cpp
+index e3554c2..3c04fb0 100644
+--- a/radio/Radio.cpp
++++ b/radio/Radio.cpp
+@@ -55,7 +55,7 @@ namespace {
+     sp<DeathNotifier>         gDeathNotifier;
+ }; // namespace anonymous
+ 
+-const sp<IRadioService>& Radio::getRadioService()
++const sp<IRadioService> Radio::getRadioService()
+ {
+     Mutex::Autolock _l(gLock);
+     if (gRadioService.get() == 0) {
+@@ -84,7 +84,7 @@ status_t Radio::listModules(struct radio_properties *properties,
+                             uint32_t *numModules)
+ {
+     ALOGV("listModules()");
+-    const sp<IRadioService>& service = getRadioService();
++    const sp<IRadioService> service = getRadioService();
+     if (service == 0) {
+         return NO_INIT;
+     }
+@@ -98,7 +98,7 @@ sp<Radio> Radio::attach(radio_handle_t handle,
+ {
+     ALOGV("attach()");
+     sp<Radio> radio;
+-    const sp<IRadioService>& service = getRadioService();
++    const sp<IRadioService> service = getRadioService();
+     if (service == 0) {
+         return radio;
+     }
+diff --git a/soundtrigger/SoundTrigger.cpp b/soundtrigger/SoundTrigger.cpp
+index 2138cb7..e959b83 100644
+--- a/soundtrigger/SoundTrigger.cpp
++++ b/soundtrigger/SoundTrigger.cpp
+@@ -55,7 +55,7 @@ namespace {
+     sp<DeathNotifier>         gDeathNotifier;
+ }; // namespace anonymous
+ 
+-const sp<ISoundTriggerHwService>& SoundTrigger::getSoundTriggerHwService()
++const sp<ISoundTriggerHwService> SoundTrigger::getSoundTriggerHwService()
+ {
+     Mutex::Autolock _l(gLock);
+     if (gSoundTriggerHwService.get() == 0) {
+@@ -84,7 +84,7 @@ status_t SoundTrigger::listModules(struct sound_trigger_module_descriptor *modul
+                                  uint32_t *numModules)
+ {
+     ALOGV("listModules()");
+-    const sp<ISoundTriggerHwService>& service = getSoundTriggerHwService();
++    const sp<ISoundTriggerHwService> service = getSoundTriggerHwService();
+     if (service == 0) {
+         return NO_INIT;
+     }
+@@ -96,7 +96,7 @@ sp<SoundTrigger> SoundTrigger::attach(const sound_trigger_module_handle_t module
+ {
+     ALOGV("attach()");
+     sp<SoundTrigger> soundTrigger;
+-    const sp<ISoundTriggerHwService>& service = getSoundTriggerHwService();
++    const sp<ISoundTriggerHwService> service = getSoundTriggerHwService();
+     if (service == 0) {
+         return soundTrigger;
+     }
+@@ -116,7 +116,7 @@ sp<SoundTrigger> SoundTrigger::attach(const sound_trigger_module_handle_t module
+ status_t SoundTrigger::setCaptureState(bool active)
+ {
+     ALOGV("setCaptureState(%d)", active);
+-    const sp<ISoundTriggerHwService>& service = getSoundTriggerHwService();
++    const sp<ISoundTriggerHwService> service = getSoundTriggerHwService();
+     if (service == 0) {
+         return NO_INIT;
+     }
+-- 
+1.9.1
+

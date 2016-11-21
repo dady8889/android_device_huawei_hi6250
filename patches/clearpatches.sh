@@ -33,6 +33,5 @@ do
 done
 }
 
-clear_set meticulus
 clear_set pa
 clear_set common

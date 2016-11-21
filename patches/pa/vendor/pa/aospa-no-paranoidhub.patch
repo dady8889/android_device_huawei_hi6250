@@ -1,0 +1,35 @@
+From c3c6115579367a2548700d20ab79399286490f56 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Mon, 21 Nov 2016 19:27:07 +0100
+Subject: [PATCH] I am from Europe so... Also ParanoidHub is not needed.
+
+Change-Id: I96bbfb4e4a6e51d759b9bfb620f2da84b0865faf
+---
+ main.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/main.mk b/main.mk
+index c0e535d..c40668c 100644
+--- a/main.mk
++++ b/main.mk
+@@ -26,7 +26,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
+ # Override undesired Google defaults
+ PRODUCT_PROPERTY_OVERRIDES += \
+     keyguard.no_require_sim=true \
+-    ro.com.android.dateformat=MM-dd-yyyy \
++    ro.com.android.dateformat=dd-MM-yyyy \
+     ro.com.android.wifi-watchlist=GoogleGuest \
+     ro.com.google.clientidbase=android-google \
+     ro.url.legal=http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html \
+@@ -79,7 +79,7 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_PACKAGES += PA_Browser
+ 
+ # Build ParanoidHub
+-PRODUCT_PACKAGES += ParanoidHub
++#PRODUCT_PACKAGES += ParanoidHub
+ 
+ # Include the custom PA bootanimation
+ ifeq ($(TARGET_BOOT_ANIMATION_RES),480)
+-- 
+1.9.1
+

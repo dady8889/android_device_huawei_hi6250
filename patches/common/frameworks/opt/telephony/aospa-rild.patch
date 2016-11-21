@@ -1,0 +1,192 @@
+From 81e3348251e6621f6368af62eb73b90487d492d7 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 20 Nov 2016 14:31:09 +0100
+Subject: [PATCH] patch
+
+Change-Id: Id5220876fc6624068df1ab75b20cc7e1f91bc9ac
+---
+ src/java/com/android/internal/telephony/RIL.java   | 49 ++++++++++++----------
+ .../telephony/dataconnection/DcTracker.java        |  4 +-
+ 2 files changed, 30 insertions(+), 23 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 4ada1aa..b279bd4 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -100,11 +100,11 @@ class RILRequest {
+     //***** Class Variables
+     static Random sRandom = new Random();
+     static AtomicInteger sNextSerial = new AtomicInteger(0);
+-    private static Object sPoolSync = new Object();
+-    private static RILRequest sPool = null;
+-    private static int sPoolSize = 0;
+-    private static final int MAX_POOL_SIZE = 4;
+-    private Context mContext;
++    protected static Object sPoolSync = new Object();
++    protected static RILRequest sPool = null;
++    protected static int sPoolSize = 0;
++    protected static final int MAX_POOL_SIZE = 4;
++    protected Context mContext;
+ 
+     //***** Instance Variables
+     int mSerial;
+@@ -169,7 +169,7 @@ class RILRequest {
+         }
+     }
+ 
+-    private RILRequest() {
++    protected RILRequest() {
+     }
+ 
+     static void
+@@ -241,7 +241,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      * Wake lock timeout should be longer than the longest timeout in
+      * the vendor ril.
+      */
+-    private static final int DEFAULT_WAKE_LOCK_TIMEOUT = 60000;
++    protected static final int DEFAULT_WAKE_LOCK_TIMEOUT = 60000;
+ 
+     //***** Instance Variables
+ 
+@@ -287,11 +287,11 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+ 
+     // The number of the required config values for broadcast SMS stored in the C struct
+     // RIL_CDMA_BroadcastServiceInfo
+-    private static final int CDMA_BSI_NO_OF_INTS_STRUCT = 3;
++    protected static final int CDMA_BSI_NO_OF_INTS_STRUCT = 3;
+ 
+-    private static final int CDMA_BROADCAST_SMS_NO_OF_SERVICE_CATEGORIES = 31;
++    protected static final int CDMA_BROADCAST_SMS_NO_OF_SERVICE_CATEGORIES = 31;
+ 
+-    private final DisplayManager.DisplayListener mDisplayListener =
++    protected final DisplayManager.DisplayListener mDisplayListener =
+             new DisplayManager.DisplayListener() {
+         @Override
+         public void onDisplayAdded(int displayId) { }
+@@ -311,7 +311,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     };
+ 
+-    private final BroadcastReceiver mBatteryStateListener = new BroadcastReceiver() {
++    protected final BroadcastReceiver mBatteryStateListener = new BroadcastReceiver() {
+         @Override
+         public void onReceive(Context context, Intent intent) {
+             boolean oldState = mIsDevicePlugged;
+@@ -452,7 +452,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      * @return Length of message less header, or -1 on end of stream.
+      * @throws IOException
+      */
+-    private static int readRilMessage(InputStream is, byte[] buffer)
++    protected static int readRilMessage(InputStream is, byte[] buffer)
+             throws IOException {
+         int countRead;
+         int offset;
+@@ -1302,7 +1302,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         send(rr);
+     }
+ 
+-    private void
++    protected void
+     constructGsmSendSmsRilRequest (RILRequest rr, String smscPDU, String pdu) {
+         rr.mParcel.writeInt(2);
+         rr.mParcel.writeString(smscPDU);
+@@ -1334,7 +1334,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         send(rr);
+     }
+ 
+-    private void
++    protected void
+     constructCdmaSendSmsRilRequest(RILRequest rr, byte[] pdu) {
+         int address_nbr_of_digits;
+         int subaddr_nbr_of_digits;
+@@ -1486,7 +1486,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      *  Translates EF_SMS status bits to a status value compatible with
+      *  SMS AT commands.  See TS 27.005 3.1.
+      */
+-    private int translateStatus(int status) {
++    protected int translateStatus(int status) {
+         switch(status & 0x7) {
+             case SmsManager.STATUS_ON_ICC_READ:
+                 return 1;
+@@ -2255,7 +2255,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      * Update the screen state. Send screen state ON if the default display is ON or the device
+      * is plugged.
+      */
+-    private void updateScreenState() {
++    protected void updateScreenState() {
+         final int oldState = mRadioScreenState;
+         mRadioScreenState = (mDefaultDisplayState == Display.STATE_ON || mIsDevicePlugged)
+                 ? RADIO_SCREEN_ON : RADIO_SCREEN_OFF;
+@@ -2287,11 +2287,12 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         updateScreenState();
+    }
+ 
+-    private RadioState getRadioStateFromInt(int stateInt) {
++    protected RadioState getRadioStateFromInt(int stateInt) {
+         RadioState state;
++        int stateIntNormalized = convertRadioState(stateInt);
+ 
+         /* RIL_RadioState ril.h */
+-        switch(stateInt) {
++        switch(stateIntNormalized) {
+             case 0: state = RadioState.RADIO_OFF; break;
+             case 1: state = RadioState.RADIO_UNAVAILABLE; break;
+             case 10: state = RadioState.RADIO_ON; break;
+@@ -2303,7 +2304,11 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return state;
+     }
+ 
+-    private void switchToRadioState(RadioState newState) {
++    protected int convertRadioState(int paramInt){
++	return paramInt > 1 && paramInt < 10 ? 10 : paramInt;
++    }
++
++    protected void switchToRadioState(RadioState newState) {
+         setRadioState(newState);
+     }
+ 
+@@ -2316,7 +2321,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+      * happen often.
+      */
+ 
+-    private void
++    protected void
+     acquireWakeLock() {
+         synchronized (mWakeLock) {
+             mWakeLock.acquire();
+@@ -2328,7 +2333,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         }
+     }
+ 
+-    private void
++    protected void
+     decrementWakeLock() {
+         synchronized (mWakeLock) {
+             if (mWakeLockCount > 1) {
+@@ -2342,7 +2347,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+     }
+ 
+     // true if we had the wakelock
+-    private boolean
++    protected boolean
+     clearWakeLock() {
+         synchronized (mWakeLock) {
+             if (mWakeLockCount == 0 && mWakeLock.isHeld() == false) return false;
+diff --git a/src/java/com/android/internal/telephony/dataconnection/DcTracker.java b/src/java/com/android/internal/telephony/dataconnection/DcTracker.java
+index 919d3b4..cc8f129 100644
+--- a/src/java/com/android/internal/telephony/dataconnection/DcTracker.java
++++ b/src/java/com/android/internal/telephony/dataconnection/DcTracker.java
+@@ -1599,7 +1599,9 @@ public final class DcTracker extends DcTrackerBase {
+                 // request goes away.  This applies to both CDMA and GSM because they both
+                 // can declare the DUN APN sharable by default traffic, thus still satisfying
+                 // those requests and not torn down organically.
+-                if (apnContext.getApnType() == PhoneConstants.APN_TYPE_DUN && teardownForDun()) {
++                if ((apnContext.getApnType() == PhoneConstants.APN_TYPE_DUN && teardownForDun())
++                || apnContext.getState() != DctConstants.State.CONNECTED
++                || mPhone.getSubId() != SubscriptionManager.getDefaultDataSubId()) {
+                     cleanup = true;
+                 } else {
+                     cleanup = false;
+-- 
+1.9.1
+
