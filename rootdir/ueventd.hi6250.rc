@@ -35,6 +35,6 @@
 /sys/class/leds/torch/brightness			0664  system    system
 /sys/class/leds/torch/flash_thermal_protect		0664  system    system
 /dev/hifi_misc                                          0770  root      audio
-/dev/dsm                            0660  system    dsm
+/dev/dsm                            0660  system    system
 /dev/block/mmcblk0p4                                    0660 system    system
 /dev/block/mmcblk0p20                                   0660 system    system

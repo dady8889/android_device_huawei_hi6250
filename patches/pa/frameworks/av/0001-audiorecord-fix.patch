@@ -1,0 +1,33 @@
+From d09312a12c1934ff88770a5d1c86b90a336da10d Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Tue, 22 Nov 2016 21:15:30 +0100
+Subject: [PATCH] audiorecord fix
+
+Change-Id: I6abae4f7b2202b33a6855f0650a8dde72a1dc851
+---
+ media/libmedia/AudioRecord.cpp | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/media/libmedia/AudioRecord.cpp b/media/libmedia/AudioRecord.cpp
+index 40cad59..5fc5ea3 100644
+--- a/media/libmedia/AudioRecord.cpp
++++ b/media/libmedia/AudioRecord.cpp
+@@ -26,7 +26,6 @@
+ #include <utils/Log.h>
+ #include <private/media/AudioTrackShared.h>
+ #include <media/IAudioFlinger.h>
+-#include "SeempLog.h"
+ 
+ #define WAIT_PERIOD_MS          10
+ 
+@@ -299,7 +298,6 @@ status_t AudioRecord::set(
+ status_t AudioRecord::start(AudioSystem::sync_event_t event, int triggerSession)
+ {
+     ALOGV("start, sync event %d trigger session %d", event, triggerSession);
+-    SEEMPLOG_RECORD(71,"");
+ 
+     AutoMutex lock(mLock);
+     if (mActive) {
+-- 
+1.9.1
+

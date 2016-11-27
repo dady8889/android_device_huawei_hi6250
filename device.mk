@@ -169,5 +169,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     Stk \
     Browser \
-    libemoji
-
+    FMRadio \
+    NfcNci \
+    Music \
+    messaging \
+    libemoji \
+    libfmjni

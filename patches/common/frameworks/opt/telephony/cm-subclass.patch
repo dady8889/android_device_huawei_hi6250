@@ -1,0 +1,575 @@
+From 224bdc7b6620988babe15cb7915c9e7039d86995 Mon Sep 17 00:00:00 2001
+From: Arne Coucheron <arco68@gmail.com>
+Date: Sat, 24 Oct 2015 00:05:33 +0200
+Subject: [PATCH] Squashed support for RIL subclass
+
+From: Ricardo Cerqueira <github@cerqueira.org>
+Date: Thu, 22 Nov 2012 17:47:31 +0100
+Subject: [PATCH] RIL: Make RIL subclassable
+
+Change-Id: I9144ef279ca9c8cb9e657a28342f0f4cb3e7debd
+
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Thu, 22 Nov 2012 19:01:13 +0100
+Subject: [PATCH] telephony: Use reflection to create command interface (RIL class)
+
+Change-Id: Icdc02eaa74b89dbde4ddfb989cc62481d6423312
+
+PhoneFactory: fall back to default RIL if custom RIL Class fails
+
+If the ro.telephony.ril_class property is set to an invalid class it will cause
+Phone to repeatedly FC and make the device unuseable. This allows it to handle the
+exceptions gracefully and fall back on the default RIL.
+
+Change-Id: Ic9c309aff173de5267aa7ef633bfff87243f24fd
+
+PhoneFactory: Block radio init if the device's custom class can't be used
+
+Trap the initialization process in a 10 second error loop. The device
+will be normally usable, and have a dead radio. The radio log buffer
+will have the full stack dump explaining what went wrong during the
+custom class instantiation
+
+Change-Id: Id47d51737a9fb78e6d43a179ba304b1ba03c4219
+
+From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
+Date: Thu, 22 Nov 2012 06:02:18 +0000
+Subject: [PATCH] Allow a device to include its own RIL subclass
+
+For cases where a single device needs a subclass, there's no need to
+pollute the common core with it: just stick it in the device's own
+repository, and add something like
+"BOARD_RIL_CLASS := ../../../device/manuf/model/ril/" to the BoardConfig
+
+Change-Id: I9d01ceb6e5587382eb216341e2e373ec0c52848f
+
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 8 Mar 2014 19:35:17 +0700
+Subject: [PATCH] RIL: mark mInstanceId as protected
+
+To use in RIL subclasses
+
+Change-Id: I4ab1ea79079e3b03670b1e985f7a574df1f16658
+
+From: Dan Pasanen <dan.pasanen@gmail.com>
+Date: Mon, 10 Nov 2014 23:50:17 -0600
+Subject: [PATCH] RIL: set responseCellInfoList protected to override in sub classes
+
+Change-Id: Ibbbee0c1a59ab2be6b71fc2f70c6279314b55d6e
+
+From: JustArchi <JustArchi@JustArchi.net>
+Date: Sat, 2 May 2015 06:17:49 +0200
+Subject: [PATCH] RIL: Make some methods protected
+
+This is required for some RIL subclasses, if they want to use them
+
+Change-Id: I59f0148be0f49b4ee2997a669e74a61c2f6a8069
+
+From: Varun Chitre <varun.chitre15@gmail.com>
+Date: Sat, 16 May 2015 02:28:40 -0400
+Subject: [PATCH] RIL : allow RILReceiver to be overridden
+
+Change-Id: If23252901073a1658fa965e14cd7188ce39397f8
+Signed-off-by: Varun Chitre <varun.chitre15@gmail.com>
+
+Change-Id: Id43b0fb43ad7f19c2e4b2a6af5590f7b3a17761e
+---
+ Android.mk                                         |   5 +
+ .../android/internal/telephony/PhoneFactory.java   |  27 +++++-
+ src/java/com/android/internal/telephony/RIL.java   | 104 +++++++++++----------
+ 3 files changed, 84 insertions(+), 52 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 449faa0..7c9319a 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -25,6 +25,9 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/java) \
+ 	$(call all-logtags-files-under, src/java)
+ 
+ LOCAL_JAVA_LIBRARIES := voip-common ims-common
++ifneq ($(BOARD_RIL_CLASS),)
++LOCAL_SRC_FILES += $(call find-other-java-files,$(BOARD_RIL_CLASS))
++endif
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE := telephony-common
+
+diff --git a/src/java/com/android/internal/telephony/PhoneFactory.java b/src/java/com/android/internal/telephony/PhoneFactory.java
+index 580da8c..534c40a 100644
+--- a/src/java/com/android/internal/telephony/PhoneFactory.java
++++ b/src/java/com/android/internal/telephony/PhoneFactory.java
+@@ -48,6 +48,7 @@
+ import java.io.FileDescriptor;
+ import java.io.PrintWriter;
+ import java.util.HashMap;
++import java.lang.reflect.Constructor;
+ 
+ /**
+  * {@hide}
+@@ -143,6 +144,8 @@ public static void makeDefaultPhone(Context context) {
+                 int[] networkModes = new int[numPhones];
+                 sProxyPhones = new PhoneProxy[numPhones];
+                 sCommandsInterfaces = new RIL[numPhones];
++                String sRILClassname = SystemProperties.get("ro.telephony.ril_class", "RIL").trim();
++                Rlog.i(LOG_TAG, "RILClassname is " + sRILClassname);
+ 
+                 for (int i = 0; i < numPhones; i++) {
+                     // reads the system properties and makes commandsinterface
+@@ -157,8 +160,20 @@ public static void makeDefaultPhone(Context context) {
+                         networkModes[i] = preferredNetworkMode;
+                     }
+                     Rlog.i(LOG_TAG, "Network Mode set to " + Integer.toString(networkModes[i]));
+-                    sCommandsInterfaces[i] = new RIL(context, networkModes[i],
+-                            cdmaSubscription, i);
++                    // Use reflection to construct the RIL class (defaults to RIL)
++                    try {
++                        sCommandsInterfaces[i] = instantiateCustomRIL(
++                                                     sRILClassname, context, networkModes[i], cdmaSubscription, i);
++                    } catch (Exception e) {
++                        // 6 different types of exceptions are thrown here that it's
++                        // easier to just catch Exception as our "error handling" is the same.
++                        // Yes, we're blocking the whole thing and making the radio unusable. That's by design.
++                        // The log message should make it clear why the radio is broken
++                        while (true) {
++                            Rlog.e(LOG_TAG, "Unable to construct custom RIL class", e);
++                            try {Thread.sleep(10000);} catch (InterruptedException ie) {}
++                        }
++                    }
+                 }
+                 Rlog.i(LOG_TAG, "Creating SubscriptionController");
+                 TelephonyPluginDelegate.getInstance().initSubscriptionController(context,
+@@ -240,6 +255,14 @@ public static Phone getGsmPhone(int phoneId) {
+         }
+     }
+ 
++    private static <T> T instantiateCustomRIL(
++                      String sRILClassname, Context context, int networkMode, int cdmaSubscription, Integer instanceId)
++                      throws Exception {
++        Class<?> clazz = Class.forName("com.android.internal.telephony." + sRILClassname);
++        Constructor<?> constructor = clazz.getConstructor(Context.class, int.class, int.class, Integer.class);
++        return (T) clazz.cast(constructor.newInstance(context, networkMode, cdmaSubscription, instanceId));
++    }
++
+     public static Phone getDefaultPhone() {
+         synchronized (sLockProxyPhones) {
+             if (!sMadeDefaults) {
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index ee377b1..b0c7e57 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -233,7 +233,7 @@ private RILRequest() {
+  *
+  * {@hide}
+  */
+-public final class RIL extends BaseCommands implements CommandsInterface {
++public class RIL extends BaseCommands implements CommandsInterface {
+     static final String RILJ_LOG_TAG = "RILJ";
+     static final boolean RILJ_LOGD = true;
+     static final boolean RILJ_LOGV = false; // STOPSHIP if true
+@@ -283,7 +283,7 @@ private RILRequest() {
+     // When we are testing emergency calls
+     AtomicBoolean mTestingEmergencyCall = new AtomicBoolean(false);
+ 
+-    private Integer mInstanceId;
++    protected Integer mInstanceId;
+ 
+     //***** Events
+ 
+@@ -521,10 +521,10 @@ private static int readRilMessage(InputStream is, byte[] buffer)
+         return messageLength;
+     }
+ 
+-    class RILReceiver implements Runnable {
++    protected class RILReceiver implements Runnable {
+         byte[] buffer;
+ 
+-        RILReceiver() {
++        protected RILReceiver() {
+             buffer = new byte[RIL_MAX_COMMAND_BYTES];
+         }
+ 
+@@ -683,7 +683,7 @@ public RIL(Context context, int preferredNetworkType,
+             riljLog("Not starting RILReceiver: wifi-only");
+         } else {
+             riljLog("Starting RILReceiver" + mInstanceId);
+-            mReceiver = new RILReceiver();
++            mReceiver = createRILReceiver();
+             mReceiverThread = new Thread(mReceiver, "RILReceiver" + mInstanceId);
+             mReceiverThread.start();
+ 
+@@ -704,6 +704,10 @@ public RIL(Context context, int preferredNetworkType,
+         tdc.registerRIL(this);
+     }
+ 
++    protected RILReceiver createRILReceiver() {
++        return new RILReceiver();
++    }
++
+     //***** CommandsInterface implementation
+ 
+     @Override
+@@ -2339,7 +2343,7 @@ private void updateScreenState() {
+         }
+     }
+ 
+-    private void sendScreenState(boolean on) {
++    protected void sendScreenState(boolean on) {
+         RILRequest rr = RILRequest.obtain(RIL_REQUEST_SCREEN_STATE, null);
+         rr.mParcel.writeInt(1);
+         rr.mParcel.writeInt(on ? 1 : 0);
+@@ -2425,7 +2429,7 @@ private void switchToRadioState(RadioState newState) {
+         }
+     }
+ 
+-    private void
++    protected void
+     send(RILRequest rr) {
+         Message msg;
+ 
+@@ -2442,7 +2446,7 @@ private void switchToRadioState(RadioState newState) {
+         msg.sendToTarget();
+     }
+ 
+-    private void
++    protected void
+     processResponse (Parcel p) {
+         int type;
+ 
+@@ -2464,7 +2468,7 @@ private void switchToRadioState(RadioState newState) {
+      * @param error is the RIL_Errno sent back
+      * @param loggable true means to print all requests in mRequestList
+      */
+-    private void clearRequestList(int error, boolean loggable) {
++    protected void clearRequestList(int error, boolean loggable) {
+         RILRequest rr;
+         synchronized (mRequestList) {
+             int count = mRequestList.size();
+@@ -2488,7 +2492,7 @@ private void clearRequestList(int error, boolean loggable) {
+         }
+     }
+ 
+-    private RILRequest findAndRemoveRequestFromList(int serial) {
++    protected RILRequest findAndRemoveRequestFromList(int serial) {
+         RILRequest rr = null;
+         synchronized (mRequestList) {
+             rr = mRequestList.get(serial);
+@@ -2500,7 +2504,7 @@ private RILRequest findAndRemoveRequestFromList(int serial) {
+         return rr;
+     }
+ 
+-    private RILRequest
++    protected RILRequest
+     processSolicited (Parcel p) {
+         int serial, error;
+         boolean found = false;
+@@ -2862,7 +2866,7 @@ private RadioCapability makeStaticRadioCapability() {
+         return s;
+     }
+ 
+-    private void
++    protected void
+     processUnsolicited (Parcel p) {
+         int response;
+         Object ret;
+@@ -3358,7 +3362,7 @@ private RadioCapability makeStaticRadioCapability() {
+      *
+      * @param rilVer is the version of the ril or -1 if disconnected.
+      */
+-    private void notifyRegistrantsRilConnectionChanged(int rilVer) {
++    protected void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         mRilVersion = rilVer;
+         if (mRilConnectedRegistrants != null) {
+             mRilConnectedRegistrants.notifyRegistrants(
+@@ -3366,7 +3370,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         }
+     }
+ 
+-    private Object
++    protected Object
+     responseInts(Parcel p) {
+         int numInts;
+         int response[];
+@@ -3392,12 +3396,12 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return failCause;
+     }
+ 
+-    private Object
++    protected Object
+     responseVoid(Parcel p) {
+         return null;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallForward(Parcel p) {
+         int numInfos;
+         CallForwardInfo infos[];
+@@ -3420,7 +3424,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return infos;
+     }
+ 
+-    private Object
++    protected Object
+     responseSuppServiceNotification(Parcel p) {
+         SuppServiceNotification notification = new SuppServiceNotification();
+ 
+@@ -3433,7 +3437,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return notification;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaSms(Parcel p) {
+         SmsMessage sms;
+         sms = SmsMessage.newFromParcel(p);
+@@ -3441,7 +3445,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return sms;
+     }
+ 
+-    private Object
++    protected Object
+     responseString(Parcel p) {
+         String response;
+ 
+@@ -3450,7 +3454,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseStrings(Parcel p) {
+         int num;
+         String response[];
+@@ -3460,7 +3464,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseRaw(Parcel p) {
+         int num;
+         byte response[];
+@@ -3470,7 +3474,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSMS(Parcel p) {
+         int messageRef, errorCode;
+         String ackPDU;
+@@ -3485,7 +3489,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+     }
+ 
+ 
+-    private Object
++    protected Object
+     responseICC_IO(Parcel p) {
+         int sw1, sw2;
+         Message ret;
+@@ -3503,7 +3507,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return new IccIoResult(sw1, sw2, s);
+     }
+ 
+-    private Object
++    protected Object
+     responseICC_IOBase64(Parcel p) {
+         int sw1, sw2;
+         Message ret;
+@@ -3522,7 +3526,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+                 ? android.util.Base64.decode(s, android.util.Base64.DEFAULT) : (byte[]) null);
+     }
+ 
+-    private Object
++    protected Object
+     responseIccCardStatus(Parcel p) {
+         IccCardApplicationStatus appStatus;
+ 
+@@ -3554,7 +3558,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return cardStatus;
+     }
+ 
+-    private Object
++    protected Object
+     responseSimRefresh(Parcel p) {
+         IccRefreshResponse response = new IccRefreshResponse();
+ 
+@@ -3564,7 +3568,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallList(Parcel p) {
+         int num;
+         int voiceSettings;
+@@ -3642,7 +3646,7 @@ private void notifyRegistrantsRilConnectionChanged(int rilVer) {
+         return response;
+     }
+ 
+-    private DataCallResponse getDataCallResponse(Parcel p, int version) {
++    protected DataCallResponse getDataCallResponse(Parcel p, int version) {
+         DataCallResponse dataCall = new DataCallResponse();
+ 
+         dataCall.version = version;
+@@ -3690,7 +3694,7 @@ private DataCallResponse getDataCallResponse(Parcel p, int version) {
+         return dataCall;
+     }
+ 
+-    private Object
++    protected Object
+     responseDataCallList(Parcel p) {
+         ArrayList<DataCallResponse> response;
+ 
+@@ -3706,7 +3710,7 @@ private DataCallResponse getDataCallResponse(Parcel p, int version) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSetupDataCall(Parcel p) {
+         int ver = p.readInt();
+         int num = p.readInt();
+@@ -3760,7 +3764,7 @@ private DataCallResponse getDataCallResponse(Parcel p, int version) {
+         return dataCall;
+     }
+ 
+-    private Object
++    protected Object
+     responseOperatorInfos(Parcel p) {
+         String strings[] = (String [])responseStrings(p);
+         ArrayList<OperatorInfo> ret;
+@@ -3785,7 +3789,7 @@ private DataCallResponse getDataCallResponse(Parcel p, int version) {
+         return ret;
+     }
+ 
+-    private Object
++    protected Object
+     responseCellList(Parcel p) {
+        int num, rssi;
+        String location;
+@@ -3813,7 +3817,7 @@ private DataCallResponse getDataCallResponse(Parcel p, int version) {
+        return response;
+     }
+ 
+-    private Object responseGetPreferredNetworkType(Parcel p) {
++    protected Object responseGetPreferredNetworkType(Parcel p) {
+        int [] response = (int[]) responseInts(p);
+ 
+        if (response.length >= 1) {
+@@ -3825,7 +3829,7 @@ private Object responseGetPreferredNetworkType(Parcel p) {
+        return response;
+     }
+ 
+-    private Object responseGmsBroadcastConfig(Parcel p) {
++    protected Object responseGmsBroadcastConfig(Parcel p) {
+         int num;
+         ArrayList<SmsBroadcastConfigInfo> response;
+         SmsBroadcastConfigInfo info;
+@@ -3847,7 +3851,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaBroadcastConfig(Parcel p) {
+         int numServiceCategories;
+         int response[];
+@@ -3886,7 +3890,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseSignalStrength(Parcel p) {
+         // Assume this is gsm, but doesn't matter as ServiceStateTracker
+         // sets the proper value.
+@@ -3894,7 +3898,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return signalStrength;
+     }
+ 
+-    private ArrayList<CdmaInformationRecords>
++    protected ArrayList<CdmaInformationRecords>
+     responseCdmaInformationRecord(Parcel p) {
+         int numberOfInfoRecs;
+         ArrayList<CdmaInformationRecords> response;
+@@ -3914,7 +3918,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseCdmaCallWaiting(Parcel p) {
+         CdmaCallWaitingNotification notification = new CdmaCallWaitingNotification();
+ 
+@@ -3933,7 +3937,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return notification;
+     }
+ 
+-    private Object
++    protected Object
+     responseCallRing(Parcel p){
+         char response[] = new char[4];
+ 
+@@ -3945,7 +3949,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return response;
+     }
+ 
+-    private void
++    protected void
+     notifyRegistrantsCdmaInfoRec(CdmaInformationRecords infoRec) {
+         int response = RIL_UNSOL_CDMA_INFO_REC;
+         if (infoRec.record instanceof CdmaInformationRecords.CdmaDisplayInfoRec) {
+@@ -3993,7 +3997,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         }
+     }
+ 
+-    private ArrayList<CellInfo> responseCellInfoList(Parcel p) {
++    protected ArrayList<CellInfo> responseCellInfoList(Parcel p) {
+         int numberOfInfoRecs;
+         ArrayList<CellInfo> response;
+ 
+@@ -4012,7 +4016,7 @@ private Object responseGmsBroadcastConfig(Parcel p) {
+         return response;
+     }
+ 
+-   private Object
++   protected Object
+    responseHardwareConfig(Parcel p) {
+       int num;
+       ArrayList<HardwareConfig> response;
+@@ -4328,29 +4332,29 @@ private Object responseActivityData(Parcel p) {
+         }
+     }
+ 
+-    private void riljLog(String msg) {
++    protected void riljLog(String msg) {
+         Rlog.d(RILJ_LOG_TAG, msg
+                 + (mInstanceId != null ? (" [SUB" + mInstanceId + "]") : ""));
+     }
+ 
+-    private void riljLogv(String msg) {
++    protected void riljLogv(String msg) {
+         Rlog.v(RILJ_LOG_TAG, msg
+                 + (mInstanceId != null ? (" [SUB" + mInstanceId + "]") : ""));
+     }
+ 
+-    private void unsljLog(int response) {
++    protected void unsljLog(int response) {
+         riljLog("[UNSL]< " + responseToString(response));
+     }
+ 
+-    private void unsljLogMore(int response, String more) {
++    protected void unsljLogMore(int response, String more) {
+         riljLog("[UNSL]< " + responseToString(response) + " " + more);
+     }
+ 
+-    private void unsljLogRet(int response, Object ret) {
++    protected void unsljLogRet(int response, Object ret) {
+         riljLog("[UNSL]< " + responseToString(response) + " " + retToString(response, ret));
+     }
+ 
+-    private void unsljLogvRet(int response, Object ret) {
++    protected void unsljLogvRet(int response, Object ret) {
+         riljLogv("[UNSL]< " + responseToString(response) + " " + retToString(response, ret));
+     }
+ 

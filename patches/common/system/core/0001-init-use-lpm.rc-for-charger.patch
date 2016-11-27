@@ -1,0 +1,41 @@
+From ef1d1b6ac3a5726ab2934c2631faa07266ef19e2 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sun, 30 Oct 2016 06:36:29 -0500
+Subject: [PATCH] init: use lpm.rc for charger
+
+Change-Id: Iccab12e1e05cb6cbe25da7fd50526955b4090c58
+---
+ init/init.cpp | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/init/init.cpp b/init/init.cpp
+index 58d7d34..fa97052 100644
+--- a/init/init.cpp
++++ b/init/init.cpp
+@@ -1111,7 +1111,14 @@ int main(int argc, char** argv) {
+     property_load_boot_defaults();
+     start_property_service();
+ 
+-    init_parse_config_file("/init.rc");
++    char bootmode[PROP_VALUE_MAX];
++    if (((property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) ||
++         strcmp(battchg_pause, BOARD_CHARGING_CMDLINE_VALUE) == 0)
++               || charging_mode_booting()) {
++    	init_parse_config_file("/lpm.rc");
++    } else {
++    	init_parse_config_file("/init.rc");
++    }
+ 
+     action_for_each_trigger("early-init", action_add_queue_tail);
+ 
+@@ -1130,7 +1137,6 @@ int main(int argc, char** argv) {
+     queue_builtin_action(mix_hwrng_into_linux_rng_action, "mix_hwrng_into_linux_rng");
+ 
+     // Don't mount filesystems or start core system services in charger mode.
+-    char bootmode[PROP_VALUE_MAX];
+     if (((property_get("ro.bootmode", bootmode) > 0 && strcmp(bootmode, "charger") == 0) ||
+          strcmp(battchg_pause, BOARD_CHARGING_CMDLINE_VALUE) == 0)
+                || charging_mode_booting()) {
+-- 
+1.9.1
+
