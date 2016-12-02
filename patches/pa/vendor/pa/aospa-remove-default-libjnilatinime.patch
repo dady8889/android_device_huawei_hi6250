@@ -1,0 +1,38 @@
+From 9107be357c221c748a02235b69af3f760f0bb4d4 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Mon, 28 Nov 2016 18:27:26 +0100
+Subject: [PATCH] Remove libjni_latinime.so
+
+Change-Id: I4c87729d6a854ded17082b2b7513611c98a8134d
+---
+ main.mk | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/main.mk b/main.mk
+index c0e535d..4e0258a 100644
+--- a/main.mk
++++ b/main.mk
+@@ -106,14 +106,14 @@ endif
+ TW_EXCLUDE_SUPERSU := true
+ 
+ # Proprietary latinime lib needed for Keyboard swyping
+-PRODUCT_COPY_FILES += \
+-    vendor/pa/prebuilt/lib/libjni_latinime.so:system/lib/libjni_latinime.so
++#PRODUCT_COPY_FILES += \
++#    vendor/pa/prebuilt/lib/libjni_latinime.so:system/lib/libjni_latinime.so
+ 
+ # import the arm64 one, if the device supports 64 bit
+-ifeq ($(TARGET_SUPPORTS_64_BIT_APPS),true)
+-PRODUCT_COPY_FILES += \
+-    vendor/pa/prebuilt/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
+-endif
++#ifeq ($(TARGET_SUPPORTS_64_BIT_APPS),true)
++#PRODUCT_COPY_FILES += \
++#    vendor/pa/prebuilt/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
++#endif
+ 
+ # Theme engine
+ PRODUCT_PACKAGES += \
+-- 
+1.9.1
+

@@ -1,0 +1,39 @@
+From c46906ad26d2545e614bd257ef11c125ea7dbf0c Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sun, 27 Nov 2016 22:48:09 +0100
+Subject: [PATCH] Fix Clock Crash
+
+Change-Id: Id23032a863f5a4c8431cfeed5cd3c17310e45c8e
+---
+ .../android/support/v4/graphics/drawable/DrawableWrapperDonut.java | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/v4/donut/android/support/v4/graphics/drawable/DrawableWrapperDonut.java b/v4/donut/android/support/v4/graphics/drawable/DrawableWrapperDonut.java
+index 300e2e8..67a76c4 100644
+--- a/v4/donut/android/support/v4/graphics/drawable/DrawableWrapperDonut.java
++++ b/v4/donut/android/support/v4/graphics/drawable/DrawableWrapperDonut.java
+@@ -245,20 +245,15 @@ class DrawableWrapperDonut extends Drawable implements Drawable.Callback, Drawab
+         if (mDrawable != null) {
+             mDrawable.setCallback(null);
+         }
+-        mDrawable = null;
++        mDrawable = drawable;
+ 
+         if (drawable != null) {
+             // Copy over the bounds from the drawable
+             setBounds(drawable.getBounds());
+             // Set ourselves as the callback for invalidations
+             drawable.setCallback(this);
+-        } else {
+-            // Clear our bounds
+-            setBounds(0, 0, 0, 0);
+         }
+ 
+-        mDrawable = drawable;
+-
+         // Invalidate ourselves
+         invalidateSelf();
+     }
+-- 
+1.9.1
+

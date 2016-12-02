@@ -1,0 +1,127 @@
+From 87cff05279e5c06f81062b2d056e368fec28916f Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Tue, 29 Nov 2016 20:01:25 +0100
+Subject: [PATCH] Fix build
+
+Change-Id: I79284874924496f603fbc4ff2d1102daeb3c7ebc
+---
+ AndroidManifest.xml                               |  3 ++-
+ src/com/android/camera/CameraActivity.java        |  2 ++
+ src/com/android/camera/CaptureModule.java         |  1 +
+ src/com/android/camera/FatalErrorHandlerImpl.java | 22 +++++++++++++++++++++-
+ 4 files changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 6e5d38f..aa7a2b7 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -2,7 +2,8 @@
+ 
+ <manifest
+     xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.android.camera2">
++    package="com.android.camera2"
++    android:sharedUserId="android.uid.system">
+ 
+     <uses-sdk
+         android:minSdkVersion="19"
+diff --git a/src/com/android/camera/CameraActivity.java b/src/com/android/camera/CameraActivity.java
+index bf48898..e5e4f2e 100644
+--- a/src/com/android/camera/CameraActivity.java
++++ b/src/com/android/camera/CameraActivity.java
+@@ -2449,6 +2449,8 @@ public class CameraActivity extends QuickActivity
+ 
+         closeModule(mCurrentModule);
+ 
++	try { Thread.sleep(5000);} catch (Exception ex) { ex.printStackTrace(); }
++
+         // Select the correct module index from the mode switcher index.
+         modeIndex = getPreferredChildModeIndex(modeIndex);
+         setModuleFromModeIndex(modeIndex);
+diff --git a/src/com/android/camera/CaptureModule.java b/src/com/android/camera/CaptureModule.java
+index 640da4f..68f3e4f 100644
+--- a/src/com/android/camera/CaptureModule.java
++++ b/src/com/android/camera/CaptureModule.java
+@@ -1530,6 +1530,7 @@ public class CaptureModule extends CameraModule implements
+         if (mPaused) {
+             return;
+         }
++	try { Thread.sleep(5000); } catch (Exception ex) { ex.printStackTrace(); }
+         cancelCountDown();
+         mAppController.freezeScreenUntilPreviewReady();
+         initSurfaceTextureConsumer();
+diff --git a/src/com/android/camera/FatalErrorHandlerImpl.java b/src/com/android/camera/FatalErrorHandlerImpl.java
+index 802abc6..0f12e08 100644
+--- a/src/com/android/camera/FatalErrorHandlerImpl.java
++++ b/src/com/android/camera/FatalErrorHandlerImpl.java
+@@ -17,11 +17,12 @@
+ package com.android.camera;
+ 
+ import android.app.Activity;
+-
+ import com.android.camera.debug.Log;
+ import com.android.camera.stats.UsageStatistics;
+ import com.android.camera.util.CameraUtil;
+ import com.google.common.logging.eventprotos;
++import java.lang.reflect.Method;
++import java.lang.Class;
+ 
+ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+     private static final Log.Tag TAG = new Log.Tag("FatalErrorHandler");
+@@ -32,6 +33,21 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+         mActivity = activity;
+     }
+ 
++    public void SetSystemProp(String name, String value)
++    {
++        Class clazz = null;
++        try {
++            clazz = Class.forName("android.os.SystemProperties");
++            Method method = clazz.getDeclaredMethod("set", String.class, String.class);
++            method.invoke(name, value);
++        }
++        catch (Exception e) {
++            Log.e(TAG, "android.os.SystemProperties NOT FOUND");
++        }
++        return;
++    }
++
++
+     @Override
+     public void onMediaStorageFailure() {
+         Exception ex = new Exception();
+@@ -49,6 +65,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onCameraOpenFailure() {
++	SetSystemProp("sys.restart_perfhub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Open Failure:", ex);
+@@ -65,6 +82,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onCameraReconnectFailure() {
++	SetSystemProp("sys.restart_perfhub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Reconnect Failure:", ex);
+@@ -81,6 +99,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void onGenericCameraAccessFailure() {
++	SetSystemProp("sys.restart_perfhub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Camera Access Failure:", ex);
+@@ -114,6 +133,7 @@ public final class FatalErrorHandlerImpl implements FatalErrorHandler {
+ 
+     @Override
+     public void handleFatalError(Reason reason) {
++	SetSystemProp("sys.restart_perfhub","true");
+         Exception ex = new Exception();
+         // Log a stack trace to be sure we can track the source.
+         Log.e(TAG, "Handling Fatal Error:", ex);
+-- 
+1.9.1
+

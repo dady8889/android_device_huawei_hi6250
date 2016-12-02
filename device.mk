@@ -169,9 +169,22 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     Stk \
     Browser \
-    FMRadio \
-    NfcNci \
-    Music \
     messaging \
     libemoji \
-    libfmjni
+    Eleven
+    
+# NFC
+PRODUCT_PACKAGES += \
+    com.android.nfc_extras \
+    NfcNci \
+    Tag 
+
+
+# Keyboard Swiping
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
+
+# Google
+PRODUCT_PACKAGES += \
+    GoogleKeyboard \
+    SetupWizard
+

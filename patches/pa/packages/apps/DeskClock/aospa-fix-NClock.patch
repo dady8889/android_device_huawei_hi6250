@@ -1,0 +1,225 @@
+From d9ff30df50d7dcdf26b4d20ab28d1c2f80c8b82b Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Mon, 28 Nov 2016 16:54:42 +0100
+Subject: [PATCH] Fix for MM
+
+Change-Id: I4c88f69ed68ad7938d5a2ffad55cabab300faa50
+---
+ Android.mk                                         |  2 +-
+ AndroidManifest.xml                                | 15 +++++--------
+ proguard.flags                                     |  9 ++++++++
+ src/com/android/deskclock/AlarmInitReceiver.java   | 11 +---------
+ .../android/deskclock/DeskClockBackupAgent.java    |  7 +-----
+ src/com/android/deskclock/Utils.java               | 25 +---------------------
+ .../android/deskclock/provider/ClockProvider.java  | 16 +-------------
+ 7 files changed, 19 insertions(+), 66 deletions(-)
+ create mode 100644 proguard.flags
+
+diff --git a/Android.mk b/Android.mk
+index b40a57a..e9625d6 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -40,6 +40,6 @@ LOCAL_AAPT_FLAGS += --extra-packages android.support.v7.recyclerview
+ LOCAL_AAPT_FLAGS += --extra-packages com.android.datetimepicker
+ LOCAL_AAPT_FLAGS += --extra-packages com.android.messageformat
+ 
+-LOCAL_PROGUARD_FLAG_FILES := ../../../frameworks/support/design/proguard-rules.pro
++LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+ 
+ include $(BUILD_PACKAGE)
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index c2df019..4fd3fc7 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -47,8 +47,7 @@
+ 
+         <provider android:name=".provider.ClockProvider"
+                 android:authorities="com.android.deskclock"
+-                android:exported="false"
+-                android:directBootAware="true" />
++                android:exported="false"/>
+ 
+         <activity android:name="DeskClock"
+                 android:label="@string/app_label"
+@@ -104,8 +103,7 @@
+                 android:excludeFromRecents="true"
+                 android:theme="@style/AlarmAlertFullScreenTheme"
+                 android:windowSoftInputMode="stateAlwaysHidden"
+-                android:showOnLockScreen="true"
+-                android:directBootAware="true" />
++                android:showOnLockScreen="true"/>
+ 
+         <activity android:name="ScreensaverActivity"
+                 android:excludeFromRecents="true"
+@@ -114,13 +112,11 @@
+                 android:configChanges="orientation|screenSize|keyboardHidden|keyboard" />
+ 
+         <receiver android:name=".alarms.AlarmStateManager"
+-                  android:exported="false"
+-                  android:directBootAware="true">
++                  android:exported="false">
+         </receiver>
+ 
+         <service android:name=".alarms.AlarmService"
+-                 android:exported="false"
+-                 android:directBootAware="true">
++                 android:exported="false">
+         </service>
+ 
+         <activity android:name="HandleApiCalls"
+@@ -234,8 +230,7 @@
+             </intent-filter>
+         </activity>
+ 
+-        <receiver android:name="AlarmInitReceiver"
+-                android:directBootAware="true">
++        <receiver android:name="AlarmInitReceiver">
+             <intent-filter>
+                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+diff --git a/proguard.flags b/proguard.flags
+new file mode 100644
+index 0000000..eeb56f2
+--- /dev/null
++++ b/proguard.flags
+@@ -0,0 +1,9 @@
++# CoordinatorLayout resolves the behaviors of its child components with reflection.
++-keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
++    public <init>(android.content.Context, android.util.AttributeSet);
++    public <init>();
++}
++
++# Make sure we keep annotations for CoordinatorLayout's DefaultBehavior
++-keepattributes *Annotation*
++-keep class android.support.v7.widget.SearchView { *; }
+diff --git a/src/com/android/deskclock/AlarmInitReceiver.java b/src/com/android/deskclock/AlarmInitReceiver.java
+index fcfaefb..4d01747 100644
+--- a/src/com/android/deskclock/AlarmInitReceiver.java
++++ b/src/com/android/deskclock/AlarmInitReceiver.java
+@@ -27,15 +27,6 @@ import com.android.deskclock.data.DataModel;
+ import com.android.deskclock.events.Events;
+ 
+ public class AlarmInitReceiver extends BroadcastReceiver {
+-
+-    /**
+-     * When running on N devices, we're interested in the boot completed event that is sent while
+-     * the user is still locked, so that we can schedule alarms.
+-     */
+-    @SuppressLint("InlinedApi")
+-    private static final String ACTION_BOOT_COMPLETED = Utils.isNOrLater()
+-            ? Intent.ACTION_LOCKED_BOOT_COMPLETED : Intent.ACTION_BOOT_COMPLETED;
+-
+     /**
+      * This receiver handles a variety of actions:
+      *
+@@ -62,7 +53,7 @@ public class AlarmInitReceiver extends BroadcastReceiver {
+ 
+         // Clear stopwatch data and reset timers because they rely on elapsed real-time values
+         // which are meaningless after a device reboot.
+-        if (ACTION_BOOT_COMPLETED.equals(action)) {
++        if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+             DataModel.getDataModel().clearLaps();
+             DataModel.getDataModel().resetStopwatch();
+             Events.sendStopwatchEvent(R.string.action_reset, R.string.label_reboot);
+diff --git a/src/com/android/deskclock/DeskClockBackupAgent.java b/src/com/android/deskclock/DeskClockBackupAgent.java
+index d29402e..1e2c2e6 100644
+--- a/src/com/android/deskclock/DeskClockBackupAgent.java
++++ b/src/com/android/deskclock/DeskClockBackupAgent.java
+@@ -83,11 +83,6 @@ public class DeskClockBackupAgent extends BackupAgent {
+      */
+     @Override
+     public void onRestoreFinished() {
+-        if (Utils.isNOrLater()) {
+-            // TODO: migrate restored database and preferences over into
+-            // the device-protected storage area
+-        }
+-
+         // Write a preference to indicate a data restore has been completed.
+         final SharedPreferences prefs = Utils.getDefaultSharedPreferences(this);
+         prefs.edit().putBoolean(KEY_RESTORE_FINISHED, true).apply();
+@@ -149,4 +144,4 @@ public class DeskClockBackupAgent extends BackupAgent {
+         LogUtils.i(TAG, "processRestoredData() completed");
+         return true;
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/src/com/android/deskclock/Utils.java b/src/com/android/deskclock/Utils.java
+index 39a7b65..a0925fd 100644
+--- a/src/com/android/deskclock/Utils.java
++++ b/src/com/android/deskclock/Utils.java
+@@ -38,7 +38,6 @@ import android.os.Looper;
+ import android.preference.PreferenceManager;
+ import android.provider.Settings;
+ import android.support.v4.content.ContextCompat;
+-import android.support.v4.os.BuildCompat;
+ import android.text.Spannable;
+ import android.text.SpannableString;
+ import android.text.TextUtils;
+@@ -169,13 +168,6 @@ public class Utils {
+     }
+ 
+     /**
+-     * @return {@code true} if the device is {@link Build.VERSION_CODES#N} or later
+-     */
+-    public static boolean isNOrLater() {
+-        return BuildCompat.isAtLeastN();
+-    }
+-
+-    /**
+      * Calculate the amount by which the radius of a CircleTimerView should be offset by any
+      * of the extra painted objects.
+      */
+@@ -706,21 +698,6 @@ public class Utils {
+      * Return the default shared preferences.
+      */
+     public static SharedPreferences getDefaultSharedPreferences(Context context) {
+-        final Context storageContext;
+-        if (isNOrLater()) {
+-            // All N devices have split storage areas, but we may need to
+-            // migrate existing preferences into the new device protected
+-            // storage area, which is where our data lives from now on.
+-            final Context deviceContext = context.createDeviceProtectedStorageContext();
+-            if (!deviceContext.moveSharedPreferencesFrom(context,
+-                    PreferenceManager.getDefaultSharedPreferencesName(context))) {
+-                LogUtils.wtf("Failed to migrate shared preferences");
+-            }
+-            storageContext = deviceContext;
+-        } else {
+-            storageContext = context;
+-        }
+-
+-        return PreferenceManager.getDefaultSharedPreferences(storageContext);
++        return PreferenceManager.getDefaultSharedPreferences(context);
+     }
+ }
+diff --git a/src/com/android/deskclock/provider/ClockProvider.java b/src/com/android/deskclock/provider/ClockProvider.java
+index a96eb5e..0264087 100644
+--- a/src/com/android/deskclock/provider/ClockProvider.java
++++ b/src/com/android/deskclock/provider/ClockProvider.java
+@@ -118,21 +118,7 @@ public class ClockProvider extends ContentProvider {
+     @Override
+     public boolean onCreate() {
+         final Context context = getContext();
+-        final Context storageContext;
+-        if (Utils.isNOrLater()) {
+-            // All N devices have split storage areas, but we may need to
+-            // migrate existing database into the new device protected
+-            // storage area, which is where our data lives from now on.
+-            final Context deviceContext = context.createDeviceProtectedStorageContext();
+-            if (!deviceContext.moveDatabaseFrom(context, ClockDatabaseHelper.DATABASE_NAME)) {
+-                LogUtils.wtf("Failed to migrate database");
+-            }
+-            storageContext = deviceContext;
+-        } else {
+-            storageContext = context;
+-        }
+-
+-        mOpenHelper = new ClockDatabaseHelper(storageContext);
++        mOpenHelper = new ClockDatabaseHelper(context);
+         return true;
+     }
+ 
+-- 
+1.9.1
+

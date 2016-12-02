@@ -1,0 +1,26 @@
+From 016a77c8a202c44a0c3e8c90ab75e7bcd489ce0a Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Fri, 2 Dec 2016 15:50:44 +0100
+Subject: [PATCH] Fix tele crash
+
+Change-Id: I1a99309c77bb4f1b3145ad3dccc43051c7571476
+---
+ src/java/com/android/internal/telephony/RIL.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 4ada1aa..e2fde20 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -3310,7 +3310,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
+-    private Object
++    protected Object
+     responseFailCause(Parcel p) {
+         LastCallFailCause failCause = new LastCallFailCause();
+         failCause.causeCode = p.readInt();
+-- 
+1.9.1
+

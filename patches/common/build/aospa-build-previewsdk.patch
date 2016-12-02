@@ -1,0 +1,41 @@
+From 83a83c197e5a1c8d010614c4cb00fb74e536c5b7 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Mon, 28 Nov 2016 15:44:39 +0100
+Subject: [PATCH] Fix PreviewSDK
+
+Change-Id: Icb44cae40d088d6d53fce384bd7aeb6e9503841e
+---
+ core/version_defaults.mk | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index bde8f83..72a609c 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -68,6 +68,23 @@ ifeq "" "$(PLATFORM_VERSION_CODENAME)"
+   PLATFORM_VERSION_ALL_CODENAMES := $(PLATFORM_VERSION_CODENAME)
+ endif
+ 
++ifeq "REL" "$(PLATFORM_VERSION_CODENAME)"
++  PLATFORM_PREVIEW_SDK_VERSION := 0
++else
++  ifeq "" "$(PLATFORM_PREVIEW_SDK_VERSION)"
++    # This is the definition of a preview SDK version over and above the current
++    # platform SDK version. Unlike the platform SDK version, a higher value
++    # for preview SDK version does NOT mean that all prior preview APIs are
++    # included. Packages reading this value to determine compatibility with
++    # known APIs should check that this value is precisely equal to the preview
++    # SDK version the package was built for, otherwise it should fall back to
++    # assuming the device can only support APIs as of the previous official
++    # public release.
++    # This value will always be 0 for release builds.
++    PLATFORM_PREVIEW_SDK_VERSION := 0
++  endif
++endif
++
+ ifeq "" "$(PLATFORM_SECURITY_PATCH)"
+   # Used to indicate the security patch that has been applied to the device.
+   # Can be an arbitrary string, but must be a single word.
+-- 
+1.9.1
+
