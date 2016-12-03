@@ -18,7 +18,7 @@ on init
     mkdir /dev/cpuset/background
 
     chown system system /dev/flp
-    chmod 0660 /dev/flp
+    chmod 0660 /dev/flpzz
 
 
 on late-init

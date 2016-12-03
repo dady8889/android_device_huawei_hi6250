@@ -106,6 +106,7 @@ HEALTHD_BACKLIGHT_LEVEL := 102
 
 # NFC
 BOARD_NFC_CHIPSET := pn548
+TARGET_USES_NQ_NFC := true
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/huawei/hi6250/rootdir/fstab.hi6250

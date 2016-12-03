@@ -1,0 +1,176 @@
+From 9b5cb1c58ba72069f10d0cdae4c2e58083bca412 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sat, 3 Dec 2016 20:14:41 +0100
+Subject: [PATCH] Fix NFC
+
+---
+ Android.mk                      |  2 +-
+ AndroidManifest.xml             |  1 -
+ nci/Android.mk                  |  1 -
+ nci/jni/Android.mk              |  3 +--
+ nci/jni/NativeNfcAla.cpp        | 10 +++++-----
+ nci/jni/NativeSecureElement.cpp |  3 ++-
+ nci/jni/RoutingManager.cpp      |  2 +-
+ nci/jni/SecureElement.cpp       |  2 +-
+ 8 files changed, 11 insertions(+), 13 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 54a8699..5cb8e5a 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -6,6 +6,7 @@ LOCAL_PATH:= $(call my-dir)
+ ########################################
+ include $(CLEAR_VARS)
+ 
++LOCAL_MODULE_PATH := $(TARGET_OUT_APPS)
+ LOCAL_MODULE_TAGS := optional
+ 
+ LOCAL_SRC_FILES := \
+@@ -22,7 +23,6 @@ LOCAL_JNI_SHARED_LIBRARIES := libnqnfc_nci_jni
+ LOCAL_JAVA_LIBRARIES := com.nxp.nfc.nq
+ LOCAL_PROGUARD_ENABLED := disabled
+ 
+-LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_MODULE_OWNER := nxp
+ 
+ include $(BUILD_PACKAGE)
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 986d40b..805c361 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -22,7 +22,6 @@
+     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+     <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+     <uses-permission android:name="android.permission.NFC" />
+-    <uses-permission android:name="android.permission.NFC_UNLOCK" />
+     <uses-permission android:name="android.permission.BIND_NFC_SERVICE" />
+     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+     <uses-permission android:name="android.permission.STATUS_BAR" />
+diff --git a/nci/Android.mk b/nci/Android.mk
+index 34f4385..cfd03be 100644
+--- a/nci/Android.mk
++++ b/nci/Android.mk
+@@ -1,3 +1,2 @@
+ LOCAL_PATH:= $(call my-dir)
+-
+ include $(call all-makefiles-under,$(LOCAL_PATH))
+diff --git a/nci/jni/Android.mk b/nci/jni/Android.mk
+index 0b0b384..396aa0e 100644
+--- a/nci/jni/Android.mk
++++ b/nci/jni/Android.mk
+@@ -47,7 +47,7 @@ LOCAL_CFLAGS += -DJCOP_VER_3_1_2=$(JCOP_VER_3_1_2)
+ LOCAL_CFLAGS += -DJCOP_VER_3_2=$(JCOP_VER_3_2)
+ LOCAL_CFLAGS += -DJCOP_VER_3_3=$(JCOP_VER_3_3)
+ 
+-NFC_NXP_ESE:= TRUE
++NFC_NXP_ESE:=FALSE
+ ifeq ($(NFC_NXP_ESE),TRUE)
+ LOCAL_CFLAGS += -DNFC_NXP_ESE=TRUE
+ LOCAL_CFLAGS += -DNFC_NXP_ESE_VER=$(JCOP_VER_3_3)
+@@ -130,7 +130,6 @@ endif
+ 
+ LOCAL_MODULE := libnqnfc_nci_jni
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_MODULE_OWNER := nxp
+ LOCAL_OVERRIDES_PACKAGES := libnfc_nci_jni
+ 
+diff --git a/nci/jni/NativeNfcAla.cpp b/nci/jni/NativeNfcAla.cpp
+index ecfdd79..06fb0ce 100644
+--- a/nci/jni/NativeNfcAla.cpp
++++ b/nci/jni/NativeNfcAla.cpp
+@@ -71,7 +71,7 @@ int nfcManager_GetAppletsList(JNIEnv* e, jobject o, jobjectArray list)
+     (void)e;
+     (void)o;
+     (void)list;
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     char *name[10];
+     UINT8 num =0, xx=0;
+     UINT8 list_len = e->GetArrayLength(list);
+@@ -132,7 +132,7 @@ int nfcManager_doAppletLoadApplet(JNIEnv* e, jobject o, jstring name, jbyteArray
+     (void)e;
+     (void)o;
+     (void)name;
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus, status;
+     IChannel_t Dwp;
+@@ -205,7 +205,7 @@ jbyteArray nfcManager_lsExecuteScript(JNIEnv* e, jobject o, jstring name, jstrin
+     const UINT8 lsExecuteResponseSize = 4;
+     uint8_t resSW [4]={0x4e,0x02,0x69,0x87};
+     jbyteArray result = e->NewByteArray(0);
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == TRUE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == TRUE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus, status;
+     IChannel_t Dwp;
+@@ -302,7 +302,7 @@ jbyteArray nfcManager_lsExecuteScript(JNIEnv* e, jobject o, jstring name, jstrin
+ 
+ jbyteArray nfcManager_GetCertificateKey(JNIEnv* e, jobject)
+ {
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus = NFA_STATUS_FAILED;
+     IChannel_t Dwp;
+@@ -361,7 +361,7 @@ jbyteArray nfcManager_GetCertificateKey(JNIEnv* e, jobject)
+ jbyteArray nfcManager_lsGetVersion(JNIEnv* e, jobject)
+ {
+ 
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == TRUE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == TRUE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus = NFA_STATUS_FAILED;
+     IChannel_t Dwp;
+diff --git a/nci/jni/NativeSecureElement.cpp b/nci/jni/NativeSecureElement.cpp
+index 6664995..fbdf02a 100644
+--- a/nci/jni/NativeSecureElement.cpp
++++ b/nci/jni/NativeSecureElement.cpp
+@@ -127,6 +127,7 @@ static jint nativeNfcSecureElement_doOpenSecureElementConnection (JNIEnv*, jobje
+ #endif
+ 
+ #if((NFC_NXP_ESE == TRUE)&&(NXP_EXTNS == TRUE))
++    ALOGD("NFC: THIS SHOULD NOT BE ENABLED");
+     ret_val = NFC_GetP61Status ((void *)&p61_current_state);
+     if (ret_val < 0)
+     {
+@@ -290,7 +291,7 @@ static jboolean nativeNfcSecureElement_doDisconnectSecureElementConnection (JNIE
+     //if nothing is active after this, then tell the controller to power down
+     if (! PowerSwitch::getInstance ().setModeOff (PowerSwitch::SE_CONNECTED))
+         PowerSwitch::getInstance ().setLevel (PowerSwitch::LOW_POWER);
+-#if((NFC_NXP_ESE == TRUE)&&(NXP_EXTNS == TRUE))
++#if(NFC_NXP_ESE == TRUE)
+     ret_val = NFC_RelWiredAccess ((void *)&status);
+     if (ret_val < 0)
+     {
+diff --git a/nci/jni/RoutingManager.cpp b/nci/jni/RoutingManager.cpp
+index 5379631..983f6ad 100644
+--- a/nci/jni/RoutingManager.cpp
++++ b/nci/jni/RoutingManager.cpp
+@@ -2533,7 +2533,7 @@ int RoutingManager::com_android_nfc_cardemulation_doGetAidMatchingPlatform(JNIEn
+            :When ever the second removal request is also reached , it is handled.
+ 
+ */
+-#if(NFC_NXP_ESE == TRUE && NFC_NXP_CHIP_TYPE == PN548C2)
++#if((NFC_NXP_ESE == TRUE) && (NFC_NXP_CHIP_TYPE == PN548C2))
+ void reader_req_event_ntf (union sigval)
+ {
+     static const char fn [] = "RoutingManager::reader_req_event_ntf";
+diff --git a/nci/jni/SecureElement.cpp b/nci/jni/SecureElement.cpp
+index 3e2a746..50cf70d 100644
+--- a/nci/jni/SecureElement.cpp
++++ b/nci/jni/SecureElement.cpp
+@@ -85,7 +85,7 @@ SyncEvent sSPIPrioSessionEndEvent;
+     static void setSPIState(bool mState);
+ //////////////////////////////////////////////
+ //////////////////////////////////////////////
+-#if(NXP_EXTNS == TRUE)
++#if(NFC_NXP_ESE == TRUE)
+ #define NFC_NUM_INTERFACE_MAP 3
+ #define NFC_SWP_RD_NUM_INTERFACE_MAP 1
+ 
+-- 
+1.9.1
+

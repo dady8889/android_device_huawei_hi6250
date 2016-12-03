@@ -1,0 +1,233 @@
+From 2f70d7a01ddcf34c652da3adbbafc5190f09fbf1 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sat, 3 Dec 2016 20:13:42 +0100
+Subject: [PATCH] Fix NFC
+
+---
+ Android.mk                                 |  4 ++--
+ halimpl/pn54x/inc/phNxpNciHal_Adaptation.h |  2 +-
+ src/adaptation/NfcAdaptation.cpp           |  7 +++++--
+ src/include/nfc_target.h                   |  3 ++-
+ src/nfc/nfc/nfc_main.c                     |  2 +-
+ src/nfc/nfc/nfc_ncif.c                     | 25 ++++++++++++++++++++-----
+ src/nfc/nfc/nfc_task.c                     |  2 ++
+ 7 files changed, 33 insertions(+), 12 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 8037831..c436de5 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -50,12 +50,12 @@ LOCAL_CFLAGS += -DJCOP_VER_3_1_2=$(JCOP_VER_3_1_2)
+ LOCAL_CFLAGS += -DJCOP_VER_3_2=$(JCOP_VER_3_2)
+ LOCAL_CFLAGS += -DJCOP_VER_3_3=$(JCOP_VER_3_3)
+ 
+-NFC_NXP_ESE:= TRUE
++NFC_NXP_ESE:= FALSE
+ ifeq ($(NFC_NXP_ESE),TRUE)
+ LOCAL_CFLAGS += -DNFC_NXP_ESE=TRUE
+ LOCAL_CFLAGS += -DNFC_NXP_ESE_VER=$(JCOP_VER_3_3)
+ else
+-LOCAL_CFLAGS += -DNFC_NXP_ESE=TRUE
++LOCAL_CFLAGS += -DNFC_NXP_ESE=FALSE
+ endif
+ 
+ #### Select the CHIP ####
+diff --git a/halimpl/pn54x/inc/phNxpNciHal_Adaptation.h b/halimpl/pn54x/inc/phNxpNciHal_Adaptation.h
+index 07692ae..87fe000 100644
+--- a/halimpl/pn54x/inc/phNxpNciHal_Adaptation.h
++++ b/halimpl/pn54x/inc/phNxpNciHal_Adaptation.h
+@@ -34,7 +34,7 @@ typedef struct
+     struct nfc_nci_device nci_device;
+ 
+     /* Local definitions */
+-    int (*ioctl)(const struct nfc_nci_device *p_dev, long arg, void *p_data);
++    int (*ioctl)(const struct nfc_nci_device *p_dev, void *p_data, long arg);
+ 
+ } pn547_dev_t;
+ 
+diff --git a/src/adaptation/NfcAdaptation.cpp b/src/adaptation/NfcAdaptation.cpp
+index 2600d03..1d0e23a 100644
+--- a/src/adaptation/NfcAdaptation.cpp
++++ b/src/adaptation/NfcAdaptation.cpp
+@@ -353,7 +353,9 @@ void NfcAdaptation::InitializeHalDeviceContext ()
+     mHalEntryFuncs.core_initialized = HalCoreInitialized;
+     mHalEntryFuncs.write = HalWrite;
+ #if(NXP_EXTNS == TRUE)
++    ALOGD ("mHalEntryFuncs.ioctl = HalIoctl;1");
+     mHalEntryFuncs.ioctl = HalIoctl;
++    ALOGD ("mHalEntryFuncs.ioctl = HalIoctl;2");
+ #endif
+     mHalEntryFuncs.prediscover = HalPrediscover;
+     mHalEntryFuncs.control_granted = HalControlGranted;
+@@ -502,7 +504,7 @@ typedef struct {
+     struct nfc_nci_device nci_device;
+ 
+     /* Local definitions */
+-    int(*ioctl)(const struct nfc_nci_device *p_dev, long arg, void *p_data);
++    int(*ioctl)(const struct nfc_nci_device *p_dev, void *p_data, long arg);
+ } pn547_dev_t;
+ /*******************************************************************************
+ **
+@@ -526,7 +528,8 @@ int NfcAdaptation::HalIoctl (long arg, void* p_data)
+     if (mHalDeviceContext)
+     {
+         pn547_dev_t *dev = (pn547_dev_t*)mHalDeviceContext;
+-        return (dev->ioctl (mHalDeviceContext, arg, p_data));
++        ALOGD ("pn547_dev_t *dev = (pn547_dev_t*)mHalDeviceContext;");
++        return (dev->ioctl (mHalDeviceContext, p_data, arg));
+     }
+     return -1;
+ }
+diff --git a/src/include/nfc_target.h b/src/include/nfc_target.h
+index becd3d7..bb73ba6 100644
+--- a/src/include/nfc_target.h
++++ b/src/include/nfc_target.h
+@@ -180,9 +180,10 @@
+ 
+ #define NCI_VERSION_0_F             0x0F
+ #define NCI_VERSION_1_0             0x10
++#define NCI_VERSION_1_1             0x11
+ 
+ #ifndef NCI_VERSION
+-#define NCI_VERSION                 NCI_VERSION_1_0
++#define NCI_VERSION                 NCI_VERSION_1_1
+ #endif
+ 
+ /* TRUE I2C patch is needed */
+diff --git a/src/nfc/nfc/nfc_main.c b/src/nfc/nfc/nfc_main.c
+index 62bfcc3..4be06c9 100644
+--- a/src/nfc/nfc/nfc_main.c
++++ b/src/nfc/nfc/nfc_main.c
+@@ -465,7 +465,7 @@ void nfc_main_handle_hal_evt (tNFC_HAL_EVT_MSG *p_msg)
+                 if (p_msg->status == HAL_NFC_STATUS_OK)
+                 {
+                     nfc_enabled (NCI_STATUS_OK, nfc_cb.p_nci_init_rsp);
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+                     /*
+                      * reading requred EEPROM config vlaues from HAL
+                      * and updating libnfc structure.
+diff --git a/src/nfc/nfc/nfc_ncif.c b/src/nfc/nfc/nfc_ncif.c
+index eae541d..cf87061 100644
+--- a/src/nfc/nfc/nfc_ncif.c
++++ b/src/nfc/nfc/nfc_ncif.c
+@@ -1889,6 +1889,7 @@ UINT8 nfc_hal_nfcc_init(UINT8 **pinit_rsp)
+ *******************************************************************************/
+ void nfc_ncif_proc_init_rsp (BT_HDR *p_msg)
+ {
++    NFC_TRACE_DEBUG0("nfc_ncif_proc_init_rsp");
+     UINT8 *p, status;
+     tNFC_CONN_CB * p_cb = &nfc_cb.conn_cb[NFC_RF_CONN_ID];
+ #if (NXP_EXTNS == TRUE)
+@@ -1903,42 +1904,54 @@ void nfc_ncif_proc_init_rsp (BT_HDR *p_msg)
+     p = (UINT8 *) (p_msg + 1) + p_msg->offset;
+     /* handle init params in nfc_enabled */
+     status   = *(p + NCI_MSG_HDR_SIZE);
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+     if(NCI_STATUS_OK == status)
+     {
+         if(NFC_STATE_CORE_INIT == nfc_cb.nfc_state)
+         {
++            NFC_TRACE_DEBUG0("NFC_STATE_CORE_INIT == nfc_cb.nfc_state");
+             nfc_cb.p_hal->ioctl(HAL_NFC_IOCTL_CHECK_FLASH_REQ, &fw_update_inf);
+             NFC_TRACE_DEBUG1 ("fw_update required  -> %d", fw_update_inf.fw_update_reqd);
+             if(fw_update_inf.fw_update_reqd == TRUE)
+             {
++                NFC_TRACE_DEBUG0("fw_update_inf.fw_update_reqd == TRUE");
+                 nfc_cb.p_hal->ioctl(HAL_NFC_IOCTL_FW_DWNLD, &fw_dwnld_status);
++                NFC_TRACE_DEBUG0("nfc_cb.p_hal->ioctl(HAL_NFC_IOCTL_FW_DWNLD, &fw_dwnld_status);");
+                 status = nfc_hal_nfcc_reset();
++                NFC_TRACE_DEBUG0("status = nfc_hal_nfcc_reset();");
+                 if(NCI_STATUS_OK == status)
+                 {
++                    NFC_TRACE_DEBUG0("if(NCI_STATUS_OK == status)1");
+                     status = nfc_hal_nfcc_init(&init_rsp);
+                     if(NCI_STATUS_OK == status)
+                     {
++                        NFC_TRACE_DEBUG0("if(NCI_STATUS_OK == status)2");
+                         /* Initialize BT_HDR */
+                         p_msg->len    =  init_rsp[2]+3;
+                         /* copying init rsp to p_msg  */
+                         memcpy ((UINT8 *)(p_msg + 1) + p_msg->offset, init_rsp, p_msg->len);
+                     }
+                     if(!init_rsp)
++                    {
++                        NFC_TRACE_DEBUG0("GKI_FREEBUF0");
+                         GKI_freebuf(init_rsp);
++                    }
+                 }
+             }
+         }
+     }
++    NFC_TRACE_DEBUG0("nfc_ncif_store_FWVersion(p);");
+     fw_status = nfc_ncif_store_FWVersion(p);
+ #if((!(NFC_NXP_CHIP_TYPE == PN547C2)) && (NFC_NXP_AID_MAX_SIZE_DYN == TRUE))
++    NFC_TRACE_DEBUG0("nfc_ncif_set_MaxRoutingTableSize(p);");
+     nfc_ncif_set_MaxRoutingTableSize(p);
+ #endif
++    NFC_TRACE_DEBUG0("nfc_cb.p_hal->ioctl");
+     nfc_cb.p_hal->ioctl(HAL_NFC_IOCTL_FW_MW_VER_CHECK, &fw_mw_ver_status);
+ #endif
+ 
+     if (status == NCI_STATUS_OK
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+             &&
+             fw_status == NCI_STATUS_OK
+             &&
+@@ -1948,7 +1961,7 @@ void nfc_ncif_proc_init_rsp (BT_HDR *p_msg)
+     {
+         p_cb->id            = NFC_RF_CONN_ID;
+         p_cb->act_protocol  = NCI_PROTOCOL_UNKNOWN;
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+         retry_cnt = 0;
+ #endif
+         nfc_set_state (NFC_STATE_W4_POST_INIT_CPLT);
+@@ -1956,7 +1969,7 @@ void nfc_ncif_proc_init_rsp (BT_HDR *p_msg)
+         nfc_cb.p_nci_init_rsp = p_msg;
+         nfc_cb.p_hal->core_initialized (p);
+     }
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+     /*Recovery is added in case of corrupted init rsp is received
+      * eg: 400119 - only 3 bytes are received. In this case since the
+      * rsp buffer[3] is status and the value is 0x00 because of memset for the rsp buffer
+@@ -1966,16 +1979,18 @@ void nfc_ncif_proc_init_rsp (BT_HDR *p_msg)
+             fw_status != NCI_STATUS_OK &&
+             NCI_STATUS_OK == fw_mw_ver_status)
+     {
++        NFC_TRACE_DEBUG0("GKI_FREEBUF1");
+         GKI_send_event (NFC_TASK, NFC_TASK_EVT_TRANSPORT_READY);
+         GKI_freebuf (p_msg);
+     }
+ #endif
+     else
+     {
+-#if(NXP_EXTNS == TRUE)
++#if(NXP_EXTNS == FALSE)
+         status = NCI_STATUS_FAILED;
+         retry_cnt = 0;
+ #endif
++        NFC_TRACE_DEBUG0("GKI_FREEBUF2");
+         nfc_enabled (status, NULL);
+         GKI_freebuf (p_msg);
+     }
+diff --git a/src/nfc/nfc/nfc_task.c b/src/nfc/nfc/nfc_task.c
+index 559de7d..bb1bf59 100644
+--- a/src/nfc/nfc/nfc_task.c
++++ b/src/nfc/nfc/nfc_task.c
+@@ -158,7 +158,9 @@ void nfc_process_timer_evt (void)
+                 nfc_cb.i2c_data_t.nci_cmd_channel_busy = 0;
+                 nfc_cb.i2c_data_t.data_stored = 0;
+             }
++            #if(NFC_NXP_ESE == TRUE)
+             nfc_ncif_credit_ntf_timeout();
++            #endif
+ #endif
+             break;
+         }
+-- 
+1.9.1
+

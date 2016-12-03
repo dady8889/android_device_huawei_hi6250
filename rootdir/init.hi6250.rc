@@ -172,11 +172,11 @@ on init
 
 on boot
 
-        chmod  0660  /dev/fingerprint
-        chown  system  system  /dev/fingerprint
-        chmod  0660  /sys/devices/platform/fingerprint/irq
-        chown  system  system  /sys/devices/platform/fingerprint/irq
-        chown system system /sys/devices/platform/fingerprint/fingerprint_chip_info
+    chmod  0660  /dev/fingerprint
+    chown  system  system  /dev/fingerprint
+    chmod  0660  /sys/devices/platform/fingerprint/irq
+    chown  system  system  /sys/devices/platform/fingerprint/irq
+    chown system system /sys/devices/platform/fingerprint/fingerprint_chip_info
 
     chown system system /sys/class/leds/torch/brightness
     chmod 664 /sys/class/leds/torch/brightness

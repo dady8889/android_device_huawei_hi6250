@@ -1,0 +1,23 @@
+From afcdfac3b2101effbc0863e48069bb7d72d0e9c9 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sat, 3 Dec 2016 20:11:58 +0100
+Subject: [PATCH] Fix build
+
+---
+ Android.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Android.mk b/Android.mk
+index 092b055..7266418 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -57,5 +57,5 @@ include $(BUILD_DROIDDOC)
+ 
+ # uncomment for NXP gsma-nfc-service
+ # ============================================================
+-#include $(call all-makefiles-under,$(LOCAL_PATH))
++include $(call all-makefiles-under,$(LOCAL_PATH))
+ endif
+-- 
+1.9.1
+
