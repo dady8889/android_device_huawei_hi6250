@@ -1,0 +1,73 @@
+From 8708b1ed541723910ead9040264108a909d7f088 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Thu, 4 Aug 2016 09:35:49 -0500
+Subject: [PATCH] cryptfs: automatic resize of data partition.
+
+-this automatically resizes the data partition
+"/dev/block/mmcblk0p25" from 383995 (4k) blocks
+to 383991 blocks. The gives us the 16k blocks
+we need for the crypto footer.
+
+Change-Id: Ibbad64d7c92a5cece9ab9a6775e79120566f3717
+---
+ cryptfs.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/cryptfs.c b/cryptfs.c
+index c8ad321..d8ad6c5 100755
+--- a/cryptfs.c
++++ b/cryptfs.c
+@@ -3031,6 +3031,8 @@ static int cryptfs_enable_all_volumes(struct crypt_mnt_ftr *crypt_ftr, int how,
+     return rc;
+ }
+ 
++bool resize_data = false;
++
+ int cryptfs_enable_internal(char *howarg, int crypt_type, char *passwd,
+                             int allow_reboot)
+ {
+@@ -3108,7 +3110,8 @@ int cryptfs_enable_internal(char *howarg, int crypt_type, char *passwd,
+ 
+         if (fs_size_sec > max_fs_size_sec) {
+             SLOGE("Orig filesystem overlaps crypto footer region.  Cannot encrypt in place.");
+-            goto error_unencrypted;
++            resize_data = true;
++	    SLOGI("Meticulus: Will attempt to resize when data is unmounted.");
+         }
+     }
+ 
+@@ -3178,6 +3181,31 @@ int cryptfs_enable_internal(char *howarg, int crypt_type, char *passwd,
+             goto error_unencrypted;
+         }
+     }
++    /* Once we have /data unmounted, resize */
++    if (resize_data) {
++	int i = 0;
++	while(system("/system/bin/sh -c '/system/bin/e2fsck -fy /dev/block/platform/hi_mci.0/by-name/userdata'") != 0 && i < 20) {
++	   sleep(1);
++	   i++;
++	}
++	if(i == 20) {
++	    SLOGE("Meticulus: e2fsck failed!");
++	    goto error_unencrypted;
++	} else {
++	    SLOGI("e2fsck succeeded!");
++	}
++	i = 0;
++    	while(system("/system/bin/sh -c '/system/bin/resize2fs /dev/block/platform/hi_mci.0/by-name/userdata 2819068'") != 0 && i < 20) {
++	   sleep(1);
++	   i++;
++	}
++	if(i == 20) {
++	    SLOGE("Meticulus: resize2fs failed!");
++	    goto error_unencrypted;
++	} else {
++	    SLOGI("resize2fs succeeded!");
++	}
++    }
+ 
+     /* Start the actual work of making an encrypted filesystem */
+     /* Initialize a crypt_mnt_ftr for the partition */
+-- 
+1.9.1
+

@@ -8,17 +8,8 @@ on early-init
 
 on post-fs-data
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    chmod 660 /dev/ttyAMA3
+    chmod 0660 /dev/ttyAMA3
     chown system system /dev/ttyAMA3
-
-# Meticulus:
-# Service already defined by CM init.rc
-# 
-#service_redefine netd /system/bin/netd
-#    class main 
-#    socket netd stream 0660 root system
-#    socket dnsproxyd stream 0660 root inet 
-#    socket mdns stream 0660 root system
 
 service chr_logd /system/bin/chr_logd
     class main

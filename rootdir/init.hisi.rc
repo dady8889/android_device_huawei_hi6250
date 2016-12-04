@@ -95,24 +95,20 @@ on boot
     chown radio radio /proc/modemstatus
 
 
-
-# Meticulus:
-# Service already defined by CM init.rc
-# 
-#service_redefine ril-daemon /system/bin/rild
-#    disabled
-#    class core
-#    socket rild stream 660 root radio
-#    socket rild-ims stream 660 root radio
-#    socket rildm2 stream 660 root radio
-#    socket rildm3 stream 660 root radio
-#    socket rildc1 stream 660 radio system
-#    socket rildc2 stream 660 radio system
-#    socket rildc3 stream 660 radio system
-    
-#    socket rild-debug stream 660 radio system
-#    user root
-#    group radio cache inet misc audio sdcard_r sdcard_rw log system dsm
+service_redefine ril-daemon /system/bin/rild
+    class late_start
+    socket rild stream 660 root radio
+    socket rild-ims stream 660 root radio
+    socket rildm2 stream 660 root radio
+    socket rildm3 stream 660 root radio
+    socket rildc1 stream 660 radio system
+    socket rildc2 stream 660 radio system
+    socket rildc3 stream 660 radio system
+    socket sap_uim_socket1 stream 660 bluetooth bluetooth
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio log qcom_diag
+    disabled
 
 service ril-daemon1 /system/bin/rild -c 1
     disabled

@@ -126,6 +126,9 @@ on property:vold.decrypt=trigger_default_encryption
 
 on property:vold.decrypt=trigger_shutdown_framework
     trigger data_not_ready
+    stop oeminfo_nvm
+    stop teecd
+    stop perfhub
 on start_main_class
     class_start main
 

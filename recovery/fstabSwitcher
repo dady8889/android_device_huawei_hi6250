@@ -47,6 +47,13 @@ switch_fstab() {
 }
 
 is_cyanogen() {
+        if [[ ! -e /system/build.prop ]]; then
+		mecho "Fstab Mode Unknown"
+		wait_unmounted /system
+                /sbin/setprop sys.stock 0
+		return
+	fi
+
 	if [[ $( cat /system/build.prop | grep -c cm_hi6250) -gt 0 ]]; then
 		mecho "Fstab Mode CyanogenMod"
 		wait_umounted /system
@@ -66,5 +73,5 @@ is_cyanogen() {
 	fi
 }
 
-mount /system
+mount /system -fatal
 is_cyanogen

@@ -15,6 +15,7 @@ import /init.post-fs-data.rc
 import /init.huawei.rc
 import /init.hi6250.usb.rc
 import /init.meticulus.rc
+import /lpm.rc
 
 on early-boot
 

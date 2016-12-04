@@ -2,7 +2,6 @@
 #
 # From Stock
 #
-ro.meticulus.compatibility=cm_hi6250
 ro.config.mmu_en=1
 dalvik.vm.heapsize=512m
 ro.opengles.version=196609
@@ -60,3 +59,8 @@ persist.radio.multisim.config=single
 # Graphics
 #
 ro.bq.gpu_to_cpu_unsupported=1
+
+#
+# TWRP
+#
+ro.config.twrp=cm_hi6250

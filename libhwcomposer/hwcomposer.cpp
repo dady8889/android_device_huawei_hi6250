@@ -49,7 +49,7 @@
 
 #endif // FAKE_VSYNC
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #define DEBUG_LOG(x...) ALOGD(x)

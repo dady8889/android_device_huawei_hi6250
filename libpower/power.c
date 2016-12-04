@@ -39,7 +39,7 @@
 
 static int low_power = 0;
 static int dt2w = 0;
-static struct power_profile * profile = &balanced; 
+static struct power_profile * profile = &performance;
 
 static void write_string(char * path, char * value) {
     int fd = open(path, O_WRONLY);
@@ -70,9 +70,6 @@ static void power_init(struct power_module *module)
     usleep(500);
     write_string(DDR_FREQ_MAX_PATH,(* profile).ddr_freq_max);
     write_string(DDR_FREQ_POLL_PATH,"50\n");
- 
-    /* Meticulus: Perhaps not prudent to do this here... */
-    write_string(FB0_MODE_PATH,FB0_MODE);
 }
 
 static void power_set_interactive(struct power_module *module, int on) {

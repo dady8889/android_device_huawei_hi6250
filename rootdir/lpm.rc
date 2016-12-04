@@ -3,7 +3,7 @@
 on early-init
     start ueventd
 
-on init 
+on charger 
     write /sys/devices/virtual/graphics/fb0/mode "U:1080x1920p-0"
  
     wait /dev/block/platform/hi_mci.0/by-name/system

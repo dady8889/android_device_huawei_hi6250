@@ -11,7 +11,6 @@ service bbInstaller /sbin/bbInstaller
     oneshot
 
 service fstabSwitcher /sbin/fstabSwitcher
-    class critical
     user root
     disabled
     oneshot

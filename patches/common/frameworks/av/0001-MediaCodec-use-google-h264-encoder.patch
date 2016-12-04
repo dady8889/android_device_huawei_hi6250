@@ -1,0 +1,40 @@
+From f14dc5b2db915df434213b6cd64f0e0365a38365 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Mon, 21 Nov 2016 09:03:19 -0600
+Subject: [PATCH] 0001-MediaCodec-use-google-h264-encoder
+
+Change-Id: I4e61458c83d71159482c7b1031232d4d7c1b5007
+---
+ media/libstagefright/MediaCodec.cpp | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/media/libstagefright/MediaCodec.cpp b/media/libstagefright/MediaCodec.cpp
+index 5e0ee55..2342bb3 100644
+--- a/media/libstagefright/MediaCodec.cpp
++++ b/media/libstagefright/MediaCodec.cpp
+@@ -175,7 +175,21 @@ sp<MediaCodec> MediaCodec::CreateByType(
+         const sp<ALooper> &looper, const char *mime, bool encoder, status_t *err, pid_t pid) {
+     sp<MediaCodec> codec = new MediaCodec(looper, pid);
+ 
+-    const status_t ret = codec->init(mime, true /* nameIsType */, encoder);
++    /* Meticulus:
++     * The hw video encoder does not do well with screenrecording
++     * and the google decoder does not do well with 1080p video
++     * playback. So here we are forcing the use of the google
++     * encoder for video/avc for recording While retaining the
++     * default behavior for video playback.
++     */
++    status_t ret = -1;
++    //ALOGD("Meticulus: mime = %s",mime);
++    if(!strcmp(mime,"video/avc") && encoder) {
++	ret = codec->init("OMX.google.h264.encoder",false,encoder);
++	ALOGI("Meticulus: force use google h264 encoder.");
++    }
++    else
++	ret = codec->init(mime, true /* nameIsType */, encoder);
+     if (err != NULL) {
+         *err = ret;
+     }
+-- 
+1.9.1
+
