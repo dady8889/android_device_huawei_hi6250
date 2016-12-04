@@ -60,9 +60,49 @@ Copy the following into hi6250.xml, save and close.
 ```bash
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+<!-- Device specific -->
   <project name="Meticulus/android_kernel_huawei_hi6250" path="kernel/huawei/hi6250" remote="github" revision="master"/>
   <project name="dady8889/android_device_huawei_hi6250" path="device/huawei/hi6250" remote="github" revision="aospa"/>
   <project name="Meticulus/android_vendor_huawei_hi6250" path="vendor/huawei/hi6250" remote="github" revision="master"/>
+
+<!-- Removes -->
+  <remove-project name="AOSPA/android_system_core"/>
+  <remove-project name="platform/system/bt"/>
+  <remove-project name="platform/system/media"/>
+  <remove-project name="platform/system/keymaster"/>
+  <remove-project name="AOSPA/android_frameworks_av"/>
+  <remove-project name="AOSPA/android_frameworks_native"/>
+  <remove-project name="platform/hardware/libhardware"/>
+  <remove-project name="platform/system/extras"/>
+  <remove-project name="platform/external/f2fs-tools"/>
+  <remove-project name="platform/external/e2fsprogs"/>
+  <remove-project name="platform/system/vold"/>
+  <remove-project name="platform/packages/apps/Browser"/>
+  <remove-project name="platform/packages/apps/Nfc"/>
+  
+<!-- CyanogenMod -->
+  <project name="CyanogenMod/android_system_core" path="system/core" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_system_bt" path="system/bt" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_system_media" path="system/media" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_system_keymaster" path="system/keymaster" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_frameworks_av" path="frameworks/av" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_frameworks_native" path="frameworks/native" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_hardware_libhardware" path="hardware/libhardware" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_ffmpeg" path="external/ffmpeg" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_stagefright-plugins" path="external/stagefright-plugins" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_system_extras" path="system/extras" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_f2fs-tools" path="external/f2fs-tools" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_e2fsprogs" path="external/e2fsprogs" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_system_vold" path="system/vold" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_packages_apps_Browser" path="packages/apps/Browser" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_packages_apps_Eleven" path="packages/apps/Eleven" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_Nfc" path="vendor/nxp-nfc/opensource/Nfc" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_libnfc-nci" path="vendor/nxp-nfc/opensource/libnfc-nci" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_frameworks" path="vendor/nxp-nfc/opensource/frameworks" remote="github" revision="cm-13.0"/>
+  
+<!-- Extras -->
+  <remove-project name="platform/packages/apps/DeskClock"/>
+  <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.0.0_r21"/>
 </manifest>
 ```
 
@@ -71,8 +111,6 @@ Execute the following commands in a linux terminal:
 cd ~/Desktop/AOSPA
 repo sync -j4
 ```
-
-NOTE: Yes we are syncing again and No, it shouldn't take quite as long. Every time you repo sync just new data is downloaded. So we are downloading the 3 repo's we just put in and any updates that may have occured to the repo's we already have.
 
 ### Step 4: Building
 
@@ -83,7 +121,7 @@ cd ~/Desktop/AOSPA/device/huawei/hi6250/patches
 ./patch.sh
 ```
 
-Now we need to build kernel:
+Now we need to build the kernel:
 ```bash
 cd ~/Desktop/AOSPA/kernel/huawei/hi6250
 ```
