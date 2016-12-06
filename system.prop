@@ -59,6 +59,13 @@ persist.radio.multisim.config=single
 #
 ro.bq.gpu_to_cpu_unsupported=1
 debug.sf.no_hw_vsync=1
+persist.camera.cap_sup_back=3
+persist.camera.cap_sup_front=3
+#
+# Media
+#
+persist.sys.sr_google_avc_enc=1
+persist.sys.google_avc_enc=0
 #
 # TWRP
 #

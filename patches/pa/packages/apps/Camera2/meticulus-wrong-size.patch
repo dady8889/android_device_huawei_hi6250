@@ -1,0 +1,62 @@
+From 152bc7aa919045d107f9d614eb2bd09416af61f0 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Tue, 6 Dec 2016 22:21:39 +0100
+Subject: [PATCH] Fix Camera2 wrong picture size (by @Meticulus)
+
+Change-Id: I38ce72d8c45ef3d8c1053eb66333adf47ede705e
+---
+ .../com/android/camera/util/GservicesHelper.java   | 24 ++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/src_pd/com/android/camera/util/GservicesHelper.java b/src_pd/com/android/camera/util/GservicesHelper.java
+index 12ae56a..92804a9 100644
+--- a/src_pd/com/android/camera/util/GservicesHelper.java
++++ b/src_pd/com/android/camera/util/GservicesHelper.java
+@@ -16,11 +16,31 @@
+ 
+ package com.android.camera.util;
+ 
++import com.android.camera.debug.Log;
+ import android.content.ContentResolver;
+ import android.content.Context;
++import java.lang.reflect.Method;
++import java.lang.Class;
+ 
+ public class GservicesHelper {
+ 
++    private static final Log.Tag TAG = new Log.Tag("GservicesHelper");
++    private static int GetSystemInt(String name, int def)
++    {
++      Class clazz = null;
++      try {
++        clazz = Class.forName("android.os.SystemProperties");
++        Method method = clazz.getDeclaredMethod("getInt", String.class, int.class);
++        Integer val = (Integer) method.invoke(clazz, name, def);
++        Log.e(TAG, Integer.toString(val));
++        return val;
++      }
++      catch (Exception e) {
++        Log.e(TAG, e.getMessage());
++      }
++      return def;
++    }
++
+     public static String getBlacklistedResolutionsBack(ContentResolver contentResolver) {
+         return "";
+     }
+@@ -38,11 +58,11 @@ public class GservicesHelper {
+     }
+ 
+     public static int getCaptureSupportLevelOverrideBack(ContentResolver contentResolver) {
+-        return -1;
++        return GetSystemInt("persist.camera.cap_sup_back",-1);
+     }
+ 
+     public static int getCaptureSupportLevelOverrideFront(ContentResolver contentResolver) {
+-        return -1;
++        return GetSystemInt("persist.camera.cap_sup_front",-1);
+     }
+ 
+     public static int getMaxAllowedNativeMemoryMb(ContentResolver contentResolver) {
+-- 
+1.9.1

@@ -31,6 +31,8 @@ on early-init
 on init
     verity_load_state
 
+    export LD_SHIM_LIBS /system/lib64/libcutils.so|libshim.so:/system/lib/libcutils.so|libshim.so:/system/lib64/liblog.so|libshim.so:/system/lib/liblog.so|libshim.so:/system/lib64/libexif.so|libshim.so:/system/lib/libexif.so|libshim.so:/system/lib64/libaudio_route.so|libshim.so:/system/lib/libaudio_route.so|libshim.so
+     
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
