@@ -103,7 +103,8 @@ PRODUCT_PACKAGES += \
     power.hi6250 \
     hwcomposer.hi6250 \
     libcopybit_wrapper \
-    lights.hi6250
+    lights.hi6250 \
+		libshim
 
 # Hack for adb
 PRODUCT_COPY_FILES += \
