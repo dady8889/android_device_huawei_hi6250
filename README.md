@@ -98,6 +98,13 @@ Copy the following into hi6250.xml, save and close.
   <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_libnfc-nci" path="vendor/nxp-nfc/opensource/libnfc-nci" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_frameworks" path="vendor/nxp-nfc/opensource/frameworks" remote="github" revision="cm-13.0"/>
 
+<!-- Bluetooth -->
+  <remove-project name="platform/system/bt"/>
+  <project name="CyanogenMod/android_system_bt" path="system/bt" remote="github" revision="cm-13.0"/>
+
+  <remove-project name="platform/packages/apps/Bluetooth"/>
+  <project name="CyanogenMod/android_packages_apps_Bluetooth" path="packages/apps/Bluetooth" remote="github" revision="cm-13.0"/>
+
 <!-- Extras -->
   <remove-project name="platform/packages/apps/DeskClock"/>
   <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.0.0_r21"/>
