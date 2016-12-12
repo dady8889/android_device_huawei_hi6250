@@ -37,7 +37,6 @@ persist.sys.jankenable=true
 #
 # RIL
 #
-ro.multi.rild=false
 ro.config.default_commril_mode=ULG_MODE
 rild.rild1_ready_to_start=false
 ro.telephony.default_network=9

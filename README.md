@@ -67,7 +67,6 @@ Copy the following into hi6250.xml, save and close.
 
 <!-- Removes -->
   <remove-project name="AOSPA/android_system_core"/>
-  <remove-project name="platform/system/bt"/>
   <remove-project name="platform/system/media"/>
   <remove-project name="platform/system/keymaster"/>
   <remove-project name="AOSPA/android_frameworks_av"/>
@@ -79,10 +78,9 @@ Copy the following into hi6250.xml, save and close.
   <remove-project name="platform/system/vold"/>
   <remove-project name="platform/packages/apps/Browser"/>
   <remove-project name="platform/packages/apps/Nfc"/>
-  
+
 <!-- CyanogenMod -->
   <project name="CyanogenMod/android_system_core" path="system/core" remote="github" revision="cm-13.0"/>
-  <project name="CyanogenMod/android_system_bt" path="system/bt" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_system_media" path="system/media" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_system_keymaster" path="system/keymaster" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_frameworks_av" path="frameworks/av" remote="github" revision="cm-13.0"/>
@@ -99,7 +97,7 @@ Copy the following into hi6250.xml, save and close.
   <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_Nfc" path="vendor/nxp-nfc/opensource/Nfc" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_libnfc-nci" path="vendor/nxp-nfc/opensource/libnfc-nci" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_vendor_nxp-nfc_opensource_frameworks" path="vendor/nxp-nfc/opensource/frameworks" remote="github" revision="cm-13.0"/>
-  
+
 <!-- Extras -->
   <remove-project name="platform/packages/apps/DeskClock"/>
   <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.0.0_r21"/>
@@ -139,7 +137,7 @@ cd ~/Desktop/AOSPA
 
 #### Bacon Makefile Missing
 
-For some reason, sometimes it shows that it cant find bacon makefile. 
+For some reason, sometimes it shows that it cant find bacon makefile.
 Execute the following commands in a linux terminal:
 ```bash
 cd ~/Desktop/AOSPA

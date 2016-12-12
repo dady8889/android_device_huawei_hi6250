@@ -1,0 +1,134 @@
+From 02a37f64dcbdd39537c81f4af7e5533129a06eac Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Fri, 9 Dec 2016 15:04:37 +0100
+Subject: [PATCH] Fix BT
+
+Change-Id: Ia5e2ed06a800034dc25875a10676ad1d77a0e905
+---
+ Android.mk                                         |  2 +-
+ .../opp/BluetoothOppObexServerSession.java         | 71 +++++++++-------------
+ 2 files changed, 30 insertions(+), 43 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 430edcd..0e63626 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -23,7 +23,7 @@ LOCAL_CERTIFICATE := platform
+ LOCAL_JNI_SHARED_LIBRARIES := libbluetooth_jni
+ LOCAL_JAVA_LIBRARIES := javax.obex telephony-common libprotobuf-java-micro
+ LOCAL_STATIC_JAVA_LIBRARIES := com.android.vcard  bluetooth.mapsapi sap-api-java-static android-support-v4
+-LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon org.cyanogenmod.platform.internal
++LOCAL_STATIC_JAVA_LIBRARIES += com.android.emailcommon
+ 
+ LOCAL_REQUIRED_MODULES := bluetooth.default
+ LOCAL_MULTILIB := 32
+diff --git a/src/com/android/bluetooth/opp/BluetoothOppObexServerSession.java b/src/com/android/bluetooth/opp/BluetoothOppObexServerSession.java
+index 37dd8b1..b3ba99a 100644
+--- a/src/com/android/bluetooth/opp/BluetoothOppObexServerSession.java
++++ b/src/com/android/bluetooth/opp/BluetoothOppObexServerSession.java
+@@ -67,7 +67,6 @@ import javax.obex.ServerSession;
+ 
+ import com.android.bluetooth.BluetoothObexTransport;
+ 
+-import cyanogenmod.providers.CMSettings;
+ 
+ /**
+  * This class runs as an OBEX server
+@@ -270,8 +269,6 @@ public class BluetoothOppObexServerSession extends ServerRequestHandler implemen
+         }
+         boolean isWhitelisted = BluetoothOppManager.getInstance(mContext).
+                 isWhitelisted(destination);
+-        boolean isAcceptAllFilesEnabled = CMSettings.System.getInt(mContext.getContentResolver(),
+-                CMSettings.System.BLUETOOTH_ACCEPT_ALL_FILES, 0) == 1;
+ 
+         try {
+             boolean pre_reject = false;
+@@ -294,40 +291,39 @@ public class BluetoothOppObexServerSession extends ServerRequestHandler implemen
+                 obexResponse = ResponseCodes.OBEX_HTTP_BAD_REQUEST;
+             }
+ 
+-            if (!isAcceptAllFilesEnabled) {
+-                if (!pre_reject) {
+-                    /* first we look for Mimetype in Android map */
+-                    String extension, type;
+-                    int dotIndex = name.lastIndexOf(".");
+-                    if (dotIndex < 0 && mimeType == null) {
+-                        if (D)
+-                            Log.w(TAG, "There is no file extension or mime type," +
+-                                    "reject the transfer. File name:" + name);
+-                        pre_reject = true;
+-                        obexResponse = ResponseCodes.OBEX_HTTP_BAD_REQUEST;
++            if (!pre_reject) {
++                /* first we look for Mimetype in Android map */
++                String extension, type;
++                int dotIndex = name.lastIndexOf(".");
++                if (dotIndex < 0 && mimeType == null) {
++                    if (D)
++                        Log.w(TAG, "There is no file extension or mime type," +
++                                "reject the transfer. File name:" + name);
++                    pre_reject = true;
++                    obexResponse = ResponseCodes.OBEX_HTTP_BAD_REQUEST;
++                } else {
++                    extension = name.substring(dotIndex + 1).toLowerCase();
++                    MimeTypeMap map = MimeTypeMap.getSingleton();
++                    type = map.getMimeTypeFromExtension(extension);
++                    if (V)
++                        Log.v(TAG, "Mimetype guessed from extension " + extension + " is "
++                                + type);
++                    if (type != null) {
++                        mimeType = type;
++
+                     } else {
+-                        extension = name.substring(dotIndex + 1).toLowerCase();
+-                        MimeTypeMap map = MimeTypeMap.getSingleton();
+-                        type = map.getMimeTypeFromExtension(extension);
+-                        if (V)
+-                            Log.v(TAG, "Mimetype guessed from extension " + extension + " is "
+-                                    + type);
+-                        if (type != null) {
+-                            mimeType = type;
+-
+-                        } else {
+-                            if (mimeType == null) {
+-                                if (D)
+-                                    Log.w(TAG, "Can't get mimetype, reject the transfer");
+-                                pre_reject = true;
+-                                obexResponse = ResponseCodes.OBEX_HTTP_UNSUPPORTED_TYPE;
+-                            }
+-                        }
+-                        if (mimeType != null) {
+-                            mimeType = mimeType.toLowerCase();
++                        if (mimeType == null) {
++                            if (D)
++                                Log.w(TAG, "Can't get mimetype, reject the transfer");
++                            pre_reject = true;
++                            obexResponse = ResponseCodes.OBEX_HTTP_UNSUPPORTED_TYPE;
+                         }
+                     }
++                    if (mimeType != null) {
++                        mimeType = mimeType.toLowerCase();
++                    }
+                 }
++            }
+ 
+                 // Reject policy: anything outside the "white list" plus
+                 // unspecified MIME Types.
+@@ -345,15 +341,6 @@ public class BluetoothOppObexServerSession extends ServerRequestHandler implemen
+                     pre_reject = true;
+                     obexResponse = ResponseCodes.OBEX_HTTP_UNSUPPORTED_TYPE;
+                 }
+-            } else {
+-                if (D)
+-                    Log.i(TAG, "isAcceptAllFilesEnabled == true, skipped check of mime type");
+-                if (mimeType == null) {
+-                    mimeType = "*/*";
+-                    if (D)
+-                        Log.i(TAG, "mimeType is null. Fixed to */*");
+-                }
+-            }
+ 
+             if (pre_reject && obexResponse != ResponseCodes.OBEX_HTTP_OK) {
+                 // some bad implemented client won't send disconnect
+-- 
+1.9.1
+

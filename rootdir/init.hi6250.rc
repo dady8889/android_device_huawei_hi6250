@@ -10,7 +10,7 @@ import /init.device.rc
 import /init.extmodem.rc
 import /init.manufacture.rc
 import /init.trace.rc
-import /init.51312.rc
+import /init.${ro.boardid.product}.rc
 import /init.post-fs-data.rc
 import /init.huawei.rc
 import /init.hi6250.usb.rc
@@ -32,7 +32,7 @@ on init
     verity_load_state
 
     export LD_SHIM_LIBS /system/lib64/libcutils.so|libshim.so:/system/lib/libcutils.so|libshim.so:/system/lib64/liblog.so|libshim.so:/system/lib/liblog.so|libshim.so:/system/lib64/libexif.so|libshim.so:/system/lib/libexif.so|libshim.so:/system/lib64/libaudio_route.so|libshim.so:/system/lib/libaudio_route.so|libshim.so
-     
+
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
@@ -98,7 +98,7 @@ on init
     chmod 0660 /sys/devices/virtual/graphics/fb0/vsync_event
     chown system system /sys/devices/virtual/graphics/fb0/mode
     chmod 0660 /sys/devices/virtual/graphics/fb0/mode
-    
+
     write /proc/sys/kernel/hung_task_panic 1
     write /proc/sys/kernel/hung_task_timeout_secs 120
     write /sys/kernel/hungtask/monitorlist "whitelist,system_server,surfaceflinger"
@@ -387,4 +387,3 @@ on property:ro.boot.ddrsize=2
 on property:ro.boot.ddrsize=3
     write /sys/block/zram0/comp_algorithm lz4
     swapon_all fstab.zram512m
- 

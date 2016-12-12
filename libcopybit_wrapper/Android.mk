@@ -14,13 +14,13 @@
 
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
+#include $(CLEAR_VARS)
 
-LOCAL_SHARED_LIBRARIES := libcopybit_wrapper liblog libcutils libc
-LOCAL_SRC_FILES := main.cpp
-LOCAL_MODULE := copybittest
-LOCAL_CFLAGS:= -DLOG_TAG=\"copybit_wrapper\"
-include $(BUILD_EXECUTABLE)
+#LOCAL_SHARED_LIBRARIES := libcopybit_wrapper liblog libcutils libc
+#LOCAL_SRC_FILES := main.cpp
+#LOCAL_MODULE := copybittest
+#LOCAL_CFLAGS:= -DLOG_TAG=\"copybit_wrapper\"
+#include $(BUILD_EXECUTABLE)
 
 include $(CLEAR_VARS)
 
@@ -28,6 +28,12 @@ LOCAL_SHARED_LIBRARIES := liblog libcutils
 LOCAL_SRC_FILES := copybit.cpp copybit_interface.cpp dump.cpp
 LOCAL_MODULE := libcopybit_wrapper
 LOCAL_CFLAGS:= -DLOG_TAG=\"copybit_wrapper\"
+
+ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+LOCAL_CFLAGS += -DDEBUG
+endif
+
 # Install the symlinks.
-LOCAL_POST_INSTALL_CMD := mkdir -p $(TARGET_OUT)/lib/hw; mkdir -p $(TARGET_OUT)/lib64/hw; ln -sf ../libcopybit_wrapper.so $(TARGET_OUT)/lib64/hw/copybit.hi6250.so; ln -sf ../libcopybit_wrapper.so $(TARGET_OUT)/lib/hw/copybit.hi6250.so;
+LOCAL_POST_INSTALL_CMD := mkdir -p $(TARGET_OUT)/lib64/hw; ln -sf ../libcopybit_wrapper.so $(TARGET_OUT)/lib64/hw/copybit.hi6250.so;
+
 include $(BUILD_SHARED_LIBRARY)

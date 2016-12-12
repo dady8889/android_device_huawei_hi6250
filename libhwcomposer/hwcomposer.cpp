@@ -65,6 +65,7 @@ static int vthread_running = 0;
 struct hwc_context_t {
     hwc_composer_device_1_t device;
     /* our private state goes below here */
+    int fd;
 };
 
 static void write_string(const char * path, const char * value) {
@@ -191,9 +192,7 @@ static int hwc_event_control (struct hwc_composer_device_1* dev, int disp,
     if(event == HWC_EVENT_VSYNC) {
 	DEBUG_LOG("HW_EVENT_VSYNC %d",enabled);
 	vsync = enabled;
-	int fd = open ("/dev/graphics/fb0", O_WRONLY);
-	ioctl(fd,HISIFB_VSYNC_CTRL, &vsync);
-	close(fd);
+	ioctl(((hwc_context_t *)dev)->fd,HISIFB_VSYNC_CTRL, &vsync);
 	if(vsync && !vthread_running) {
 	    pthread_attr_init(&attr);
 	    pthread_create(&vthread,&attr,&vsync_thread,NULL);
@@ -203,10 +202,13 @@ static int hwc_event_control (struct hwc_composer_device_1* dev, int disp,
 
 }
 
-static int hwc_blank(struct hwc_composer_device_1* dev, int disp, int blank) { 
-    write_string("/sys/devices/virtual/graphics/fb0/blank", blank ? "1\n" : "0\n");
-    DEBUG_LOG("blank called");
-    return 0;
+static int hwc_blank(struct hwc_composer_device_1* dev, int disp, int blank) {
+    int ret = -1;
+    if(ret = ioctl(((hwc_context_t *)dev)->fd, FBIOBLANK, blank ? FB_BLANK_NORMAL : FB_BLANK_UNBLANK))
+	ALOGE("Could not %s framebuffer!", blank ? "blank" : "unblank?");
+
+    DEBUG_LOG("blank called %d",blank);
+    return ret;
 }
 
 static void register_procs(struct hwc_composer_device_1* dev,
@@ -269,9 +271,8 @@ static int hwc_device_open(const struct hw_module_t* module, const char* name,
         dev->device.eventControl = hwc_event_control;
         dev->device.registerProcs = register_procs;
         dev->device.query = query;
-
+	dev->fd = status = open ("/dev/graphics/fb0", O_WRONLY);
         *device = &dev->device.common;
-        status = 0;
     }
     return status;
 }

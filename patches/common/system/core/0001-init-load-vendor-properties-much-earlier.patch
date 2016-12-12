@@ -1,0 +1,54 @@
+From c4de87c083f4f3a7a879cd654e13161a099e6ba3 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sat, 10 Dec 2016 11:25:23 -0600
+Subject: [PATCH] init: load vendor properties much earlier.
+
+-By loading vendor properties at this point we can preempt what
+is in the build.prop. This ROM is capable of supporting "NEMO" as
+well but in order to do that, we need to be able to set
+ro.boardid.product before the init.hi6250.rc imports are parsed
+and it's also nice to be able to set ro.product.model too.
+
+Change-Id: I6b854eff1b4477eee86754d22b3d55de25bac45c
+---
+ init/property_service.cpp | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/init/property_service.cpp b/init/property_service.cpp
+index fe82bef..272765c 100644
+--- a/init/property_service.cpp
++++ b/init/property_service.cpp
+@@ -521,6 +521,11 @@ static void load_persistent_properties() {
+ 
+ void property_load_boot_defaults() {
+     load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, NULL);
++    /* update with vendor-specific property runtime
++     * overrides
++     */
++    vendor_load_properties();
++
+ }
+ 
+ bool properties_initialized() {
+@@ -547,10 +552,6 @@ void load_persist_props(void) {
+     /* Read persistent properties after all default values have been loaded. */
+     load_persistent_properties();
+ 
+-    /* update with vendor-specific property runtime
+-     * overrides
+-     */
+-    vendor_load_properties();
+ }
+ 
+ void load_recovery_id_prop() {
+@@ -599,6 +600,7 @@ void load_system_props() {
+     load_properties_from_file(PROP_PATH_FACTORY, "ro.*");
+ 
+     load_recovery_id_prop();
++
+ }
+ 
+ void start_property_service() {
+-- 
+1.9.1
+

@@ -15,14 +15,19 @@
 #
 
 TARGET_SPECIFIC_HEADER_PATH := device/huawei/hi6250/include
-TARGET_OTA_ASSERT_DEVICE := hi6250,VNS
+TARGET_OTA_ASSERT_DEVICE := hi6250,VNS,nemo
+
+# Bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_BCM := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/huawei/hi6250/bluetooth
 
 # Board
 TARGET_BOOTLOADER_BOARD_NAME := hisi
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
-# Platform 
+# Platform
 TARGET_BOARD_PLATFORM := hi6250
 TARGET_CPU_SMP := true
 TARGET_USES_64_BIT_BINDER := true
@@ -69,6 +74,9 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS := device/huawei/hi6250
 
+# Init
+TARGET_INIT_VENDOR_LIB := libhuawei_init
+
 # RIL
 BOARD_RIL_CLASS := ../../../device/huawei/hi6250/ril/
 SIM_COUNT := 2
@@ -99,7 +107,7 @@ BOARD_USES_ALSA_AUDIO := true
 PRODUCT_AAPT_CONFIG := normal xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Charger 
+# Charger
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
 BACKLIGHT_PATH := "/sys/class/leds/lcd_backlight0/brightness"
 HEALTHD_BACKLIGHT_LEVEL := 102
@@ -116,7 +124,7 @@ TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 # RECOVERY_VARIANT := twrp
 DEVICE_RESOLUTION := 1080x1920
 TW_THEME := portrait_mdpi
-TW_CUSTOM_BATTERY_PATH := "/sys/devices/battery.5/power_supply/Battery" 
+TW_CUSTOM_BATTERY_PATH := "/sys/devices/battery.5/power_supply/Battery"
 TARGET_USERIMAGES_USE_EXT4 := true
 RECOVERY_SDCARD_ON_DATA := true
 TW_INTERNAL_STORAGE_PATH := "/data/media"
@@ -135,4 +143,3 @@ TW_CRYPTO_KEY_LOC := "footer"
 TW_USE_TOOLBOX := true
 TW_EXCLUDE_SUPERSU := false
 TW_EXTRA_LANGUAGES := true
-
