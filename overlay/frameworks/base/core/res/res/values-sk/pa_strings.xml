@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright (C) 2014, ParanoidAndroid Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- [CHAR LIMIT=NONE] Message shown in dialog on first boot after clean install for each .apk that is optimized. -->
+    <string name="android_installing_apk">Inštalujem aplikáciu
+        <xliff:g id="number" example="123">%1$d</xliff:g> of
+        <xliff:g id="number" example="123">%2$d</xliff:g>.</string>
+
+    <!-- [CHAR LIMIT=40] Title of dialog that is shown when performing a system install. -->
+    <string name="android_installing_title">Android sa inštaluje\u2026</string>
+
+    <!-- Power Menu (Global Actions) -->
+    <!-- Label for item that takes a screenshot in phone options dialog. -->
+    <string name="global_action_screenshot">Screenshot</string>
+    <!-- label for item that reboots the phone in phone options dialog. -->
+    <string name="global_action_reboot">Reštart</string>
+    <!-- Reboot Progress Dialog. This is shown if the user chooses to reboot the phone. -->
+    <string name="reboot_progress">Reštartujem\u2026</string>
+    <!-- Title of dialog to confirm rebooting. -->
+    <string name="reboot_title">Reštart</string>
+    <!-- Reboot Confirmation Dialog.  When the user chooses to reboot the device, there will
+     be a confirmation dialog.  This is the message. -->
+    <string name="reboot_confirm" product="tablet">Váš tablet sa reštartuje.</string>
+    <string name="reboot_confirm" product="default">Váš telefón sa reštartuje.</string>
+    <!-- Sub-dialog labels. -->
+    <string name="reboot">Reštart</string>
+    <string name="reboot_recovery">Recovery</string>
+    <string name="reboot_bootloader">Bootloader</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_accessThemeService">prístup k službe tém</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_accessThemeService">Povoluje aplikácii prístup k službe tém. Pre normálne aplikácie by to nemalo byť potrebné.</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_readThemes">čítať informácie o vašej téme</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_readThemesDesc">Povoluje aplikácii čítať vaše témy a
+       určiť vašu aktuálnu tému.</string>
+
+    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permlab_writeThemes">modifikovať vaše témy</string>
+    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
+    <string name="permdesc_writeThemesDesc">Povoluje aplikácii vkladať nové témy a
+       nastaviť vašu aktuálnu tému.</string>
+
+    <!-- Theme installation error notification -->
+    <string name="theme_install_error_title">Nepodarilo sa nainštalovať tému</string>
+    <string name="theme_install_error_message">Téma %s sa nepodarila nainštalovať</string>
+    <string name="theme_reset_notification_title">Obnoviť tému</string>
+    <string name="theme_reset_notification_body">Systémová téma sa obnovila z dôvodu hromadńeho pádu aplikácií.</string>
+</resources>

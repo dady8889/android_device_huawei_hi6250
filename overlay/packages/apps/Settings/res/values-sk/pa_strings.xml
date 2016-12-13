@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2013,2014,2015, The ParanoidAndroid Project
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!--PA Version-->
+    <string name="pa_version">Verzia systému ParanoidAndroid</string>
+    <string name="pa_version_default">Neznáma</string>
+
+    <!-- Advanced reboot options -->
+    <string name="advanced_reboot_title">Rozšírený reštart</string>
+    <string name="advanced_reboot_summary">Pridá do možností reštartu aj reštart do recovery alebo bootladeru</string>
+
+    <!-- QS tiles reset -->
+    <string name="reset_qs_tiles_title">Obnoviť rozloženie dlaždíc v rýchlom nastavení</string>
+    <string name="reset_qs_tiles_summary">Použiť predvolené rozloženie dlaždíc</string>
+    <string name="reset_qs_tiles_dialog_title">Obnoviť všetky dlaždice?</string>
+    <string name="reset_qs_tiles_dialog_msg">Všetky dlaždice rýchleho nastavenia budú presunuté na pôvodné miesto.</string>
+    <string name="reset_qs_tiles_dialog_yes">Obnoviť teraz</string>
+    <string name="reset_qs_tiles_dialog_no">Zrušiť</string>
+
+    <!-- Themes Settings -->
+    <!-- Settings main menu entry -->
+    <string name="themes_settings_title">Témy</string>
+
+    <string name="reset_all_settings">OBNOVIŤ VŠETKO</string>
+    <string name="reset_selected_settings">OBNOVIŤ VYBRANÉ</string>
+    <string name="reset_settings_title">Nastavenie funkcií</string>
+    <string name="reset_settings_summary">Obnovenie funkcií Paranoid Androidu</string>
+    <string name="keywords_settings_reset">reset</string>
+
+    <!-- Status bar - Battery -->
+    <string name="battery_style_title">Štýl batérie</string>
+    <string name="battery_style_icon">Ikona</string>
+    <string name="battery_style_circle">Kruh</string>
+    <string name="battery_style_text">Text</string>
+    <string name="battery_style_hidden">Skryť</string>
+
+    <!-- Status bar - Battery percentage -->
+    <string name="battery_percentage_title">Percentá batérie</string>
+    <string name="battery_percentage_default">Skryté (predvolené)</string>
+    <string name="battery_percentage_text_inside">Vo vnútri ikony</string>
+    <string name="battery_percentage_text_next">Vedľa ikony</string>
+
+    <!-- Floating peeking notifications -->
+    <string name="app_notification_floating_title">Povoliť plávajúci pohľad</string>
+    <string name="app_notification_floating_summary">Nechať túto aplikáciu pri stlačení notifikácie otvoriť v plávajúcom pohľade</string>
+    <string name="filter_notif_no_floating">No floating</string>
+    <string name="notifications_no_floating">No floating</string>
+    <string name="notifications_four_items"><xliff:g id="notif_state" example="Priority">%1$s</xliff:g> / <xliff:g id="notif_state" example="Priority">%2$s</xliff:g> / <xliff:g id="notif_state" example="Priority">%3$s</xliff:g> / <xliff:g id="notif_state" example="Priority">%4$s</xliff:g></string>
+
+</resources>
