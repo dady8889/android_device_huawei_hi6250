@@ -68,11 +68,47 @@ void vendor_load_properties() {
 	set_property("ro.boardid.product","51312");
 	set_property("ro.product.model","VNS-L31");
     }
+    else if(!strcmp(model,"VNS-L22")) {
+	set_property("ro.config.mulirild","true");
+	set_property("ro.boardid.product","51312");
+	set_property("ro.product.model","VNS-L22");
+    }
+    else if(!strcmp(model,"VNS")) {
+	set_property("ro.config.mulirild","false");
+	set_property("ro.boardid.product","51312");
+	set_property("ro.product.model","VNS-GENERIC");
+    }
     else if(!strcmp(model,"NEM-AL60")) {
 	set_property("ro.config.mulirild","false");
 	set_property("ro.boardid.product","4871");
 	set_property("ro.product.model","NEM-AL10");
     }
+    else if(!strcmp(model,"NEM-UL10")) {
+	set_property("ro.config.mulirild","false");
+	set_property("ro.boardid.product","4871");
+	set_property("ro.product.model","NEM-UL10");
+    }
+    else if(!strcmp(model,"NEM-L21")) {
+	set_property("ro.config.mulirild","true");
+	set_property("ro.boardid.product","4871");
+	set_property("ro.product.model","NEM-L21");
+    }
+    else if(!strcmp(model,"NEM")) {
+	set_property("ro.config.mulirild","false");
+	set_property("ro.boardid.product","4871");
+	set_property("ro.product.model","NEM-GENERIC");
+    }
+    else if(!strcmp(model,"NMO-L21")) {
+	set_property("ro.config.mulirild","false");
+	set_property("ro.boardid.product","4871");
+	set_property("ro.product.model","NMO-L21");
+    }
+    else if(!strcmp(model,"NMO")) {
+	set_property("ro.config.mulirild","false");
+	set_property("ro.boardid.product","4871");
+	set_property("ro.product.model","NMO-GENERIC");
+    }
+
     /* if a match is not found the values in the build.prop will be used.
      * ro.boardid.product will not be set so the camera will not work.
      */

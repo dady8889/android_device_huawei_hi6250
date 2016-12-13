@@ -57,21 +57,29 @@ index 2630849..5d0dd0b 100644
 -- 
 1.9.1
 
-From 9bde76d675ed5b122defc3b55a81b757d0ef82d1 Mon Sep 17 00:00:00 2001
+From f293d51600c14e7d991f09476c268570e98f601e Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Tue, 22 Nov 2016 22:20:55 +0100
-Subject: [PATCH] unmount system on start
+Date: Tue, 13 Dec 2016 19:06:14 +0100
+Subject: [PATCH] AOSPA Build
 
-Change-Id: I0fa89325148501aa42a1580e602f220bc2531226
+Change-Id: Ifa6ea44206ab85a9580f48ca041788246c8551a3
 ---
- tools/releasetools/ota_from_target_files.py | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ tools/releasetools/ota_from_target_files.py | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
 diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index 33ef2d8..d28bf06 100755
+index 33ef2d8..03b3848 100755
 --- a/tools/releasetools/ota_from_target_files.py
 +++ b/tools/releasetools/ota_from_target_files.py
-@@ -603,13 +603,16 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+@@ -594,6 +594,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   script.Print(" ")
+   script.Print("**************************")
+   script.Print("Paranoid Android installer")
++  script.Print("Made by dady000/dady8889")
+   script.Print("**************************")
+ 
+   # Dump fingerprints
+@@ -603,13 +604,16 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
    device_specific.FullOTA_InstallBegin()
  
    CopyInstallTools(output_zip)
@@ -89,7 +97,7 @@ index 33ef2d8..d28bf06 100755
      script.Mount("/system")
      if has_vendor_partition:
        script.Mount("/vendor")
-@@ -636,10 +639,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+@@ -636,10 +640,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
      system_diff = common.BlockDifference("system", system_tgt, src=None)
      system_diff.WriteScript(script, output_zip)
    else:
@@ -104,7 +112,7 @@ index 33ef2d8..d28bf06 100755
      script.UnpackPackageDir("system", "/system")
  
      symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
-@@ -679,22 +684,23 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+@@ -679,22 +685,23 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
        vendor_items.GetMetadata(input_zip)
        vendor_items.Get("vendor").SetPermissions(script)
  
@@ -132,7 +140,21 @@ index 33ef2d8..d28bf06 100755
    script.WriteRawImage("/boot", "boot.img")
  
    device_specific.FullOTA_InstallEnd()
+@@ -902,6 +909,7 @@ else if get_stage("%(bcb_dev)s") != "3/3" then
+   script.Print(" ")
+   script.Print("**************************")
+   script.Print("Paranoid Android installer")
++  script.Print("Made by dady000/dady8889")
+   script.Print("**************************")
+ 
+   # Dump fingerprints
+@@ -1296,6 +1304,7 @@ else if get_stage("%(bcb_dev)s") != "3/3" then
+   script.Print(" ")
+   script.Print("**************************")
+   script.Print("Paranoid Android installer")
++  script.Print("Made by dady000/dady8889")
+   script.Print("**************************")
+ 
+   # Dump fingerprints
 -- 
 1.9.1
-
-
