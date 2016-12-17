@@ -63,8 +63,8 @@ persist.camera.cap_sup_front=3
 #
 # Media
 #
-persist.sys.sr_google_avc_enc=1
-persist.sys.google_avc_enc=0
+persist.sys.sr_google_avc_enc=0
+persist.sys.google_avc_enc=1
 #
 # TWRP
 #
