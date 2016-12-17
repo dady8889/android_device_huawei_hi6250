@@ -28,6 +28,11 @@
 #include <unistd.h>
 #define BASE "/sys/firmware/devicetree/base/"
 #define PRODUCT_PATH BASE"hisi,product_name"
+#define MULTI_RILD_PROP "ro.multi.rild"
+#define BOARDID_PRODUCT_PROP "ro.boardid.product"
+#define PRODUCT_MODEL_PROP "ro.product.model"
+
+static char *model = "hi6250";
 
 extern "C" int __system_property_add(char *key,int ksize,char * value,int vsize);
 
@@ -37,7 +42,7 @@ static void set_property(char *key, char *value) {
 	klog_write(0, "libhuawei_init: Could not set %s to %s error %d\n",key,value,error);
     }
 }
-static char * read_string(char * path, int maxsize) {
+static char * read_string(char * path) {
     char var[255];
     sprintf(var,"%s","ERR");
 
@@ -48,66 +53,43 @@ static char * read_string(char * path, int maxsize) {
     if(read(fd,var,255) < 1) {
 	klog_write(0,"Unable to read %s!\n", path);
     }
-    return var;
+    return strdup(var);
 }
 
 static int read_int(char * path) {
-     return atoi(read_string(path,255));
+     return atoi(read_string(path));
 }
 
 void vendor_load_properties() {
-    char * model = read_string(PRODUCT_PATH,255);
+    model = read_string(PRODUCT_PATH);
     klog_write(0,"libhuawei_init: model is %s\n",model);
-    if(!strcmp(model,"VNS-L21")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","51312");
-	set_property("ro.product.model","VNS-L21");
+
+    /* bail if model is NULL */
+    if(!model)
+	return;
+
+    /* All P9-Lite needs this */
+    if(!strncmp(model,"VNS", 3)) 
+	set_property(BOARDID_PRODUCT_PROP,"51312");
+    /* All Honor 5c/Honor 7 lite needs this */
+    if(!strncmp(model, "NEM", 3) || !strncmp(model, "NMO", 3))
+	set_property(BOARDID_PRODUCT_PROP, "4871");
+
+    /* These models need ro.multi.rild true */
+    if(!strcmp(model, "VNS-L31") ||
+       !strcmp(model, "VNS-L22") ||
+       !strcmp(model, "NEM-L21")) {
+	set_property(MULTI_RILD_PROP, "true");
+    } else {
+	set_property(MULTI_RILD_PROP, "false");	
     }
-    else if(!strcmp(model,"VNS-L31")) {
-	set_property("ro.config.mulirild","true");
-	set_property("ro.boardid.product","51312");
-	set_property("ro.product.model","VNS-L31");
-    }
-    else if(!strcmp(model,"VNS-L22")) {
-	set_property("ro.config.mulirild","true");
-	set_property("ro.boardid.product","51312");
-	set_property("ro.product.model","VNS-L22");
-    }
-    else if(!strcmp(model,"VNS")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","51312");
-	set_property("ro.product.model","VNS-GENERIC");
-    }
-    else if(!strcmp(model,"NEM-AL60")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NEM-AL10");
-    }
-    else if(!strcmp(model,"NEM-UL10")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NEM-UL10");
-    }
-    else if(!strcmp(model,"NEM-L21")) {
-	set_property("ro.config.mulirild","true");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NEM-L21");
-    }
-    else if(!strcmp(model,"NEM")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NEM-GENERIC");
-    }
-    else if(!strcmp(model,"NMO-L21")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NMO-L21");
-    }
-    else if(!strcmp(model,"NMO")) {
-	set_property("ro.config.mulirild","false");
-	set_property("ro.boardid.product","4871");
-	set_property("ro.product.model","NMO-GENERIC");
-    }
+
+    /* These have renamed model */
+    if(!strcmp(model, "NMO-L21"))
+	set_property(PRODUCT_MODEL_PROP, "NEM-L51");
+    else
+    	set_property(PRODUCT_MODEL_PROP,model);
+ 
 
     /* if a match is not found the values in the build.prop will be used.
      * ro.boardid.product will not be set so the camera will not work.

@@ -1,0 +1,6 @@
+# dmd
+#
+type device_monitor, domain;
+type device_monitor_exec, exec_type, file_type;
+
+init_daemon_domain(device_monitor)

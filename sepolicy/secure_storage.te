@@ -1,0 +1,6 @@
+# secure_storage
+#
+type secure_storage, domain;
+type secure_storage_exec, exec_type, file_type;
+
+init_daemon_domain(secure_storage)

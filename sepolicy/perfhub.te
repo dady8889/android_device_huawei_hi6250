@@ -1,0 +1,6 @@
+# perfhub
+#
+type perfhub, domain;
+type perfhub_exec, exec_type, file_type;
+
+init_daemon_domain(perfhub)

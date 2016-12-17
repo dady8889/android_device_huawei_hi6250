@@ -52,6 +52,8 @@ char const *const BLUE_DELAYOFF_FILE = "/sys/class/leds/blue/delay_off";
 
 char const *const BACKLIGHT_FILE = "/sys/class/leds/lcd_backlight0/brightness";
 
+static int last_battery_color = 0xff000000;
+
 /** Write integer to file **/
 static int write_int(char const *path, int value)
 {
@@ -90,8 +92,44 @@ static int set_light_backlight(struct light_device_t *dev, struct light_state_t 
     return err;
 }
 
-static void set_state(struct light_state_t const * state) {
+static void stop_blink(void) {
+    write_int(RED_DELAYON_FILE, 0);
+    write_int(RED_DELAYOFF_FILE, 0);
+    write_int(GREEN_DELAYON_FILE, 0);
+    write_int(GREEN_DELAYOFF_FILE, 0);
+    write_int(BLUE_DELAYON_FILE, 0);
+    write_int(BLUE_DELAYOFF_FILE, 0);
+}
 
+static void set_light_color(int color) {
+    char scolor[255];
+    char alpha[3], red[3], green[3], blue[3];
+    int ialpha,ired,igreen,iblue;
+    sprintf(scolor, "%x",color);
+#ifdef DEBUG
+    ALOGD("color=%s",scolor);
+#endif
+    strncpy(alpha,scolor,2);
+    strncpy(red, scolor + 2,2);
+    strncpy(green, scolor + 4,2);
+    strncpy(blue, scolor + 6,2);
+    alpha[2] = red[2] = green[2] = blue[2] = '\0';
+#ifdef DEBUG
+    ALOGD("alpha=%s red=%s green=%s blue=%s",alpha,red,green,blue);
+#endif
+    ired = strtol(red,NULL,16);
+    igreen = strtol(green,NULL,16);
+    iblue = strtol(blue,NULL,16);
+
+    stop_blink();
+
+    write_int(RED_BRIGHTNESS_FILE,ired);
+    write_int(GREEN_BRIGHTNESS_FILE,igreen);
+    write_int(BLUE_BRIGHTNESS_FILE,iblue);
+
+}
+
+static void set_blink(struct light_state_t const* state) {
     char scolor[255];
     char alpha[3], red[3], green[3], blue[3];
     int ialpha,ired,igreen,iblue;
@@ -110,9 +148,6 @@ static void set_state(struct light_state_t const * state) {
     ired = strtol(red,NULL,16);
     igreen = strtol(green,NULL,16);
     iblue = strtol(blue,NULL,16);
-    write_int(RED_BRIGHTNESS_FILE,ired);
-    write_int(GREEN_BRIGHTNESS_FILE,igreen);
-    write_int(BLUE_BRIGHTNESS_FILE,iblue);
 
 #ifdef DEBUG
     ALOGD("flashMode=%d flashOnMS=%d flashOffMS=%d brightnessMode=%d ledsModes=%d",
@@ -121,14 +156,8 @@ static void set_state(struct light_state_t const * state) {
 				state->flashOffMS,
 				state->brightnessMode,
 				state->ledsModes);
-#endif 
-    write_int(RED_DELAYON_FILE, 0);
-    write_int(RED_DELAYOFF_FILE, 0);
-    write_int(GREEN_DELAYON_FILE, 0);
-    write_int(GREEN_DELAYOFF_FILE, 0);
-    write_int(BLUE_DELAYON_FILE, 0);
-    write_int(BLUE_DELAYOFF_FILE, 0);
-
+#endif
+    stop_blink();
     if(!state->flashMode) return;
 
     if(ired > igreen && ired > iblue) {
@@ -144,11 +173,27 @@ static void set_state(struct light_state_t const * state) {
     }
 }
 
+
+
 static int set_light_notifications(struct light_device_t* dev, struct light_state_t const* state)
 {
     int err = 0;
     pthread_mutex_lock(&g_lock);
-    set_state(state);
+    if(state->color == 0xff000000)
+	set_light_color(last_battery_color);
+    else
+    	set_light_color(state->color);
+    set_blink(state);
+    pthread_mutex_unlock(&g_lock);
+    return err;
+}
+
+static int set_light_battery(struct light_device_t* dev, struct light_state_t const* state)
+{
+    int err = 0;
+    pthread_mutex_lock(&g_lock);
+    last_battery_color = state->color;
+    set_light_color(state->color);
     pthread_mutex_unlock(&g_lock);
     return err;
 }
@@ -174,9 +219,7 @@ static int open_lights(const struct hw_module_t *module, char const *name, struc
 	else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
         	set_light = set_light_notifications;
 	else if (0 == strcmp(LIGHT_ID_BATTERY, name))
-        	set_light = set_light_notifications;
-	else if (0 == strcmp(LIGHT_ID_ATTENTION, name))
-        	set_light = set_light_notifications;
+        	set_light = set_light_battery;
 	else
 		return -EINVAL;
 

@@ -1,0 +1,6 @@
+type irda_device, dev_type, file_type;
+type teecd_device, dev_type, file_type;
+type modem_log_file, file_type;
+type teecd_blkdev, dev_type, file_type;
+type modem_device, dev_type, file_type;
+type make_ext4fs_blkdev, dev_type, file_type;
