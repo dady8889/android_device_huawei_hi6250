@@ -75,7 +75,7 @@ index 33ef2d8..03b3848 100755
    script.Print(" ")
    script.Print("**************************")
    script.Print("Paranoid Android installer")
-+  script.Print("Made by dady000/dady8889")
++  script.Print("    ROM built by dady     ")
    script.Print("**************************")
  
    # Dump fingerprints
