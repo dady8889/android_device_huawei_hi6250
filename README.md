@@ -107,7 +107,10 @@ Copy the following into hi6250.xml, save and close.
 
 <!-- Extras -->
   <remove-project name="platform/packages/apps/DeskClock"/>
-  <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.0.0_r21"/>
+  <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.1.1_r13"/>
+  <project name="CyanogenMod/android_packages_apps_CMFileManager" path="packages/apps/CMFileManager" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_cyanogen_UICommon" path="external/uicommon" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_libtruezip" path="external/libtruezip" remote="github" revision="cm-13.0"/>
 </manifest>
 ```
 
