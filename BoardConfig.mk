@@ -77,7 +77,13 @@ TARGET_RELEASETOOLS_EXTENSIONS := device/huawei/hi6250
 # Init
 TARGET_INIT_VENDOR_LIB := libhuawei_init
 
+# Linker
+LD_SHIM_LIBS := '/system/lib64/libcutils.so|libshim.so:/system/lib/libcutils.so|libshim.so:/system/lib64/liblog.so|libshim.so:/system/lib/liblog.so|libshim.so:/system/lib64/libexif.so|libshim.so:/system/lib/libexif.so|libshim.so:/system/lib64/libaudio_route.so|libshim.so:/system/lib/libaudio_route.so|libshim.so'
+
 # RIL
+BOARD_PROVIDES_LIBRIL := true
+BOARD_PROVIDES_RILD := true
+BOARD_PROVIDES_LIBREFERENCE_RIL := true
 BOARD_RIL_CLASS := ../../../device/huawei/hi6250/ril/
 SIM_COUNT := 2
 
@@ -118,7 +124,6 @@ TARGET_USES_NQ_NFC := true
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/huawei/hi6250/rootdir/fstab.hi6250
-TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 
 # TWRP Recovery defines
 # RECOVERY_VARIANT := twrp

@@ -81,7 +81,8 @@ PRODUCT_COPY_FILES += \
 	      $(LOCAL_PATH)/busybox:recovery/root/sbin/busybox \
 	      $(LOCAL_PATH)/recovery/bbInstaller:recovery/root/sbin/bbInstaller \
 	      $(LOCAL_PATH)/recovery/fstabSwitcher:recovery/root/sbin/fstabSwitcher \
-	      $(LOCAL_PATH)/recovery/fstab.hi6250.stock:recovery/root/fstab.hi6250.stock
+	      $(LOCAL_PATH)/recovery/fstab.hi6250.stock:recovery/root/fstab.hi6250.stock \
+				$(LOCAL_PATH)/recovery/fstab.hi6250.bootdevice:recovery/root/fstab.hi6250.bootdevice
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -171,12 +172,12 @@ PRODUCT_COPY_FILES += \
 
 # Essential packages
 PRODUCT_PACKAGES += \
-    Stk \
-    Browser \
-    messaging \
-    libemoji \
-    Eleven \
-		org.apache.http.legacy
+		org.apache.http.legacy \
+		libemoji \
+		Stk \
+		Browser \
+		messaging \
+		Eleven
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -190,9 +191,9 @@ PRODUCT_PACKAGES += \
     Tag
 
 
-# Keyboard Swiping
+# Keyboard swiping
 PRODUCT_COPY_FILES += $(LOCAL_PATH)/lib64/libjni_latinime.so:system/lib64/libjni_latinime.so
 
-# Google
+# Additional packages
 PRODUCT_PACKAGES += \
     GoogleKeyboard

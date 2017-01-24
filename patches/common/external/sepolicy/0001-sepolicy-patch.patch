@@ -1,0 +1,31 @@
+From 7ca3e15d203864e7c0b1f62a4cbfa62b90f93e00 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sat, 24 Dec 2016 09:22:13 -0600
+Subject: [PATCH] 0001-sepolicy-patch
+
+Change-Id: Ie91b775b182f7a63ef7fd0c56ca6fb604b2dc807
+---
+ domain.te | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/domain.te b/domain.te
+index cc76ee7..6524d56 100644
+--- a/domain.te
++++ b/domain.te
+@@ -341,11 +341,11 @@ neverallow { domain -recovery } contextmount_type:dir_file_class_set
+ # system_app_service rather than the generic type.
+ # New service_types are defined in service.te and new mappings
+ # from service name to service_type are defined in service_contexts.
+-neverallow domain default_android_service:service_manager add;
++neverallow { domain -perfhub -hwcamcfgsvr } default_android_service:service_manager add;
+ 
+ # Require that domains explicitly label unknown properties, and do not allow
+ # anyone but init to modify unknown properties.
+-neverallow { domain -init } default_prop:property_service set;
++neverallow { domain -init -tee } default_prop:property_service set;
+ 
+ neverallow { domain -init -recovery -system_server } frp_block_device:blk_file rw_file_perms;
+ 
+-- 
+1.9.1
+

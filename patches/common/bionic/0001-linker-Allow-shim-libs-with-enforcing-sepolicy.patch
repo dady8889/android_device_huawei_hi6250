@@ -1,0 +1,57 @@
+From a2e5c2054f0ea2325ec7c15bd7faa7b4e2511656 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Fri, 23 Dec 2016 16:15:27 -0600
+Subject: [PATCH] linker: Allow shim libs with enforcing sepolicy.
+
+-It seems that the LD_SHIM_LIBS was not intended to be
+used with an enforcing sepolicy. This device (hi6250 variants)
+uses a shim lib for missing symbols. The alternative is to put the
+symbols into each lib. I prefer this solution which loads the
+var dispite the security restrictions.
+
+-It also seems that with an enforcing sepolicy, the LD_SHIM_LIBS
+env var can not be set. So, I just set if from BoardConfig with
+the LD_SHIM_LIBS define.
+
+Change-Id: Iea298bb66b406ec1db7d495921ebf66d5c9b61f9
+---
+ linker/Android.mk | 4 ++++
+ linker/linker.cpp | 6 +++++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/linker/Android.mk b/linker/Android.mk
+index 7a9b5d9..6a8841f 100644
+--- a/linker/Android.mk
++++ b/linker/Android.mk
+@@ -49,6 +49,10 @@ ifeq ($(TARGET_IS_64_BIT),true)
+ LOCAL_CPPFLAGS += -DTARGET_IS_64_BIT
+ endif
+ 
++ifneq ($(LD_SHIM_LIBS),)
++LOCAL_CPPFLAGS += -DLD_SHIM_LIBS=\"$(LD_SHIM_LIBS)\"
++endif
++
+ # We need to access Bionic private headers in the linker.
+ LOCAL_CFLAGS += -I$(LOCAL_PATH)/../libc/
+ 
+diff --git a/linker/linker.cpp b/linker/linker.cpp
+index 99c02d8..f377c84 100644
+--- a/linker/linker.cpp
++++ b/linker/linker.cpp
+@@ -3244,8 +3244,12 @@ static ElfW(Addr) __linker_init_post_relocation(KernelArgumentBlock& args, ElfW(
+   if (!getauxval(AT_SECURE)) {
+     ldpath_env = getenv("LD_LIBRARY_PATH");
+     ldpreload_env = getenv("LD_PRELOAD");
+-    ldshim_libs_env = getenv("LD_SHIM_LIBS");
+   }
++#ifdef LD_SHIM_LIBS
++    ldshim_libs_env = LD_SHIM_LIBS;
++#else
++    ldshim_libs_env = getenv("LD_SHIM_LIBS");
++#endif
+ 
+   INFO("[ android linker & debugger ]");
+ 
+-- 
+1.9.1
+

@@ -42,7 +42,14 @@ wait_umounted() {
 switch_fstab() {
 	cp /etc/stock.twrp.fstab /etc/twrp.fstab
 	checkerror $? "Could not overwrite stab!" -fatal
-        cp /fstab.hi6250.stock /fstab.hi6250
+
+	MODEL=$(cat /sys/firmware/devicetree/base/hisi,product_name)
+	mecho "Model is $MODEL"
+	if [[ "$MODEL" == "NEM-AL60" ]]; then
+		cp /fstab.hi6250.bootdevice /fstab.hi6250
+	else
+    	cp /fstab.hi6250.stock /fstab.hi6250
+	fi
 	checkerror $? "Could not overwrite stab!" -fatal
 }
 

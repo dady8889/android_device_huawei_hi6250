@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cutils/klog.h>
+#include <sys/system_properties.h>
 #include <unistd.h>
 #define BASE "/sys/firmware/devicetree/base/"
 #define PRODUCT_PATH BASE"hisi,product_name"
@@ -35,6 +36,9 @@
 static char *model = "hi6250";
 
 extern "C" int __system_property_add(char *key,int ksize,char * value,int vsize);
+extern "C" const prop_info * __system_property_find(const char * name);
+extern "C" int __system_property_update(prop_info * pi, char* value,int vsize);
+extern "C" int property_get(char *key, char *dvalue);
 
 static void set_property(char *key, char *value) {
     int error;
@@ -42,6 +46,15 @@ static void set_property(char *key, char *value) {
 	klog_write(0, "libhuawei_init: Could not set %s to %s error %d\n",key,value,error);
     }
 }
+
+static void update_property(char *key, char *value) {
+    int error;
+    prop_info* pi = (prop_info*) __system_property_find(key);
+    if(error = __system_property_update(pi,value,strlen(value))) {
+	klog_write(0, "libhuawei_init: Could not update %s to %s error %d\n",key,value,error);
+    }
+}
+
 static char * read_string(char * path) {
     char var[255];
     sprintf(var,"%s","ERR");
@@ -60,7 +73,7 @@ static int read_int(char * path) {
      return atoi(read_string(path));
 }
 
-void vendor_load_properties() {
+void vendor_load_default_properties() {
     model = read_string(PRODUCT_PATH);
     klog_write(0,"libhuawei_init: model is %s\n",model);
 
@@ -69,7 +82,7 @@ void vendor_load_properties() {
 	return;
 
     /* All P9-Lite needs this */
-    if(!strncmp(model,"VNS", 3)) 
+    if(!strncmp(model,"VNS", 3))
 	set_property(BOARDID_PRODUCT_PROP,"51312");
     /* All Honor 5c/Honor 7 lite needs this */
     if(!strncmp(model, "NEM", 3) || !strncmp(model, "NMO", 3))
@@ -81,22 +94,27 @@ void vendor_load_properties() {
        !strcmp(model, "NEM-L21")) {
 	set_property(MULTI_RILD_PROP, "true");
     } else {
-	set_property(MULTI_RILD_PROP, "false");	
+	set_property(MULTI_RILD_PROP, "false");
     }
 
     /* These have renamed model */
     if(!strcmp(model, "NMO-L21"))
-	set_property(PRODUCT_MODEL_PROP, "NEM-L51");
-    else
-    	set_property(PRODUCT_MODEL_PROP,model);
- 
+	model = "NEM-L51";
 
     /* if a match is not found the values in the build.prop will be used.
      * ro.boardid.product will not be set so the camera will not work.
      */
 }
+void vendor_load_system_properties() {
+    char lmodel[255];
+    if(!property_get(PRODUCT_MODEL_PROP,lmodel))
+	klog_write(0, "libhuawei_init: Could not get property %s\n",PRODUCT_MODEL_PROP);
 
-int vendor_handle_control_message(const char *msg, const char *arg) { 
+    if(!strcmp(lmodel,"hi6250"))
+	update_property(PRODUCT_MODEL_PROP,model);
+}
+
+int vendor_handle_control_message(const char *msg, const char *arg) {
 	klog_write(0, "libhuawei_init: control message '%s' '%s' arg is not implemented!\n",msg,arg);
 	return -1;
 }
