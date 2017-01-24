@@ -196,4 +196,5 @@ PRODUCT_COPY_FILES += $(LOCAL_PATH)/lib64/libjni_latinime.so:system/lib64/libjni
 
 # Additional packages
 PRODUCT_PACKAGES += \
-    GoogleKeyboard
+    GoogleKeyboard \
+		CMFileManager
