@@ -28,61 +28,61 @@ $(call inherit-product, build/target/product/core_64_bit.mk)
 
 # Ramdisk
 PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/rootdir/init.hi6250.rc:root/init.hi6250.rc \
-        $(LOCAL_PATH)/rootdir/init.meticulus.rc:root/init.meticulus.rc \
-        $(LOCAL_PATH)/rootdir/init.platform.rc:root/init.platform.rc \
-        $(LOCAL_PATH)/rootdir/init.hisi.rc:root/init.hisi.rc \
-        $(LOCAL_PATH)/rootdir/init.connectivity.hisi.rc:root/init.connectivity.hisi.rc \
-        $(LOCAL_PATH)/rootdir/init.connectivity.bcm43455.rc:root/init.connectivity.bcm43455.rc \
-        $(LOCAL_PATH)/rootdir/fstab.hi6250:root/fstab.hi6250 \
-        $(LOCAL_PATH)/rootdir/resetFactory.cfg:root/resetFactory.cfg \
-        $(LOCAL_PATH)/rootdir/init.51312.rc:root/init.51312.rc \
-        $(LOCAL_PATH)/rootdir/init.post-fs-data.rc:root/init.post-fs-data.rc \
-        $(LOCAL_PATH)/rootdir/init.balong_modem.rc:root/init.balong_modem.rc \
-        $(LOCAL_PATH)/rootdir/init.tee.rc:root/init.tee.rc \
-        $(LOCAL_PATH)/rootdir/init.manufacture.rc:root/init.manufacture.rc \
-        $(LOCAL_PATH)/rootdir/init.huawei.rc:root/init.huawei.rc \
-        $(LOCAL_PATH)/rootdir/init.audio.rc:root/init.audio.rc \
-        $(LOCAL_PATH)/rootdir/init.4871.rc:root/init.4871.rc \
-        $(LOCAL_PATH)/rootdir/init.6193.rc:root/init.6193.rc \
-        $(LOCAL_PATH)/rootdir/init.connectivity.bcm43xx.rc:root/init.connectivity.bcm43xx.rc \
-        $(LOCAL_PATH)/rootdir/init.extmodem.rc:root/init.extmodem.rc \
-        $(LOCAL_PATH)/rootdir/ueventd.hi6250.rc:root/ueventd.hi6250.rc \
-        $(LOCAL_PATH)/rootdir/fstab.zram256m:root/fstab.zram256m \
-        $(LOCAL_PATH)/rootdir/ueventd.51312.rc:root/ueventd.51312.rc \
-        $(LOCAL_PATH)/rootdir/init.connectivity.gps.rc:root/init.connectivity.gps.rc \
-        $(LOCAL_PATH)/rootdir/init.connectivity.rc:root/init.connectivity.rc \
-        $(LOCAL_PATH)/rootdir/fstab.zram512m:root/fstab.zram512m \
-        $(LOCAL_PATH)/rootdir/init.hi6250.usb.rc:root/init.hi6250.usb.rc \
-        $(LOCAL_PATH)/rootdir/ueventd.4871.rc:root/ueventd.4871.rc \
-        $(LOCAL_PATH)/rootdir/init.device.rc:root/init.device.rc \
-        $(LOCAL_PATH)/rootdir/ueventd.6193.rc:root/ueventd.6193.rc \
-        $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
-        $(LOCAL_PATH)/rootdir/sbin:root/sbin \
-        $(LOCAL_PATH)/rootdir/sbin/teecd:root/sbin/teecd \
-        $(LOCAL_PATH)/rootdir/sbin/oeminfo_nvm_server:root/sbin/oeminfo_nvm_server \
-        $(LOCAL_PATH)/rootdir/sbin/check_root:root/sbin/check_root \
-        $(LOCAL_PATH)/rootdir/sbin/kmsgcat:root/sbin/kmsgcat \
-        $(LOCAL_PATH)/rootdir/sbin/hw_crit_service_sys:root/sbin/hw_crit_service_sys \
-        $(LOCAL_PATH)/rootdir/sbin/hw_ueventd:root/sbin/hw_ueventd \
-        $(LOCAL_PATH)/rootdir/sbin/hdbd:root/sbin/hdbd \
-        $(LOCAL_PATH)/rootdir/sbin/volisnotd:root/sbin/volisnotd \
-        $(LOCAL_PATH)/rootdir/sbin/ntfs-3gd:root/sbin/ntfs-3gd \
-        $(LOCAL_PATH)/rootdir/sbin/logctl_service:root/sbin/logctl_service
+    $(LOCAL_PATH)/rootdir/init.hi6250.rc:root/init.hi6250.rc \
+    $(LOCAL_PATH)/rootdir/init.meticulus.rc:root/init.meticulus.rc \
+    $(LOCAL_PATH)/rootdir/init.platform.rc:root/init.platform.rc \
+    $(LOCAL_PATH)/rootdir/init.hisi.rc:root/init.hisi.rc \
+    $(LOCAL_PATH)/rootdir/init.connectivity.hisi.rc:root/init.connectivity.hisi.rc \
+    $(LOCAL_PATH)/rootdir/init.connectivity.bcm43455.rc:root/init.connectivity.bcm43455.rc \
+    $(LOCAL_PATH)/rootdir/fstab.hi6250:root/fstab.hi6250 \
+    $(LOCAL_PATH)/rootdir/resetFactory.cfg:root/resetFactory.cfg \
+    $(LOCAL_PATH)/rootdir/init.51312.rc:root/init.51312.rc \
+    $(LOCAL_PATH)/rootdir/init.post-fs-data.rc:root/init.post-fs-data.rc \
+    $(LOCAL_PATH)/rootdir/init.balong_modem.rc:root/init.balong_modem.rc \
+    $(LOCAL_PATH)/rootdir/init.tee.rc:root/init.tee.rc \
+    $(LOCAL_PATH)/rootdir/init.manufacture.rc:root/init.manufacture.rc \
+    $(LOCAL_PATH)/rootdir/init.huawei.rc:root/init.huawei.rc \
+    $(LOCAL_PATH)/rootdir/init.audio.rc:root/init.audio.rc \
+    $(LOCAL_PATH)/rootdir/init.4871.rc:root/init.4871.rc \
+    $(LOCAL_PATH)/rootdir/init.6193.rc:root/init.6193.rc \
+    $(LOCAL_PATH)/rootdir/init.connectivity.bcm43xx.rc:root/init.connectivity.bcm43xx.rc \
+    $(LOCAL_PATH)/rootdir/init.extmodem.rc:root/init.extmodem.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.hi6250.rc:root/ueventd.hi6250.rc \
+    $(LOCAL_PATH)/rootdir/fstab.zram256m:root/fstab.zram256m \
+    $(LOCAL_PATH)/rootdir/ueventd.51312.rc:root/ueventd.51312.rc \
+    $(LOCAL_PATH)/rootdir/init.connectivity.gps.rc:root/init.connectivity.gps.rc \
+    $(LOCAL_PATH)/rootdir/init.connectivity.rc:root/init.connectivity.rc \
+    $(LOCAL_PATH)/rootdir/fstab.zram512m:root/fstab.zram512m \
+    $(LOCAL_PATH)/rootdir/init.hi6250.usb.rc:root/init.hi6250.usb.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.4871.rc:root/ueventd.4871.rc \
+    $(LOCAL_PATH)/rootdir/init.device.rc:root/init.device.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.6193.rc:root/ueventd.6193.rc \
+    $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
+    $(LOCAL_PATH)/rootdir/sbin:root/sbin \
+    $(LOCAL_PATH)/rootdir/sbin/teecd:root/sbin/teecd \
+    $(LOCAL_PATH)/rootdir/sbin/oeminfo_nvm_server:root/sbin/oeminfo_nvm_server \
+    $(LOCAL_PATH)/rootdir/sbin/check_root:root/sbin/check_root \
+    $(LOCAL_PATH)/rootdir/sbin/kmsgcat:root/sbin/kmsgcat \
+    $(LOCAL_PATH)/rootdir/sbin/hw_crit_service_sys:root/sbin/hw_crit_service_sys \
+    $(LOCAL_PATH)/rootdir/sbin/hw_ueventd:root/sbin/hw_ueventd \
+    $(LOCAL_PATH)/rootdir/sbin/hdbd:root/sbin/hdbd \
+    $(LOCAL_PATH)/rootdir/sbin/volisnotd:root/sbin/volisnotd \
+    $(LOCAL_PATH)/rootdir/sbin/ntfs-3gd:root/sbin/ntfs-3gd \
+    $(LOCAL_PATH)/rootdir/sbin/logctl_service:root/sbin/logctl_service
 
 # Recovery ramdisk, libraries and modules.
 PRODUCT_COPY_FILES += \
-        $(LOCAL_PATH)/rootdir/init.recovery.balong_modem.rc:root/init.recovery.balong_modem.rc \
-        $(LOCAL_PATH)/rootdir/init.recovery.huawei.rc:root/init.recovery.huawei.rc \
-        $(LOCAL_PATH)/rootdir/init.recovery.hisi.rc:root/init.recovery.hisi.rc \
-        $(LOCAL_PATH)/recovery/init.recovery.hi6250.rc:root/init.recovery.hi6250.rc \
-	      $(LOCAL_PATH)/recovery/twrp.fstab:recovery/root/etc/twrp.fstab \
-      	$(LOCAL_PATH)/recovery/stock.twrp.fstab:recovery/root/etc/stock.twrp.fstab \
-	      $(LOCAL_PATH)/busybox:recovery/root/sbin/busybox \
-	      $(LOCAL_PATH)/recovery/bbInstaller:recovery/root/sbin/bbInstaller \
-	      $(LOCAL_PATH)/recovery/fstabSwitcher:recovery/root/sbin/fstabSwitcher \
-	      $(LOCAL_PATH)/recovery/fstab.hi6250.stock:recovery/root/fstab.hi6250.stock \
-				$(LOCAL_PATH)/recovery/fstab.hi6250.bootdevice:recovery/root/fstab.hi6250.bootdevice
+    $(LOCAL_PATH)/rootdir/init.recovery.balong_modem.rc:root/init.recovery.balong_modem.rc \
+    $(LOCAL_PATH)/rootdir/init.recovery.huawei.rc:root/init.recovery.huawei.rc \
+    $(LOCAL_PATH)/rootdir/init.recovery.hisi.rc:root/init.recovery.hisi.rc \
+    $(LOCAL_PATH)/recovery/init.recovery.hi6250.rc:root/init.recovery.hi6250.rc \
+	$(LOCAL_PATH)/recovery/twrp.fstab:recovery/root/etc/twrp.fstab \
+    $(LOCAL_PATH)/recovery/stock.twrp.fstab:recovery/root/etc/stock.twrp.fstab \
+	$(LOCAL_PATH)/busybox:recovery/root/sbin/busybox \
+	$(LOCAL_PATH)/recovery/bbInstaller:recovery/root/sbin/bbInstaller \
+	$(LOCAL_PATH)/recovery/fstabSwitcher:recovery/root/sbin/fstabSwitcher \
+	$(LOCAL_PATH)/recovery/fstab.hi6250.stock:recovery/root/fstab.hi6250.stock \
+	$(LOCAL_PATH)/recovery/fstab.hi6250.bootdevice:recovery/root/fstab.hi6250.bootdevice
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -105,14 +105,14 @@ PRODUCT_PACKAGES += \
     hwcomposer.hi6250 \
     libcopybit_wrapper \
     lights.hi6250 \
-		libshim
+	libshim
 
 # Hack for adb
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/busybox:root/sbin/sh
-#    $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-#    $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
-#    $(LOCAL_PATH)/configs/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
+    $(LOCAL_PATH)/busybox:root/sbin/sh
+#   $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+#   $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
+#   $(LOCAL_PATH)/configs/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
@@ -163,21 +163,21 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Kernel
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := kernel/huawei/out/arch/arm64/boot/Image
+	LOCAL_KERNEL := kernel/huawei/out/arch/arm64/boot/Image
 else
-LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
+	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
 PRODUCT_COPY_FILES += \
 	$(LOCAL_KERNEL):kernel
 
 # Essential packages
 PRODUCT_PACKAGES += \
-		org.apache.http.legacy \
-		libemoji \
-		Stk \
-		Browser \
-		messaging \
-		Eleven
+	org.apache.http.legacy \
+	libemoji \
+	Stk \
+	Browser \
+	messaging \
+	Eleven
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -196,4 +196,8 @@ PRODUCT_COPY_FILES += $(LOCAL_PATH)/lib64/libjni_latinime.so:system/lib64/libjni
 
 # Additional packages
 PRODUCT_PACKAGES += \
-    GoogleKeyboard
+    GoogleKeyboard \
+    CMFileManager \
+    bzip2 \
+    pigz
+

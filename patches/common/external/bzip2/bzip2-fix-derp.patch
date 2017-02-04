@@ -1,0 +1,25 @@
+From d832e7011ad008d1f1c63952c9216c7c9c5e8b73 Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Fri, 3 Feb 2017 23:58:51 +0100
+Subject: [PATCH] Fix derp
+
+---
+ Android.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Android.mk b/Android.mk
+index 496769b..d9c592b 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -53,7 +53,7 @@ LOCAL_STATIC_LIBRARIES := libbz
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
+ 
+-BZIP_LINKS := bzcat bunzip2
++BZIP_TOOLS := bzcat bunzip2
+ LOCAL_POST_INSTALL_CMD := $(hide) $(foreach t,$(BZIP_TOOLS),ln -sf bzip2 $(TARGET_OUT)/xbin/$(t);)
+ 
+ include $(BUILD_EXECUTABLE)
+-- 
+1.9.1
+
