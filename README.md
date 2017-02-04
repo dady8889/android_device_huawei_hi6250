@@ -78,6 +78,7 @@ Copy the following into hi6250.xml, save and close.
   <remove-project name="platform/system/vold"/>
   <remove-project name="platform/packages/apps/Browser"/>
   <remove-project name="platform/packages/apps/Nfc"/>
+  <remove-project name="platform/external/bzip2"/>
 
 <!-- CyanogenMod -->
   <project name="CyanogenMod/android_system_core" path="system/core" remote="github" revision="cm-13.0"/>
@@ -108,7 +109,13 @@ Copy the following into hi6250.xml, save and close.
 <!-- Extras -->
   <remove-project name="platform/packages/apps/DeskClock"/>
   <project name="platform/packages/apps/DeskClock" path="packages/apps/DeskClock" remote="aosp" revision="refs/tags/android-7.1.1_r13"/>
+  <project name="CyanogenMod/android_packages_apps_CMFileManager" path="packages/apps/CMFileManager" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_cyanogen_UICommon" path="external/uicommon" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_libtruezip" path="external/libtruezip" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_bzip2" path="external/bzip2" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_pigz" path="external/pigz" remote="github" revision="cm-13.0"/>
 </manifest>
+
 ```
 
 Execute the following commands in a linux terminal:
