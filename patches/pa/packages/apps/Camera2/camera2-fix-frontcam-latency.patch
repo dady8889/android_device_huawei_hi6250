@@ -1,15 +1,65 @@
-From c8151b5db51926e4cb996beecd1628a78a450b87 Mon Sep 17 00:00:00 2001
+From 2d87b7c9d1562ea49a32befc22fd7547ffb1f284 Mon Sep 17 00:00:00 2001
 From: Daniel <dady8889@gmail.com>
-Date: Fri, 3 Feb 2017 20:25:37 +0100
-Subject: [PATCH] Fix front camera snap latency
+Date: Sat, 4 Feb 2017 11:42:10 +0100
+Subject: [PATCH] Disable front camera AE & AF
 
-Change-Id: Ieba195b31e4708a1d49ec0c56fd0b459d4e4a4d3
+Change-Id: Icf33dec70bb606b21220b2cb41232f04ee2b1b2f
 ---
- src/com/android/camera/app/CameraApp.java                    |  2 ++
- .../android/camera/one/v2/OneCameraCharacteristicsImpl.java  | 12 ++++++++++++
- .../android/camera/one/v2/autofocus/TriggerStateMachine.java | 11 ++++++++++-
- 3 files changed, 24 insertions(+), 1 deletion(-)
+ src/com/android/camera/CaptureModule.java                 | 15 +++++++++++++++
+ src/com/android/camera/FocusOverlayManager.java           |  4 ++++
+ src/com/android/camera/app/CameraApp.java                 |  2 ++
+ .../camera/one/v2/OneCameraCharacteristicsImpl.java       | 12 ++++++++++++
+ .../camera/one/v2/autofocus/TriggerStateMachine.java      | 12 ++++++++++++
+ 5 files changed, 45 insertions(+)
 
+diff --git a/src/com/android/camera/CaptureModule.java b/src/com/android/camera/CaptureModule.java
+index 640da4f..5f23d20 100644
+--- a/src/com/android/camera/CaptureModule.java
++++ b/src/com/android/camera/CaptureModule.java
+@@ -96,6 +96,9 @@ import java.util.concurrent.TimeUnit;
+ 
+ import javax.annotation.Nonnull;
+ 
++import com.android.camera.app.CameraApp;
++import android.os.Bundle;
++
+ /**
+  * New Capture module that is made to support photo and video capture on top of
+  * the OneCamera API, to transparently support GCam.
+@@ -489,6 +492,18 @@ public class CaptureModule extends CameraModule implements
+             return;
+         }
+ 
++        Log.Tag CAMPATCHTAG = new Log.Tag("CamPatch");
++
++        if (mCameraFacing == Facing.FRONT) {
++            CameraApp.settingsBundle.putString("facing", "front");
++            Log.d(CAMPATCHTAG, "Current camera is FRONT");
++        }
++        else if (mCameraFacing == Facing.BACK) {
++            CameraApp.settingsBundle.putString("facing", "back");
++            Log.d(CAMPATCHTAG, "Current camera is BACK");
++        }
++
++
+         int countDownDuration = mSettingsManager
+                 .getInteger(SettingsManager.SCOPE_GLOBAL, Keys.KEY_COUNTDOWN_DURATION);
+         if (countDownDuration > 0) {
+diff --git a/src/com/android/camera/FocusOverlayManager.java b/src/com/android/camera/FocusOverlayManager.java
+index c16d01b..ca7346b 100644
+--- a/src/com/android/camera/FocusOverlayManager.java
++++ b/src/com/android/camera/FocusOverlayManager.java
+@@ -362,6 +362,10 @@ public class FocusOverlayManager implements PreviewStatusListener.PreviewAreaCha
+             return;
+         }
+ 
++        if (mMirror) {
++            return;
++        }
++
+         // Let users be able to cancel previous touch focus.
+         if ((mFocusArea != null) && (mState == STATE_FOCUSING ||
+                     mState == STATE_SUCCESS || mState == STATE_FAIL)) {
 diff --git a/src/com/android/camera/app/CameraApp.java b/src/com/android/camera/app/CameraApp.java
 index a6f0d52..b3fca61 100644
 --- a/src/com/android/camera/app/CameraApp.java
@@ -61,25 +111,28 @@ index 279ede3..4457b9a 100644
          return maxAeRegions != null && maxAeRegions > 0;
      }
 diff --git a/src/com/android/camera/one/v2/autofocus/TriggerStateMachine.java b/src/com/android/camera/one/v2/autofocus/TriggerStateMachine.java
-index 95d2523..168e90d 100644
+index 95d2523..e050247 100644
 --- a/src/com/android/camera/one/v2/autofocus/TriggerStateMachine.java
 +++ b/src/com/android/camera/one/v2/autofocus/TriggerStateMachine.java
-@@ -26,6 +26,9 @@ import java.util.Set;
+@@ -26,6 +26,10 @@ import java.util.Set;
  import javax.annotation.ParametersAreNonnullByDefault;
  import javax.annotation.concurrent.NotThreadSafe;
  
 +import com.android.camera.app.CameraApp;
 +import android.os.Bundle;
++import com.android.camera.debug.Log;
 +
  /**
   * Tracks the finite state machines used by the camera2 api for AF and AE
   * triggers. That is, the state machine waits for a TRIGGER_START followed by
-@@ -76,6 +79,12 @@ final class TriggerStateMachine {
+@@ -76,6 +80,14 @@ final class TriggerStateMachine {
          boolean triggeredNow = triggerState != null && triggerState == mTriggerStart;
          boolean doneNow = mDoneStates.contains(state);
  
 +        String str = CameraApp.settingsBundle.getString("facing");
 +        if (str != null && str == "front") {
++                Log.Tag CAMPATCHTAG = new Log.Tag("CamPatch");
++                Log.d(CAMPATCHTAG, "Blocked front camera AF & AE");
 +                return true;
 +        }
 +
