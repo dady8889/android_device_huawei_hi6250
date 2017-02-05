@@ -63,6 +63,6 @@
     <!-- Help URL, Remote display [DO NOT TRANSLATE] -->
     <string name="help_url_remote_display" translatable="false">https://support.google.com/nexus/answer/2865484?hl=en</string>
     <!-- Help URL, Fingerprint [DO NOT TRANSLATE] -->
-    <string name="help_url_fingerprint" translatable="false">https://support.google.com/nexus/answer/6285273?hl=en&ref_topic=7029556</string>
+    <string name="help_url_fingerprint" translatable="false">https://support.google.com/nexus/answer/6285273?hl=en</string>
     
 </resources>
