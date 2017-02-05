@@ -79,14 +79,87 @@ Only the three quirks included above are recognized at this point:
 
     <Include href="media_codecs_google_audio.xml" />
     <Include href="media_codecs_google_telephony.xml" />
+
+    <Decoders>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.AVC" type="video/avc">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="4096x2160" />
+            <Feature name="adaptive-playback" />
+        <Limit name="concurrent-instances" max="16" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.REAL" type="video/x-pn-realvideo">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.MPEG2" >
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Type name="video/mpeg2">
+            <Limit name="size" min="96x16" max="1920x1088"  />
+        <Limit name="concurrent-instances" max="16" />
+            </Type>
+            <Type name="video/mpeg">
+            <Limit name="size" min="96x16" max="1920x1088"  />
+        <Limit name="concurrent-instances" max="16" />
+            </Type>
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.MPEG4" type="video/mp4v-es">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.H263" type="video/3gpp">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.VC1" type="video/vc1">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.VP8" type="video/x-vnd.on2.vp8">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.SORENSON" type="video/x-flv">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="1920x1088" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+
+        <MediaCodec name="OMX.IMG.MSVDX.Decoder.HEVC" type="video/hevc">
+            <Quirk name="needs-flush-on-all-ports" />
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Limit name="size" min="96x16" max="4096x2160" />
+        <Limit name="concurrent-instances" max="16" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
+    </Decoders>
+
     <Include href="media_codecs_google_video.xml" />
 
     <Settings>
     <Setting name="max-video-encoder-input-buffers" value="5" />
     </Settings>
 
-    <Encoders>
 
+    <Encoders>
         <MediaCodec name="OMX.IMG.TOPAZ.VIDEO.Encoder">
             <Type name="video/3gpp">
               <Limit name="size" min="128x128" max="4096x4096" />
@@ -104,80 +177,5 @@ Only the three quirks included above are recognized at this point:
               <Limit name="concurrent-instances" max="2" />
             </Type>
         </MediaCodec>
-
     </Encoders>
-
-    <Decoders>
-
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.AVC" type="video/avc">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="4096x2160" />
-            <Feature name="adaptive-playback" />
-	    <Limit name="concurrent-instances" max="16" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.REAL" type="video/x-pn-realvideo">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.MPEG2" >
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Type name="video/mpeg2">
-            <Limit name="size" min="96x16" max="1920x1088"  />
-	    <Limit name="concurrent-instances" max="16" />
-            </Type>
-            <Type name="video/mpeg">
-            <Limit name="size" min="96x16" max="1920x1088"  />
-	    <Limit name="concurrent-instances" max="16" />
-            </Type>
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.MPEG4" type="video/mp4v-es">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.H263" type="video/3gpp">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.VC1" type="video/vc1">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.VP8" type="video/x-vnd.on2.vp8">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.SORENSON" type="video/x-flv">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="1920x1088" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-
-        <MediaCodec name="OMX.IMG.MSVDX.Decoder.HEVC" type="video/hevc">
-            <Quirk name="needs-flush-on-all-ports" />
-            <Quirk name="requires-allocate-on-input-ports" />
-            <Limit name="size" min="96x16" max="4096x2160" />
-	    <Limit name="concurrent-instances" max="16" />
-            <Feature name="adaptive-playback" />
-        </MediaCodec>
-
-    </Decoders>
 </MediaCodecs>
