@@ -1,0 +1,113 @@
+From 36accfbf2962fedf827d3fbdd855102f9c24575d Mon Sep 17 00:00:00 2001
+From: Daniel <dady8889@gmail.com>
+Date: Sat, 11 Mar 2017 18:33:39 +0100
+Subject: [PATCH] Fix systemless root
+
+---
+ res/xml/command_list.xml                           |  3 ++-
+ .../filemanager/FileManagerApplication.java        | 28 ++++++++++++----------
+ .../filemanager/commands/shell/Command.java        | 16 +++++++++++++
+ 3 files changed, 34 insertions(+), 13 deletions(-)
+
+diff --git a/res/xml/command_list.xml b/res/xml/command_list.xml
+index cd04ec9..3049e88 100644
+--- a/res/xml/command_list.xml
++++ b/res/xml/command_list.xml
+@@ -38,6 +38,7 @@
+   <!-- Shell commands -->
+   <command commandId="bash" commandPath="/system/bin/sh" commandArgs="" />
+   <command commandId="su" commandPath="/system/xbin/su" commandArgs="" />
++  <command commandId="systemlesssu" commandPath="/su/bin/su" commandArgs="" />
+ 
+   <!-- Console info -->
+   <command commandId="groups" commandPath="/system/bin/groups" commandArgs="" />
+@@ -105,4 +106,4 @@
+   <command commandId="unxz" commandPath="/system/xbin/unxz" commandArgs="-f %1$s" />
+   <command commandId="unrar" commandPath="/system/xbin/unrar" commandArgs="x -ry -c- -cfg- -kb -p- -o+ %2$s %1$s" />
+ 
+-</CommandList>
++</CommandList>
+\ No newline at end of file
+diff --git a/src/com/cyanogenmod/filemanager/FileManagerApplication.java b/src/com/cyanogenmod/filemanager/FileManagerApplication.java
+index e3c88d6..360251c 100644
+--- a/src/com/cyanogenmod/filemanager/FileManagerApplication.java
++++ b/src/com/cyanogenmod/filemanager/FileManagerApplication.java
+@@ -568,24 +568,28 @@ public final class FileManagerApplication extends Application {
+      * @return boolean True if root command is present
+      */
+     private boolean isRootPresent() {
++        boolean rootPresent = false;
+         try {
+-            String rootCommand = getString(R.string.root_command);
+-            File cmd = new File(rootCommand);
+-            if (!cmd.exists() || !cmd.isFile()) {
+-                Log.w(TAG,
+-                        String.format(
+-                                "Command %s not found. Exists: %s; IsFile: %s.", //$NON-NLS-1$
+-                                rootCommand,
+-                                String.valueOf(cmd.exists()),
+-                                String.valueOf(cmd.isFile())));
+-                return false;
++            String[] rootCommands = { getString(R.string.root_command), "/su/bin/su" };
++            for (String s : rootCommands) {
++                File cmd = new File(s);
++                if (!cmd.exists() || !cmd.isFile()) {
++                    Log.w(TAG,
++                            String.format(
++                                    "Command %s not found. Exists: %s; IsFile: %s.", //$NON-NLS-1$
++                                    s,
++                                    String.valueOf(cmd.exists()),
++                                    String.valueOf(cmd.isFile())));
++                } else {
++                    rootPresent = true;
++                    break;
++                }
+             }
+-            return true;
+         } catch (Exception e) {
+             Log.e(TAG,
+                     "Failed to read root command.", e); //$NON-NLS-1$
+         }
+-        return false;
++        return rootPresent;
+     }
+ 
+     @SuppressWarnings("boxing")
+diff --git a/src/com/cyanogenmod/filemanager/commands/shell/Command.java b/src/com/cyanogenmod/filemanager/commands/shell/Command.java
+index cf9a9f5..93b2691 100644
+--- a/src/com/cyanogenmod/filemanager/commands/shell/Command.java
++++ b/src/com/cyanogenmod/filemanager/commands/shell/Command.java
+@@ -32,6 +32,8 @@ import com.cyanogenmod.filemanager.util.ShellHelper;
+ import org.xmlpull.v1.XmlPullParserException;
+ 
+ import java.io.IOException;
++import java.io.File;
++import android.util.Log;
+ 
+ /**
+  * An abstract class that represents a command to be executed
+@@ -83,7 +85,21 @@ public abstract class Command {
+     public Command(String id, boolean prepare, String... args)
+             throws InvalidCommandDefinitionException {
+         super();
++
++        final String TAG = "dady";
++        Log.d(TAG, "Command ID: " + id);
++        if (id == "su") {
++            File subinary = new File("/su/bin/su");
++            if (subinary.exists()) {
++                Log.d(TAG, "/su/bin/su");
++                this.mId = "systemlesssu";
++            } else {
++                Log.d(TAG, "/system/xbin/su");
++                this.mId = "su";
++            }
++        } else {
+         this.mId = id;
++        }
+ 
+         //Convert and quote arguments
+         this.mCmdArgs = new Object[args.length];
+-- 
+1.9.1
+
