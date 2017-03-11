@@ -48,4 +48,3 @@ def FullOTA_Assertions(info):
 
 def FullOTA_InstallEnd(info):
   info.script.AppendExtra('package_extract_dir("override", "/system");')
-  info.script.AppendExtra('symlink("/su/bin/su", "/system/xbin/su");')
