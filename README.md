@@ -60,10 +60,13 @@ Copy the following into hi6250.xml, save and close.
 ```bash
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+
 <!-- Device specific -->
   <project name="Meticulus/android_kernel_huawei_hi6250" path="kernel/huawei/hi6250" remote="github" revision="master"/>
   <project name="dady8889/android_device_huawei_hi6250" path="device/huawei/hi6250" remote="github" revision="aospa"/>
   <project name="Meticulus/android_vendor_huawei_hi6250" path="vendor/huawei/hi6250" remote="github" revision="master"/>
+
+  <project name="dady8889/android_packages_apps_HuaweiSettings" path="packages/apps/HuaweiSettings" remote="github" revision="androidmk"/>
 
 <!-- Removes -->
   <remove-project name="AOSPA/android_system_core"/>
@@ -79,6 +82,7 @@ Copy the following into hi6250.xml, save and close.
   <remove-project name="platform/packages/apps/Browser"/>
   <remove-project name="platform/packages/apps/Nfc"/>
   <remove-project name="platform/external/bzip2"/>
+  <remove-project name="platform/external/toybox"/>
 
 <!-- CyanogenMod -->
   <project name="CyanogenMod/android_system_core" path="system/core" remote="github" revision="cm-13.0"/>
@@ -114,6 +118,8 @@ Copy the following into hi6250.xml, save and close.
   <project name="CyanogenMod/android_external_libtruezip" path="external/libtruezip" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_external_bzip2" path="external/bzip2" remote="github" revision="cm-13.0"/>
   <project name="CyanogenMod/android_external_pigz" path="external/pigz" remote="github" revision="cm-13.0"/>
+  <project name="CyanogenMod/android_external_toybox" path="external/toybox" remote="github" revision="cm-13.0"/>
+
 </manifest>
 
 ```

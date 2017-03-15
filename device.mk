@@ -199,5 +199,6 @@ PRODUCT_PACKAGES += \
     GoogleKeyboard \
     CMFileManager \
     bzip2 \
-    pigz
+    pigz \
+    HuaweiSettings
 
