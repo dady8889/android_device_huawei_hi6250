@@ -20,10 +20,9 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_RELATIVE_PATH := hw
-LOCAL_SHARED_LIBRARIES := liblog libEGL
+LOCAL_SHARED_LIBRARIES := libutils liblog libEGL
 LOCAL_SRC_FILES := hwcomposer.cpp
 LOCAL_MODULE := hwcomposer.hi6250
-LOCAL_CFLAGS:= -DLOG_TAG=\"hwcomposer\"
 LOCAL_MODULE_TAGS := optional
 
 ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
