@@ -174,7 +174,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Kernel
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := kernel/huawei/out/arch/arm64/boot/Image
+	LOCAL_KERNEL := kernel/huawei/out/arch/arm64/boot/Image.gz
 else
 	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
