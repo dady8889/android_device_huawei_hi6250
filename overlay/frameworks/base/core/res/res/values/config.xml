@@ -60,10 +60,18 @@
 
          Must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLevels">
-        <item>15</item>
+        <item>2</item>
+        <item>10</item>
+        <item>40</item>
         <item>100</item>
-        <item>3000</item>
-        <item>8000</item>
+        <item>200</item>
+        <item>400</item>
+        <item>500</item>
+        <item>800</item>
+        <item>1000</item>
+        <item>1600</item>
+        <item>2000</item>
+        <item>2950</item>
     </integer-array>
 
     <!-- Array of output values for LCD backlight corresponding to the LUX values
@@ -72,12 +80,24 @@
          The brightness values must be between 0 and 255 and be non-decreasing.
          This must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLcdBacklightValues">
-        <item>24</item>
-        <item>48</item>
-        <item>108</item>
-        <item>206</item>
-        <item>246</item>
+        <item>7</item>   <!-- 0-2 -->
+        <item>22</item>   <!-- 2-10 -->
+        <item>38</item>   <!-- 10-40 -->
+        <item>47</item>   <!-- 40-100 -->
+        <item>63</item>   <!-- 100-200 -->
+        <item>85</item>   <!-- 200-400 -->
+        <item>94</item>   <!-- 400-500 -->
+        <item>110</item>  <!-- 500-800 -->
+        <item>126</item>  <!-- 800-1000 -->
+        <item>162</item>  <!-- 1000-1600 -->
+        <item>196</item>  <!-- 1600-2000 -->
+        <item>222</item>  <!-- 2000-2950 -->
+        <item>255</item>  <!-- 2950+ (MAX 3000) -->
     </integer-array>
+
+    <!-- Minimum screen brightness setting allowed by the power manager.
+         The user is forbidden from setting the brightness below this level. -->
+    <integer name="config_screenBrightnessSettingMinimum">5</integer>
 
     <!-- Indicate whether the SD card is accessible without removing the battery. -->
     <bool name="config_batterySdCardAccessibility">true</bool>
