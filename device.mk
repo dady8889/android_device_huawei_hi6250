@@ -211,4 +211,5 @@ PRODUCT_PACKAGES += \
     CMFileManager \
     bzip2 \
     pigz \
-    HuaweiSettings
+    HuaweiSettings \
+    DeskClockNougat
