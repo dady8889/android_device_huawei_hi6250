@@ -1,26 +1,18 @@
-From 4a90a0ec8a5595dcd8ee459a5c58683b070ae74d Mon Sep 17 00:00:00 2001
+From 7683b9f201187eeacfe954b599129ab4b0a8c53b Mon Sep 17 00:00:00 2001
 From: Meticulus <theonejohnnyd@gmail.com>
-Date: Wed, 11 Jan 2017 11:02:50 -0600
-Subject: [PATCH] media: roll back some recent IOMX changes.
+Date: Wed, 1 Mar 2017 09:11:23 -0600
+Subject: [PATCH] 0001-media-roll-back-some-recent-IOMX-changes
 
--I have not quite figured out why this is happening but
-somewhere these changes cause a crash in our blobs
-during freeBuffer in IOMXNodeInstance.cpp. The
-input and output buffers tend to happen in sets of 4. Then
-we get a set of 5 and the very last one crashes. Its as if
-it was supposed to be a set of 4 and the last on is invalid
-for some reason. This will have to do for now...
-
-Change-Id: If54e8dadcee5e499ac383ff651dd0889ba2fc6a3
+Change-Id: I129d159c3a69a30ca556c15b0696cdd7d8f51747
 ---
  include/media/IOMX.h                           |   4 +-
- media/libmedia/IOMX.cpp                        |  66 ++++-----
+ media/libmedia/IOMX.cpp                        |  66 +++++-----
  media/libstagefright/OMXClient.cpp             |  13 +-
  media/libstagefright/include/OMX.h             |   4 +-
  media/libstagefright/include/OMXNodeInstance.h |   7 +-
  media/libstagefright/omx/OMX.cpp               |   8 +-
- media/libstagefright/omx/OMXNodeInstance.cpp   | 197 +++----------------------
- 7 files changed, 67 insertions(+), 232 deletions(-)
+ media/libstagefright/omx/OMXNodeInstance.cpp   | 173 ++++---------------------
+ 7 files changed, 73 insertions(+), 202 deletions(-)
 
 diff --git a/include/media/IOMX.h b/include/media/IOMX.h
 index 83a177a..27ad694 100644
@@ -293,7 +285,7 @@ index 153a979..68ff9b0 100644
  
  status_t OMX::freeBuffer(node_id node, OMX_U32 port_index, buffer_id buffer) {
 diff --git a/media/libstagefright/omx/OMXNodeInstance.cpp b/media/libstagefright/omx/OMXNodeInstance.cpp
-index c09064f..ccd241c 100644
+index 0c30e44..cf37c67 100644
 --- a/media/libstagefright/omx/OMXNodeInstance.cpp
 +++ b/media/libstagefright/omx/OMXNodeInstance.cpp
 @@ -101,34 +101,26 @@ static void InitOMXParams(T *params) {
@@ -348,18 +340,16 @@ index c09064f..ccd241c 100644
              return;
          }
  
-@@ -170,10 +162,6 @@ struct BufferMeta {
-         return buf;
+@@ -171,7 +163,7 @@ struct BufferMeta {
      }
  
--    bool copyToOmx() const {
--        return mCopyToOmx;
--    }
--
-     void setGraphicBuffer(const sp<GraphicBuffer> &graphicBuffer) {
-         mGraphicBuffer = graphicBuffer;
+     bool copyingOrSharingToOmx(const OMX_BUFFERHEADERTYPE *header) const {
+-        return mCopyToOmx
++        return mIsBackup
+                                     // sharing buffer with client
+                 || (mMem != NULL && mMem->pointer() == header->pBuffer);
      }
-@@ -182,18 +170,12 @@ struct BufferMeta {
+@@ -184,18 +176,12 @@ struct BufferMeta {
          return mPortIndex;
      }
  
@@ -379,7 +369,7 @@ index c09064f..ccd241c 100644
  
      BufferMeta(const BufferMeta &);
      BufferMeta &operator=(const BufferMeta &);
-@@ -219,8 +201,7 @@ OMXNodeInstance::OMXNodeInstance(
+@@ -221,8 +207,7 @@ OMXNodeInstance::OMXNodeInstance(
        mNodeID(0),
        mHandle(NULL),
        mObserver(observer),
@@ -389,7 +379,7 @@ index c09064f..ccd241c 100644
        mBufferIDCount(0)
  {
      mName = ADebug::GetDebugName(name);
-@@ -394,11 +375,7 @@ status_t OMXNodeInstance::freeNode(OMXMaster *master) {
+@@ -396,11 +381,7 @@ status_t OMXNodeInstance::freeNode(OMXMaster *master) {
  
  status_t OMXNodeInstance::sendCommand(
          OMX_COMMANDTYPE cmd, OMX_S32 param) {
@@ -402,7 +392,7 @@ index c09064f..ccd241c 100644
      if (bufferSource != NULL && cmd == OMX_CommandStateSet) {
          if (param == OMX_StateIdle) {
              // Initiating transition from Executing -> Idle
-@@ -431,57 +408,10 @@ status_t OMXNodeInstance::sendCommand(
+@@ -433,57 +414,10 @@ status_t OMXNodeInstance::sendCommand(
      return StatusFromOMXError(err);
  }
  
@@ -460,7 +450,7 @@ index c09064f..ccd241c 100644
      OMX_ERRORTYPE err = OMX_GetParameter(mHandle, index, params);
      OMX_INDEXEXTTYPE extIndex = (OMX_INDEXEXTTYPE)index;
      // some errors are expected for getParameter
-@@ -497,11 +427,6 @@ status_t OMXNodeInstance::setParameter(
+@@ -499,11 +433,6 @@ status_t OMXNodeInstance::setParameter(
      OMX_INDEXEXTTYPE extIndex = (OMX_INDEXEXTTYPE)index;
      CLOG_CONFIG(setParameter, "%s(%#x), %zu@%p)", asString(extIndex), index, size, params);
  
@@ -472,7 +462,7 @@ index c09064f..ccd241c 100644
      OMX_ERRORTYPE err = OMX_SetParameter(
              mHandle, index, const_cast<void *>(params));
      CLOG_IF_ERROR(setParameter, err, "%s(%#x)", asString(extIndex), index);
-@@ -512,11 +437,6 @@ status_t OMXNodeInstance::getConfig(
+@@ -514,11 +443,6 @@ status_t OMXNodeInstance::getConfig(
          OMX_INDEXTYPE index, void *params, size_t /* size */) {
      Mutex::Autolock autoLock(mLock);
  
@@ -484,7 +474,7 @@ index c09064f..ccd241c 100644
      OMX_ERRORTYPE err = OMX_GetConfig(mHandle, index, params);
      OMX_INDEXEXTTYPE extIndex = (OMX_INDEXEXTTYPE)index;
      // some errors are expected for getConfig
-@@ -532,11 +452,6 @@ status_t OMXNodeInstance::setConfig(
+@@ -534,11 +458,6 @@ status_t OMXNodeInstance::setConfig(
      OMX_INDEXEXTTYPE extIndex = (OMX_INDEXEXTTYPE)index;
      CLOG_CONFIG(setConfig, "%s(%#x), %zu@%p)", asString(extIndex), index, size, params);
  
@@ -496,7 +486,7 @@ index c09064f..ccd241c 100644
      OMX_ERRORTYPE err = OMX_SetConfig(
              mHandle, index, const_cast<void *>(params));
      CLOG_IF_ERROR(setConfig, err, "%s(%#x)", asString(extIndex), index);
-@@ -616,10 +531,6 @@ status_t OMXNodeInstance::storeMetaDataInBuffers(
+@@ -618,10 +537,6 @@ status_t OMXNodeInstance::storeMetaDataInBuffers(
  
  status_t OMXNodeInstance::storeMetaDataInBuffers_l(
          OMX_U32 portIndex, OMX_BOOL enable, MetadataBufferType *type) {
@@ -507,7 +497,7 @@ index c09064f..ccd241c 100644
      if (portIndex != kPortIndexInput && portIndex != kPortIndexOutput) {
          android_errorWriteLog(0x534e4554, "26324358");
          return BAD_VALUE;
-@@ -687,10 +598,6 @@ status_t OMXNodeInstance::prepareForAdaptivePlayback(
+@@ -689,10 +604,6 @@ status_t OMXNodeInstance::prepareForAdaptivePlayback(
          OMX_U32 portIndex, OMX_BOOL enable, OMX_U32 maxFrameWidth,
          OMX_U32 maxFrameHeight) {
      Mutex::Autolock autolock(mLock);
@@ -518,7 +508,7 @@ index c09064f..ccd241c 100644
      CLOG_CONFIG(prepareForAdaptivePlayback, "%s:%u en=%d max=%ux%u",
              portString(portIndex), portIndex, enable, maxFrameWidth, maxFrameHeight);
  
-@@ -721,10 +628,6 @@ status_t OMXNodeInstance::configureVideoTunnelMode(
+@@ -723,10 +634,6 @@ status_t OMXNodeInstance::configureVideoTunnelMode(
          OMX_U32 portIndex, OMX_BOOL tunneled, OMX_U32 audioHwSync,
          native_handle_t **sidebandHandle) {
      Mutex::Autolock autolock(mLock);
@@ -529,7 +519,7 @@ index c09064f..ccd241c 100644
      CLOG_CONFIG(configureVideoTunnelMode, "%s:%u tun=%d sync=%u",
              portString(portIndex), portIndex, tunneled, audioHwSync);
  
-@@ -765,48 +668,23 @@ status_t OMXNodeInstance::configureVideoTunnelMode(
+@@ -767,17 +674,21 @@ status_t OMXNodeInstance::configureVideoTunnelMode(
  
  status_t OMXNodeInstance::useBuffer(
          OMX_U32 portIndex, const sp<IMemory> &params,
@@ -541,49 +531,35 @@ index c09064f..ccd241c 100644
          return BAD_VALUE;
      }
  
--    // metadata buffers are not connected cross process
--    BufferMeta *buffer_meta;
--    bool isMeta = mMetadataType[portIndex] != kMetadataBufferTypeInvalid;
+     // metadata buffers are not connected cross process
+     BufferMeta *buffer_meta;
++#if 0
+     bool isMeta = mMetadataType[portIndex] != kMetadataBufferTypeInvalid;
 -    bool useBackup = crossProcess && isMeta; // use a backup buffer instead of the actual buffer
--    OMX_U8 *data = static_cast<OMX_U8 *>(params->pointer());
--    // allocate backup buffer
--    if (useBackup) {
--        data = new (std::nothrow) OMX_U8[allottedSize];
--        if (data == NULL) {
--            return NO_MEMORY;
--        }
--        memset(data, 0, allottedSize);
--
--        // if we are not connecting the buffers, the sizes must match
--        if (allottedSize != params->size()) {
--            CLOG_ERROR(useBuffer, BAD_VALUE, SIMPLE_BUFFER(portIndex, (size_t)allottedSize, data));
--            delete[] data;
--            return BAD_VALUE;
--        }
--
--        buffer_meta = new BufferMeta(
--                params, portIndex, false /* copyToOmx */, false /* copyFromOmx */, data);
--    } else {
--        buffer_meta = new BufferMeta(
++    bool useBackup = false; // use a backup buffer instead of the actual buffer
++#endif
+     OMX_U8 *data = static_cast<OMX_U8 *>(params->pointer());
++
++#if 0
+     // allocate backup buffer
+     if (useBackup) {
+         data = new (std::nothrow) OMX_U8[allottedSize];
+@@ -789,10 +700,12 @@ status_t OMXNodeInstance::useBuffer(
+         buffer_meta = new BufferMeta(
+                 params, portIndex, false /* copyToOmx */, false /* copyFromOmx */, data);
+     } else {
++#endif
+         buffer_meta = new BufferMeta(
 -                params, portIndex, false /* copyToOmx */, false /* copyFromOmx */, NULL);
--    }
-+    BufferMeta *buffer_meta = new BufferMeta(params, portIndex);
- 
++                params, portIndex,true);
++#if 0
+     }
+-
++#endif
      OMX_BUFFERHEADERTYPE *header;
  
      OMX_ERRORTYPE err = OMX_UseBuffer(
-             mHandle, &header, portIndex, buffer_meta,
--            allottedSize, data);
-+            allottedSize, static_cast<OMX_U8 *>(params->pointer()));
- 
-     if (err != OMX_ErrorNone) {
-         CLOG_ERROR(useBuffer, err, SIMPLE_BUFFER(
--                portIndex, (size_t)allottedSize, data));
-+                portIndex, (size_t)allottedSize, params->pointer()));
- 
-         delete buffer_meta;
-         buffer_meta = NULL;
-@@ -991,16 +869,7 @@ status_t OMXNodeInstance::createGraphicBufferSource(
+@@ -986,16 +899,7 @@ status_t OMXNodeInstance::createGraphicBufferSource(
          OMX_U32 portIndex, sp<IGraphicBufferConsumer> bufferConsumer, MetadataBufferType *type) {
      status_t err;
  
@@ -601,7 +577,7 @@ index c09064f..ccd241c 100644
      if (surfaceCheck != NULL) {
          if (portIndex < NELEM(mMetadataType) && type != NULL) {
              *type = mMetadataType[portIndex];
-@@ -1156,21 +1025,13 @@ status_t OMXNodeInstance::allocateBuffer(
+@@ -1151,21 +1055,13 @@ status_t OMXNodeInstance::allocateBuffer(
  
  status_t OMXNodeInstance::allocateBufferWithBackup(
          OMX_U32 portIndex, const sp<IMemory> &params,
@@ -626,7 +602,7 @@ index c09064f..ccd241c 100644
  
      OMX_BUFFERHEADERTYPE *header;
  
-@@ -1266,12 +1127,6 @@ status_t OMXNodeInstance::emptyBuffer(
+@@ -1261,12 +1157,6 @@ status_t OMXNodeInstance::emptyBuffer(
          OMX_U32 flags, OMX_TICKS timestamp, int fenceFd) {
      Mutex::Autolock autoLock(mLock);
  
@@ -639,17 +615,7 @@ index c09064f..ccd241c 100644
      OMX_BUFFERHEADERTYPE *header = findBufferHeader(buffer, kPortIndexInput);
      if (header == NULL) {
          return BAD_VALUE;
-@@ -1283,8 +1138,7 @@ status_t OMXNodeInstance::emptyBuffer(
- 
-     // convert incoming ANW meta buffers if component is configured for gralloc metadata mode
-     // ignore rangeOffset in this case
--    if (buffer_meta->copyToOmx()
--            && mMetadataType[kPortIndexInput] == kMetadataBufferTypeGrallocSource
-+    if (mMetadataType[kPortIndexInput] == kMetadataBufferTypeGrallocSource
-             && backup->capacity() >= sizeof(VideoNativeMetadata)
-             && codec->capacity() >= sizeof(VideoGrallocMetadata)
-             && ((VideoNativeMetadata *)backup->base())->eType
-@@ -1694,13 +1548,6 @@ void OMXNodeInstance::onEvent(
+@@ -1689,13 +1579,6 @@ void OMXNodeInstance::onEvent(
              && arg2 == OMX_StateExecuting) {
          bufferSource->omxExecuting();
      }
@@ -665,4 +631,3 @@ index c09064f..ccd241c 100644
  // static
 -- 
 1.9.1
-
