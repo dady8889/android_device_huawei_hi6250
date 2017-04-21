@@ -24,7 +24,7 @@ You'll need Linux to be able to build AOSPA. You have three choices here; you ca
 2. Dual boot Linux and Windows.
 3. Use virtual machine software ( virtual box, vmware ) to run linux.
 
-NOTE: I recommend you use Ubuntu 14.04 LTS to build. That's what I use. I had problems with Debian so really use it.
+NOTE: I recommend you use Ubuntu 14.04 LTS to build. That's what I use. I had problems with Debian so rarely use it.
 
 Now read this: http://source.android.com/source/initializing.html
 
