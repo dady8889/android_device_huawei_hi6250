@@ -1,0 +1,25 @@
+# Android fstab file.
+#<src>                                                  <mnt_point>         <type>    <mnt_flags and options>                       <fs_mgr_flags>
+# The filesystem that contains the filesystem checker binary (typically /system) cannot
+# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+
+# Main
+/dev/block/platform/hi_mci.0/by-name/boot      		/boot        	emmc      defaults   defaults
+/dev/block/platform/hi_mci.0/by-name/recovery      	/recovery       emmc      defaults   defaults
+/dev/block/platform/hi_mci.0/by-name/system    		/system    	ext4      ro,barrier=1    wait,verify
+/dev/block/platform/hi_mci.0/by-name/userdata         	/data           ext4      rw,nosuid,nodev,noatime,user_xattr,acl,barrier=1,data=ordered,noauto_da_alloc,mblk_io_submit,discard wait,check,encryptable=footer,length=-16384
+
+# Huawei
+/dev/block/platform/hi_mci.0/by-name/cust    		/cust    	ext4      ro,barrier=1    wait,verify
+/dev/block/platform/hi_mci.0/by-name/cache         	/cache          ext4      rw,nosuid,nodev,noatime,data=ordered wait,check
+/dev/block/platform/hi_mci.0/by-name/splash2         	/splash2        ext4      rw,nosuid,nodev,noatime,data=ordered wait,check
+/dev/block/platform/hi_mci.0/by-name/secure_storage     /sec_storage    ext4      rw,nosuid,nodev,noatime,discard,auto_da_alloc,mblk_io_submit,data=journal wait,check
+
+# Modem
+/dev/block/platform/hi_mci.0/by-name/modemnvm_img       /mnvm2:0        ext4      rw,nosuid,nodev,noatime,noauto_da_alloc,data=ordered wait,verify
+/dev/block/mmcblk0p18         				/modem_log      ext4      rw,nosuid,nodev,noatime,noauto_da_alloc,data=ordered wait,verify
+
+# External Storage
+/devices/hi_mci.1/mmc_host/mmc1/*                       auto            auto      defaults                                      voldmanaged=sdcard:auto,noemulatedsd,encryptable=userdata
+/devices/hisi-usb-otg/usb1/*                            auto            auto      defaults                                      voldmanaged=usbotg:auto
+

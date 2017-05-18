@@ -1,0 +1,82 @@
+#!/bin/bash
+# Copyright (C) 2017 dady8889@github
+# Create a git patch and save it with selected name to desktop
+
+function invalidargs() {
+    echo "Try 'git-makepatch --help' for more information."
+}
+
+function helpcommand() {
+    echo "Usage: git-makepatch -n [NUMBER] [FILENAME]"
+    echo "Utility for generating git patch files"
+    echo ""
+    echo "This utility saves the patch as FILENAME.patch on your desktop"
+    echo ""
+    echo "Optional arguments:"
+    echo "-n, --number   specifies number of commits to include in the patch"
+}
+
+function createpatch() {
+    echo -e "${BLUE}Creating patch...${YELLOW}"
+
+    output=$(git format-patch HEAD~$NUMBER --stdout 2>&1 > $FULLPATH)
+    CURRENTDIR=$PWD
+    MAKELOC=$(git rev-parse --show-toplevel)
+    cd $MAKELOC/../../
+    PROJECTDIR=$PWD
+    cd $CURRENTDIR
+
+    LENGTH=${#PROJECTDIR}
+    LENGTH=$(($LENGTH+2))
+    TARGET=$(cat <<< $PWD | cut -c $LENGTH-)
+    HEADER="%TARGET=\"$TARGET\""
+    echo -e " -> Target repository: $TARGET${NC}"
+    if [[ -n $NUMBER ]] ; then
+        echo -e "${YELLOW} -> Including last $NUMBER commits${NC}"
+    fi
+    sed -i "1i $HEADER" $FULLPATH
+
+    if [[ $output ]] ; then
+     echo -e "${RED}$output${NC}"
+     filetext=$(<$FULLPATH)
+     if [ -z "$filetext" -o "$filetext" == " " -o "$filetext" == "\n" ] ; then
+      rm $FULLPATH
+     fi
+    else
+        echo -e "${GREEN}Patch saved as $FULLPATH${NC}"
+    fi
+}
+
+NC='\033[0m' # No Color
+RED='\033[0;91m'
+BLUE='\033[0;94m'
+YELLOW='\033[0;93m'
+GREEN='\033[0;92m'
+
+while [[ $# -gt 0 ]]
+do
+    arg="$1"
+    case $arg in
+        -n|--number)
+        NUMBER=$2
+        shift
+        ;;
+        --help)
+        ACTION=true
+        helpcommand
+        ;;
+        *)
+        HOMEDIR="${HOME}"
+        FILENAME="$arg"
+        FULLPATH="$HOMEDIR/Desktop/$FILENAME.patch"
+        createpatch
+        exit 1
+        ;;
+    esac
+    shift
+done
+
+if [[ -z $ACTION ]]; then
+    invalidargs
+    exit 1
+fi

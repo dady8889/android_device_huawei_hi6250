@@ -1,0 +1,7 @@
+on fs
+	mkdir /modem_fw
+	wait /dev/block/platform/hi_mci.0/by-name/modem_fw
+	mount ext4 /dev/block/platform/hi_mci.0/by-name/modem_fw /modem_fw ro
+	chown radio radio sys/devices/platform/balong_power/state
+
+        mkdir /modem_log

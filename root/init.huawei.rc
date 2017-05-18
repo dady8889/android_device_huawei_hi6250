@@ -1,0 +1,69 @@
+# Meticulus:
+# These are taken from a diff of the stock init.rc and CM's init.rc
+#
+
+on early-init
+    setprop persist.service.hdb.enable true
+
+on init
+    write /dev/cpuctl/ionice.prio 16388
+
+    mkdir /dev/cpuctl/top_visible
+    chown system system /dev/cpuctl/top_visible/tasks
+    chmod 0666 /dev/cpuctl/top_visible/tasks
+    write /dev/cpuctl/top_visible/cpu.shares 10240
+    write /dev/cpuctl/top_visible/cpu.rt_runtime_us 900000
+    write /dev/cpuctl/top_visible/cpu.rt_period_us 1000000
+    write /dev/cpuctl/top_visible/ionice.prio 16384
+    mkdir /dev/cpuset/background
+
+    chown system system /dev/flp
+    chmod 0660 /dev/flp
+
+
+on late-init
+    trigger cust_parse_action
+    trigger post-fs-data
+    trigger load_all_props_action
+
+on early-fs
+
+on fs
+
+on post-fs
+
+on post-fs-data
+    mkdir /data/misc/radvd 0770 root root
+    mkdir /data/misc/dhcp6s 0770 root root
+
+on early-boot
+
+on boot
+    chown system system /sys/bus/platform/drivers/huawei,camcfgdev/guard_thermal
+    chmod  0660  /sys/devices/platform/fingerprint/read_image_flag
+    chown  system  system  /sys/devices/platform/fingerprint/read_image_flag
+
+    setprop ro.config.compatibility_enable 1
+    setprop hifi.watchdog.come false 
+
+on property:hifi.watchdog.come=true
+    restart media
+    setprop hifi.watchdog.come false
+
+service fingerprintd /system/bin/fingerprintd
+    class late_start
+    user system
+    group input
+
+
+service_redefine zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server --socket-name=zygote
+    class main
+    socket zygote stream 660 root system
+    onrestart restart media
+    onrestart restart netd
+
+service_redefine zygote_secondary /system/bin/app_process32 -Xzygote /system/bin --zygote --socket-name=zygote_secondary
+    class main
+    socket zygote_secondary stream 660 root system
+    onrestart restart zygote 
+

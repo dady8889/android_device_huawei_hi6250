@@ -1,0 +1,9 @@
+# init for Meticulus Development's Extras
+
+on fs
+    chown system system /sys/devices/ff100000.hisi_usb/plugusb
+    chmod 0664 /sys/devices/ff100000.hisi_usb/plugusb
+
+on property:sys.restart_perfhub=true
+    restart perfhub
+    setprop sys.restart_perfhub false

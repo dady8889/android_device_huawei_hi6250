@@ -1,0 +1,71 @@
+
+#
+# From Stock
+#
+ro.config.mmu_en=1
+dalvik.vm.heapsize=512m
+ro.opengles.version=196609
+ro.sf.lcd_density=480
+hw.lcd.density=480
+persist.fw.force_adoptable=true
+dalvik.vm.checkjni=false
+ro.bt.bdaddr_path=/data/misc/bluedroid/macbt
+ro.config.hw_navigationbar=true
+ro.hwui.texture_cache_size=48
+ro.hwui.texture_cache_flushrate=0.4
+ro.hwui.layer_cache_size=32
+ro.hwui.path_cache_size=16
+ro.hwui.shape_cache_size=2
+ro.hwui.drop_shadow_cache_size=6
+ro.hwui.gradient_cache_size=1
+ro.hwui.text_large_cache_height=1024
+ro.hwui.text_large_cache_width=2048
+ro.hwui.text_small_cache_height=1024
+ro.hwui.text_small_cache_width=1024
+ro.hwui.r_buffer_cache_size=8
+ro.hwui.fbo_cache_size=0
+debug.hwui.render_dirty_regions=false
+debug.hwui.enable_bp_cache=false
+ro.config.hw_music_lp=true
+ro.tui.service=true
+persist.media.offload.enable=true
+ro.config.hw_sensorhub=true
+ro.hwcamera.sm.video_size=640x480
+build.hisi_perf_opt=true
+ro.config.hw_perfhub=true
+ro.product.platform.pseudonym=1ARB9CV
+persist.sys.jankenable=true
+#
+# RIL
+#
+ro.config.default_commril_mode=ULG_MODE
+rild.rild1_ready_to_start=false
+ro.telephony.default_network=9
+rild.libargs=-m modem0
+rild.libpath1=/system/lib64/libbalong-ril-1.so
+ro.config.client_number=2
+persist.radio.modem.cap=09A9C
+ro.config.hw_dsda=false
+rild.libargs1=-m modem1
+ro.config.is_start_commril=true
+ro.config.dsds_mode=umts_gsm
+persist.dsds.enabled=true
+rild.libpath=/system/lib64/libbalong-ril.so
+ro.config.modem_number=2
+audioril.lib=libhuawei-audio-ril.so
+persist.radio.multisim.config=single
+#
+# Graphics
+#
+ro.bq.gpu_to_cpu_unsupported=1
+#
+# Media
+#
+persist.sys.sr_google_avc_enc=1
+persist.sys.google_avc_enc=0
+persist.camera.cap_sup_back=3
+persist.camera.cap_sup_front=3
+#
+# TWRP
+#
+ro.config.twrp=cm_hi6250

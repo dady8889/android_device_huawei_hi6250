@@ -1,0 +1,22 @@
+# Offline Charging.
+#
+on early-init
+    start ueventd
+
+on charger
+    write /sys/devices/virtual/graphics/fb0/mode "U:1080x1920p-0"
+
+    wait /dev/block/platform/hi_mci.0/by-name/system
+    wait /dev/block/platform/hi_mci.0/by-name/cache
+    mount_all /fstab.hi6250
+    start charger
+
+service charger /sbin/healthd -c
+   class default
+   user root
+   group root
+
+service ueventd /sbin/ueventd
+    class core
+    critical
+    seclabel u:r:ueventd:s0
