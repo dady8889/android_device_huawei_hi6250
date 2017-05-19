@@ -55,15 +55,3 @@ service fingerprintd /system/bin/fingerprintd
     user system
     group input
 
-
-service_redefine zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server --socket-name=zygote
-    class main
-    socket zygote stream 660 root system
-    onrestart restart media
-    onrestart restart netd
-
-service_redefine zygote_secondary /system/bin/app_process32 -Xzygote /system/bin --zygote --socket-name=zygote_secondary
-    class main
-    socket zygote_secondary stream 660 root system
-    onrestart restart zygote 
-

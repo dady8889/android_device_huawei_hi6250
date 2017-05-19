@@ -4,17 +4,20 @@ on early-init
     start ueventd
 
 on charger
+    class_stop core
+    class_stop main 
+    class_stop late_start
     write /sys/devices/virtual/graphics/fb0/mode "U:1080x1920p-0"
-
+ 
     wait /dev/block/platform/hi_mci.0/by-name/system
     wait /dev/block/platform/hi_mci.0/by-name/cache
-    mount_all /fstab.hi6250
     start charger
 
 service charger /sbin/healthd -c
    class default
    user root
-   group root
+   group root 
+   seclabel u:r:healthd:s0
 
 service ueventd /sbin/ueventd
     class core

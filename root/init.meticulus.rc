@@ -1,4 +1,5 @@
 # init for Meticulus Development's Extras
+import /init.bootdebug.rc
 
 on fs
     chown system system /sys/devices/ff100000.hisi_usb/plugusb

@@ -95,7 +95,7 @@ on boot
     chown radio radio /proc/modemstatus
 
 
-service_redefine ril-daemon /system/bin/rild
+service ril-daemon /system/bin/rild
     class late_start
     socket rild stream 660 root radio
     socket rild-ims stream 660 root radio
@@ -107,7 +107,7 @@ service_redefine ril-daemon /system/bin/rild
     socket sap_uim_socket1 stream 660 bluetooth bluetooth
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio log qcom_diag
+    group radio cache inet misc audio log
     disabled
 
 service ril-daemon1 /system/bin/rild -c 1

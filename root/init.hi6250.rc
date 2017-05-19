@@ -17,9 +17,9 @@ import /init.hi6250.usb.rc
 import /init.meticulus.rc
 import /lpm.rc
 
+
 on early-boot
 
-    verity_update_state
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
 
@@ -29,8 +29,7 @@ on early-boot
 on early-init
 
 on init
-    verity_load_state
-     
+ 
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
