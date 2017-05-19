@@ -1,0 +1,78 @@
+%TARGET="build/make"
+From 6becf28dba8e07d460b2baeb349aeb0eba4353ba Mon Sep 17 00:00:00 2001
+From: Daniel Mucka <dady8889@gmail.com>
+Date: Fri, 19 May 2017 15:25:12 +0200
+Subject: [PATCH] Build changes
+
+Disabled XML syntax check
+Output zip contains build date
+Added support for custom update-binary
+Disabled adding of recovery dat file
+
+Change-Id: I61bc332c11ded829432fe1f143dbc826ec04ec43
+---
+ core/Makefile       | 14 ++++++++++----
+ core/definitions.mk |  2 +-
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/core/Makefile b/core/Makefile
+index 0b6391554..5c19e258c 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1031,8 +1031,8 @@ endif
+ 
+ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS_BOOT)))
+ # Named '.dat' so we don't attempt to use imgdiff for patching it.
+-RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
+-else
++#RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
++#else
+ RECOVERY_RESOURCE_ZIP :=
+ endif
+ 
+@@ -2327,10 +2327,16 @@ name := $(TARGET_PRODUCT)
+ ifeq ($(TARGET_BUILD_TYPE),debug)
+   name := $(name)_debug
+ endif
+-name := $(name)-ota-$(FILE_NAME_TAG)
++name := $(name)-$(TARGET_PLATFORM_VERSION)-$(shell $(DATE) +%d%m%Y)
+ 
+ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+ 
++ifeq ($(TARGET_OTA_UPDATE_BINARY),)
++  INTERNAL_TARGET_OTA_UPDATE_BINARY :=
++else
++  INTERNAL_TARGET_OTA_UPDATE_BINARY := "$(shell pwd)/$(TARGET_OTA_UPDATE_BINARY)"
++endif
++
+ $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
+ 
+ ifeq ($(AB_OTA_UPDATER),true)
+@@ -2342,10 +2348,10 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
+ 	@echo "Package OTA: $@"
+ 	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
+ 	   ./build/tools/releasetools/ota_from_target_files -v \
+-	   --block \
+ 	   --extracted_input_target_files $(patsubst %.zip,%,$(BUILT_TARGET_FILES_PACKAGE)) \
+ 	   -p $(HOST_OUT) \
+ 	   -k $(KEY_CERT_PAIR) \
++	   -b $(INTERNAL_TARGET_OTA_UPDATE_BINARY) \
+ 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
+ 	   $(BUILT_TARGET_FILES_PACKAGE) $@
+ 
+diff --git a/core/definitions.mk b/core/definitions.mk
+index 804f2c37c..c0887c194 100644
+--- a/core/definitions.mk
++++ b/core/definitions.mk
+@@ -2779,7 +2779,7 @@ endef
+ define copy-xml-file-checked
+ $(2): $(1)
+ 	@echo "Copy xml: $$@"
+-	$(hide) xmllint $$< >/dev/null  # Don't print the xml file to stdout.
++	#$(hide) xmllint $$< >/dev/null  # Don't print the xml file to stdout.
+ 	$$(copy-file-to-target)
+ endef
+ 
+-- 
+2.11.0
+

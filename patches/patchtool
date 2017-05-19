@@ -126,6 +126,16 @@ function patchcommand() {
 			echo -e "\n -> ${RESULT}"
 		fi
 
+		if [[ $(echo $RESULT | grep -c "Reversed (or previously applied) patch detected") -gt 0 ]] ; then
+			echo -e  " -> ${BI_MAGENTA}Already patched. Skipping...${NC}"
+			ERRORNUM=$(($ERRORNUM+1))
+			continue
+		fi
+		if [[ $(echo $RESULT | grep -c "can't find") -gt 0 ]] ; then
+			echo -e " -> ${RED}Can't find specific file. Skipping...${NC}"
+			ERRORNUM=$(($ERRORNUM+1))
+			continue
+		fi
 		if [[ $(echo $RESULT | grep -c FAILED) -gt 0 ]] ; then
 			echo -e " -> ${RED}Patch failed. Skipping...${NC}"
 			ERRORNUM=$(($ERRORNUM+1))
@@ -136,17 +146,13 @@ function patchcommand() {
 			ERRORNUM=$(($ERRORNUM+1))
 			continue
 		fi
-		if [[ $(echo $RESULT | grep -c "Skip this patch") -gt 0 ]] ; then
-			echo -e  " -> ${RED}Already patched. Skipping...${NC}"
-			ERRORNUM=$(($ERRORNUM+1))
-			continue
-		fi
-		if [[ $(echo $RESULT | grep -c "garbage") -gt 0 ]] ; then
+		if [[ $(echo $RESULT | grep -c "garbage\|malformed") -gt 0 ]] ; then
 			echo -e  " -> ${RED}Invalid syntax. Skipping...${NC}"
 			ERRORNUM=$(($ERRORNUM+1))
 			continue
 		fi
 
+		echo -e  " -> ${GREEN}Done${NC}"
 		OKNUM=$(($OKNUM+1))
 	done
 	if [[ $LINENUM == 0 ]] ; then
@@ -196,6 +202,7 @@ function applycommand() {
 			continue
 		fi
 
+		echo -e  " -> ${GREEN}Done${NC}"
 		OKNUM=$(($OKNUM+1))
 	done
 	if [[ $LINENUM == 0 ]] ; then
@@ -221,6 +228,7 @@ RED='\033[0;91m'
 BLUE='\033[0;94m'
 YELLOW='\033[0;93m'
 GREEN='\033[0;92m'
+BI_MAGENTA='\033[1;95m'
 
 while [[ $# -gt 0 ]]
 do

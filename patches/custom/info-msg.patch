@@ -1,0 +1,98 @@
+%TARGET="build/make"
+From 605d686bb92ffd584e519d1397e0bab8f58a65fe Mon Sep 17 00:00:00 2001
+From: Daniel Mucka <dady8889@gmail.com>
+Date: Fri, 19 May 2017 16:08:21 +0200
+Subject: [PATCH] Added informational messages
+
+Change-Id: I632d12d4527a43dba9559f6753d67c6945338ddc
+---
+ tools/releasetools/ota_from_target_files.py | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 761acb7ed..12e12417a 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -642,6 +642,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
+   # in the target build.
+   script = edify_generator.EdifyGenerator(3, OPTIONS.info_dict)
+ 
++  script.Print("INFO: You are flashing a Full OTA")
++
+   recovery_mount_options = OPTIONS.info_dict.get("recovery_mount_options")
+   oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
+   oem_dicts = None
+@@ -728,6 +730,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   # Dump fingerprints
+   script.Print("Target: %s" % target_fp)
+ 
++  script.Print("- Device OK")
++
+   device_specific.FullOTA_InstallBegin()
+ 
+   system_progress = 0.75
+@@ -757,12 +761,16 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+     system_diff = common.BlockDifference("system", system_tgt, src=None)
+     system_diff.WriteScript(script, output_zip)
+   else:
++    script.Print("- Formatting /system")
+     script.FormatPartition("/system")
++    script.Print("- Remounting /system")
+     script.Mount("/system", recovery_mount_options)
+     #if not has_recovery_patch:
+     #  script.UnpackPackageDir("recovery", "/system")
++    script.Print("- Unpacking /system")
+     script.UnpackPackageDir("system", "/system")
+ 
++    script.Print("- Symlinking")
+     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
+     script.MakeSymlinks(symlinks)
+ 
+@@ -781,6 +789,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+     system_items.Get("system").SetPermissions(script)
+ 
+   if HasVendorPartition(input_zip):
++    script.Print("- Unpacking /vendor")
+     vendor_items = ItemSet("vendor", "META/vendor_filesystem_config.txt")
+     script.ShowProgress(0.1, 0)
+ 
+@@ -800,6 +809,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+       vendor_items.GetMetadata(input_zip)
+       vendor_items.Get("vendor").SetPermissions(script)
+ 
++  script.Print("- Flashing boot image")
+   common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
+   common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
+ 
+@@ -812,9 +822,11 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   if OPTIONS.extra_script is not None:
+     script.AppendExtra(OPTIONS.extra_script)
+ 
++  script.Print("- Unmounting")
+   script.UnmountAll()
+ 
+   if OPTIONS.wipe_user_data:
++    script.Print("- Wiping user data")
+     script.ShowProgress(0.1, 10)
+     script.FormatPartition("/data")
+ 
+@@ -835,6 +847,7 @@ endif;
+ endif;
+ """ % bcb_dev)
+ 
++  script.Print("- Done")
+   script.SetProgress(1)
+   script.AddToZip(input_zip, output_zip, input_path=OPTIONS.updater_binary)
+   metadata["ota-required-cache"] = str(script.required_cache)
+@@ -1721,6 +1734,8 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
+   target_has_recovery_patch = HasRecoveryPatch(target_zip)
+   source_has_recovery_patch = HasRecoveryPatch(source_zip)
+ 
++  script.Print("INFO: You are flashing an Incremental OTA")
++
+   if (OPTIONS.block_based and
+       target_has_recovery_patch and
+       source_has_recovery_patch):
+-- 
+2.11.0
+

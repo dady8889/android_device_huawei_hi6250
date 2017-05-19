@@ -1,0 +1,73 @@
+%TARGET="system/core"
+From 8cc098b8871224f85f38cf23a38efd8e1dbda7c4 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sun, 30 Apr 2017 10:44:21 -0500
+Subject: [PATCH] 0002-init-vendor-stubs-boot-critical
+
+---
+ init/property_service.cpp |  5 ++++-
+ init/vendor_init.cpp      | 12 +++++++++++-
+ init/vendor_init.h        |  4 +++-
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/init/property_service.cpp b/init/property_service.cpp
+index 1242a21fb..593c97690 100644
+--- a/init/property_service.cpp
++++ b/init/property_service.cpp
+@@ -595,6 +595,7 @@ void property_load_boot_defaults() {
+     load_properties_from_file("/default.prop", NULL);
+     load_properties_from_file("/odm/default.prop", NULL);
+     load_properties_from_file("/vendor/default.prop", NULL);
++    vendor_load_default_properties();
+ 
+     update_sys_usb_config();
+ }
+@@ -654,8 +655,9 @@ void load_system_props() {
+     load_properties_from_file("/vendor/build.prop", NULL);
+     load_properties_from_file("/factory/factory.prop", "ro.*");
+     /* update with vendor-specific property runtime overrides */
+-    vendor_load_properties();
++    vendor_load_persist_properties();
+     load_recovery_id_prop();
++    vendor_load_system_properties();
+ }
+ 
+
+diff --git a/init/vendor_init.cpp b/init/vendor_init.cpp
+index d3fd5ff..a30c2f1 100644
+--- a/init/vendor_init.cpp
++++ b/init/vendor_init.cpp
+@@ -32,6 +32,16 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ /* init vendor override stubs */
+ 
+ __attribute__ ((weak))
+-void vendor_load_properties()
++void vendor_load_default_properties()
++{
++}
++
++__attribute__ ((weak))
++void vendor_load_system_properties()
++{
++}
++
++__attribute__ ((weak))
++void vendor_load_persist_properties()
+ {
+ }
+diff --git a/init/vendor_init.h b/init/vendor_init.h
+index 9afb449..f86c65f 100644
+--- a/init/vendor_init.h
++++ b/init/vendor_init.h
+@@ -29,5 +29,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ #ifndef __INIT_VENDOR__H__
+ #define __INIT_VENDOR__H__
+-extern void vendor_load_properties(void);
++extern void vendor_load_default_properties(void);
++extern void vendor_load_system_properties(void);
++extern void vendor_load_persist_properties(void);
+ #endif /* __INIT_VENDOR__H__ */
+-- 
+1.9.1
+

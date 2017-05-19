@@ -1,0 +1,27 @@
+%TARGET="build/make"
+From 653bd4b8dd6636d90676714d3b8712ebc6d6bf90 Mon Sep 17 00:00:00 2001
+From: Daniel Mucka <dady8889@gmail.com>
+Date: Fri, 19 May 2017 15:47:40 +0200
+Subject: [PATCH] Disabled MakeRecoveryPatch function
+
+Change-Id: Ib8b1a3497dbfd92f336035b45cf907fc52a3d4d0
+---
+ tools/releasetools/common.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 925a5231f..e1118ebfd 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1601,7 +1601,7 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+   corresponding images.  info should be the dictionary returned by
+   common.LoadInfoDict() on the input target_files.
+   """
+-
++  return
+   if info_dict is None:
+     info_dict = OPTIONS.info_dict
+ 
+-- 
+2.11.0
+

@@ -1,0 +1,27 @@
+%TARGET="build/make"
+From 1b2e409e46f9147f99d32e68b6c40e7172272bf7 Mon Sep 17 00:00:00 2001
+From: Daniel Mucka <dady8889@gmail.com>
+Date: Fri, 19 May 2017 15:50:35 +0200
+Subject: [PATCH] Removed previous build check
+
+Change-Id: Ie59a94130f3323361658c752e801e2554a6e8082
+---
+ tools/releasetools/ota_from_target_files.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 20904001d..4e5dd7590 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -407,7 +407,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
+ 
+   ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
+   ts_text = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+-  script.AssertOlderBuild(ts, ts_text)
++  #script.AssertOlderBuild(ts, ts_text)
+ 
+   AppendAssertions(script, OPTIONS.info_dict, oem_dicts)
+   device_specific.FullOTA_Assertions()
+-- 
+2.11.0
+
