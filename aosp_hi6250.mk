@@ -26,5 +26,4 @@ PRODUCT_MANUFACTURER := HUAWEI
 PRODUCT_RESTRICT_VENDOR_FILES := false
 
 $(call inherit-product, device/huawei/hi6250/device.mk)
-$(call inherit-product-if-exists, vendor/huawei/hi6250/device-vendor.mk)
-#$(call inherit-product-if-exists, vendor/huawei/hi6250/vendor-additions.mk)
+$(call inherit-product-if-exists, vendor/huawei/hi6250/vendor.mk)

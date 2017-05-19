@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+# Enable ADB early
+BOOTDEBUG := true
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
@@ -63,6 +66,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/root/sbin/volisnotd:root/sbin/volisnotd \
     $(LOCAL_PATH)/root/sbin/ntfs-3gd:root/sbin/ntfs-3gd \
     $(LOCAL_PATH)/root/sbin/logctl_service:root/sbin/logctl_service
+
+ifneq ($(BOOTDEBUG),)
+PRODUCT_COPY_FILES += \
+	$(LOCAL_PATH)/root/init.bootdebug.rc:root/init.bootdebug.rc
+endif
 
 # Recovery ramdisk
 PRODUCT_COPY_FILES += \
