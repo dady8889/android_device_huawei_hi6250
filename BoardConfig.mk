@@ -22,7 +22,7 @@ TARGET_BOOTLOADER_BOARD_NAME := hisi
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
-# Platform 
+# Platform
 TARGET_BOARD_PLATFORM := hi6250
 TARGET_CPU_SMP := true
 TARGET_USES_64_BIT_BINDER := true
@@ -38,7 +38,7 @@ TARGET_CPU_VARIANT := cortex-a53
 TARGET_CPU_ABI := arm64-v8a
 TARGET_BOARD_GPU := mali-t830mp2
 
-#2nd Arch
+# 2nd Arch
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_VARIANT := cortex-a15
@@ -53,15 +53,10 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 11231236096
 BOARD_FLASH_BLOCK_SIZE := 4096
 
 # Kernel
-TARGET_KERNEL_CONFIG := merge_hi6250_defconfig
-TARGET_KERNEL_SOURCE := kernel/huawei/hi6250
 BOARD_KERNEL_CMDLINE := loglevel=4 coherent_pool=512K mmcparts=mmcblk0:p1(vrl),p2(vrl_backup),p6(modemnvm_factory),p10(modemnvm_backup),p11(modemnvm_img),p12(modemnvm_system),p18(modem_om),p21(modemnvm_update),p31(modem_fw) no_console_suspend androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00478000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_MKBOOTIMG_ARGS := --kernel_offset 0x00008000 --ramdisk_offset 0x07b88000 --tags_offset 0x07588000
-HISI_TARGET_PRODUCT := hi6250
-TARGET_ARM_TYPE := arm64
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS := device/huawei/hi6250
@@ -71,7 +66,6 @@ TARGET_INIT_VENDOR_LIB := libhuawei_init
 
 # Linker
 LD_SHIM_LIBS := '/system/lib64/libcutils.so|libshim.so:/system/lib/libcutils.so|libshim.so:/system/lib64/liblog.so|libshim.so:/system/lib/liblog.so|libshim.so:/system/lib64/libexif.so|libshim.so:/system/lib/libexif.so|libshim.so:/system/lib64/libaudio_route.so|libshim.so:/system/lib/libaudio_route.so|libshim.so:/system/lib/hw/audio.primary.hisi.so|libshim_icu.so:/system/vendor/lib64/libril.so|libshim_icu.so:/system/lib/hw/camera.hi6250.so|libshim_camera.so:/system/bin/wpa_supplicant_hisi|libshim_libssl.so:/system/bin/wpa_supplicant_hisi|libshim_libssl2.so:/system/bin/wpa_supplicant_hisi|libshim_libcrypto.so:/system/bin/wpa_supplicant_hisi|libshim.so:/system/lib64/hwcam/hwcam.hi6250.m.VENUS.so|libshim_camera.so:/system/lib64/hwcam/hwcam.hi6250.m.VENUS.so|libshim_libui.so:/system/lib64/hwcam/hwcam.hi6250.m.NEMO.so|libshim_camera.so:/system/lib64/hwcam/hwcam.hi6250.m.NEMO.so|libshim_libui.so:/system/lib64/libcamera_algo.so|libshim_algo.so:/system/lib64/libcamera_algo.so|libshim_libui.so:/system/lib64/hw/copybit.real.so|libshim_libui.so:/system/lib64/hw/copybit.real.so|libshim_libgui.so:/system/bin/hostapd|libshim_libssl.so:/system/bin/hostapd|libshim_libssl2.so:/system/bin/hostapd|libshim_libcrypto.so:/system/bin/hostapd|libshim.so:/system/vendor/lib/libwvm.so|libshim.so:/system/bin/rild|libshim_icu.so'
-
 
 # RIL
 BOARD_PROVIDES_LIBRIL := true
@@ -88,16 +82,16 @@ BOARD_NO_SUPPORT_SWAP_BUFFERS_WITH_DAMAGE := true
 BOARD_DONT_USE_NATIVE_FENCE_SYNC := true
 
 # Surfaceflinger
-NUM_FRAMEBUFFER_SURFACE_BUFFERS := 6
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
-# NFC
+# Nfc
 BOARD_NFC_CHIPSET := pn548
 TARGET_USES_NQ_NFC := true
 
 # OTA
 BLOCK_BASED_OTA := false
 
-# WIFI
+# Wifi
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_HOSTAPD_DRIVER := NL80211
 
@@ -108,11 +102,7 @@ TARGET_SCREEN_WIDTH := 1080
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 
-# Define kind of DPI
-PRODUCT_AAPT_CONFIG := normal xxhdpi
-PRODUCT_AAPT_PREF_CONFIG := xxhdpi
-
-# Charger 
+# Charger
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
 BACKLIGHT_PATH := "/sys/class/leds/lcd_backlight0/brightness"
 HEALTHD_BACKLIGHT_LEVEL := 102
@@ -121,42 +111,6 @@ HEALTHD_FORCE_BACKLIGHT_CONTROL := true
 # Recovery
 TARGET_RECOVERY_FSTAB := device/huawei/hi6250/rootdir/fstab.hi6250
 
-# cmhw
-BOARD_HARDWARE_CLASS := device/huawei/hi6250/cmhw/
-
-# TWRP Recovery defines
-# RECOVERY_VARIANT := twrp
-DEVICE_RESOLUTION := 1080x1920
-TW_THEME := portrait_mdpi
-TW_CUSTOM_BATTERY_PATH := "/sys/devices/battery.5/power_supply/Battery" 
-TARGET_USERIMAGES_USE_EXT4 := true
-RECOVERY_SDCARD_ON_DATA := true
-TW_INTERNAL_STORAGE_PATH := "/data/media"
-TW_INTERNAL_STORAGE_MOUNT_POINT := "/emmc"
-TW_EXTERNAL_STORAGE_PATH := "/sdcard"
-TW_EXTERNAL_STORAGE_MOUNT_POINT := "/sdcard"
-TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd_backlight0/brightness"
-TW_MAX_BRIGHTNESS := 255
-TW_INCLUDE_CRYPTO := true
-TW_CRYPTO_FS_TYPE := "ext4"
-TW_CRYPTO_REAL_BLKDEV := "/dev/block/platform/hi_mci.0/by-name/userdata"
-TW_CRYPTO_MNT_POINT := "/data"
-TW_CRYPTO_FS_OPTIONS := "noatime,nosuid,nodev,discard,noauto_da_alloc,journal_async_commit,errors=panic    wait,check"
-TW_CRYPTO_FS_FLAGS := "0x00000406"
-TW_CRYPTO_KEY_LOC := "footer"
-ifneq ($(TARGET_PRODUCT), omni_hi6250)
-TW_USE_TOOLBOX := true
-endif
-TW_EXCLUDE_SUPERSU := false
-TW_EXTRA_LANGUAGES := true
-
-
 # SELinux
 BOARD_SEPOLICY_DIRS += \
 	device/huawei/hi6250/sepolicy
-
-ifneq ($(TARGET_PRODUCT), aosp_hi6250)
-BOARD_SEPOLICY_DIRS += \
-	device/huawei/hi6250/cm_sepolicy
-endif
-
