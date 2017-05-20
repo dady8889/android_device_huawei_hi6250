@@ -63,8 +63,8 @@ Copy the following into hi6250.xml, save and close.
 
 <!-- Device specific -->
   <project name="Meticulus/android_kernel_huawei_hi6250" path="kernel/huawei/hi6250" remote="github" revision="master"/>
-  <project name="dady8889/android_device_huawei_hi6250" path="device/huawei/hi6250" remote="github" revision="aospa"/>
-  <project name="Meticulus/android_vendor_huawei_hi6250" path="vendor/huawei/hi6250" remote="github" revision="master"/>
+  <project name="dady8889/android_device_huawei_hi6250" path="device/huawei/hi6250" remote="github" revision="aospa-mm"/>
+  <project name="dady8889/android_vendor_huawei_hi6250" path="vendor/huawei/hi6250" remote="github" revision="aospa-mm"/>
 
   <project name="dady8889/android_packages_apps_HuaweiSettings" path="packages/apps/HuaweiSettings" remote="github" revision="androidmk"/>
 
