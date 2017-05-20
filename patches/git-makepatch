@@ -1,0 +1,86 @@
+#!/bin/bash
+# Copyright (C) 2017 dady8889@github
+# Create a git patch and save it with selected name to desktop
+
+function invalidargs() {
+    echo "Try 'git-makepatch --help' for more information."
+}
+
+function helpcommand() {
+    echo "Usage: git-makepatch -n [NUMBER] [FILENAME]"
+    echo "Utility for generating git patch files"
+    echo ""
+    echo "This utility saves the patch as FILENAME.patch on your desktop"
+    echo ""
+    echo "Optional arguments:"
+    echo "-n, --number   specifies number of commits to include in the patch"
+    echo "-d, --diff     uses 'git diff' to make patch without commit"
+}
+
+function createpatch() {
+    echo -e "${BLUE}Creating patch...${YELLOW}"
+
+    if [[ $USEDIFF == true ]] ; then
+        echo -e " -> ${YELLOW}Using git diff (without need to commit)${NC}"
+        output=$(git diff 2>&1 > $FULLPATH)
+    else
+        output=$(git format-patch HEAD~$NUMBER --stdout 2>&1 > $FULLPATH)
+    fi
+
+    if [[ -n $NUMBER ]] ; then
+        echo -e "${YELLOW} -> Including last $NUMBER commits${NC}"
+    fi
+
+    if [[ $output ]] ; then
+        echo -e "${RED}$output${NC}"
+        filetext=$(<$FULLPATH)
+        if [ -z "$filetext" -o "$filetext" == " " -o "$filetext" == "\n" ] ; then
+            rm $FULLPATH
+        fi
+    else
+        filetext=$(<$FULLPATH)
+        if [ -z "$filetext" -o "$filetext" == " " -o "$filetext" == "\n" ] ; then
+            rm $FULLPATH
+            echo -e "${BLUE}Patch was deleted because it was empty${NC}"
+        else
+            echo -e "${GREEN}Patch saved as $FULLPATH${NC}"
+        fi
+    fi
+}
+
+NC='\033[0m' # No Color
+RED='\033[0;91m'
+BLUE='\033[0;94m'
+YELLOW='\033[0;93m'
+GREEN='\033[0;92m'
+
+while [[ $# -gt 0 ]]
+do
+    arg="$1"
+    case $arg in
+        -d|--diff)
+        USEDIFF=true
+        ;;
+        -n|--number)
+        NUMBER=$2
+        shift
+        ;;
+        --help)
+        ACTION=true
+        helpcommand
+        ;;
+        *)
+        HOMEDIR="${HOME}"
+        FILENAME="$arg"
+        FULLPATH="$HOMEDIR/Desktop/$FILENAME.patch"
+        createpatch
+        exit 1
+        ;;
+    esac
+    shift
+done
+
+if [[ -z $ACTION ]]; then
+    invalidargs
+    exit 1
+fi
