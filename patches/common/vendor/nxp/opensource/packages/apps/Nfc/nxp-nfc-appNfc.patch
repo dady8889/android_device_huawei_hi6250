@@ -1,0 +1,219 @@
+From 43d3c387caa99567cc7af9a9026cc2e32b7a0821 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Fri, 3 Mar 2017 09:31:17 -0600
+Subject: [PATCH] nxp-nfc-appNfc
+
+Change-Id: Iaaa3cbb9394351fac24179383b012b7cd35e5ea0
+---
+ Android.mk                      |  2 +-
+ AndroidManifest.xml             |  1 -
+ nci/Android.mk                  |  1 -
+ nci/jni/Android.mk              |  3 +--
+ nci/jni/NativeNfcAla.cpp        | 10 +++++-----
+ nci/jni/NativeNfcManager.cpp    | 12 ++++++------
+ nci/jni/NativeSecureElement.cpp |  2 +-
+ nci/jni/RoutingManager.cpp      |  6 +++---
+ nci/jni/SecureElement.cpp       |  2 +-
+ 9 files changed, 18 insertions(+), 21 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 598b14c..4f1e462 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -6,6 +6,7 @@ LOCAL_PATH:= $(call my-dir)
+ ########################################
+ include $(CLEAR_VARS)
+ 
++LOCAL_MODULE_PATH := $(TARGET_OUT_APPS)
+ LOCAL_MODULE_TAGS := optional
+ 
+ LOCAL_SRC_FILES := \
+@@ -23,7 +24,6 @@ LOCAL_JAVA_LIBRARIES := com.nxp.nfc.nq
+ LOCAL_PROGUARD_ENABLED := disabled
+ LOCAL_STATIC_JAVA_LIBRARIES := android-support-v4
+ 
+-LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_MODULE_OWNER := nxp
+ 
+ include $(BUILD_PACKAGE)
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index e8e0f05..1e5e913 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -22,7 +22,6 @@
+     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+     <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+     <uses-permission android:name="android.permission.NFC" />
+-    <uses-permission android:name="android.permission.NFC_UNLOCK" />
+     <uses-permission android:name="android.permission.BIND_NFC_SERVICE" />
+     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+     <uses-permission android:name="android.permission.STATUS_BAR" />
+diff --git a/nci/Android.mk b/nci/Android.mk
+index 34f4385..cfd03be 100644
+--- a/nci/Android.mk
++++ b/nci/Android.mk
+@@ -1,3 +1,2 @@
+ LOCAL_PATH:= $(call my-dir)
+-
+ include $(call all-makefiles-under,$(LOCAL_PATH))
+diff --git a/nci/jni/Android.mk b/nci/jni/Android.mk
+index 00198c5..684ce65 100644
+--- a/nci/jni/Android.mk
++++ b/nci/jni/Android.mk
+@@ -54,7 +54,7 @@ LOCAL_CFLAGS += -DJCOP_VER_3_2=$(JCOP_VER_3_2)
+ LOCAL_CFLAGS += -DJCOP_VER_3_3=$(JCOP_VER_3_3)
+ LOCAL_CFLAGS += -DJCOP_VER_4_0=$(JCOP_VER_4_0)
+ 
+-NFC_NXP_ESE:= TRUE
++NFC_NXP_ESE:=FALSE
+ ifeq ($(NFC_NXP_ESE),TRUE)
+ LOCAL_CFLAGS += -DNFC_NXP_ESE=TRUE
+ LOCAL_CFLAGS += -DNFC_NXP_ESE_VER=$(JCOP_VER_4_0)
+@@ -140,7 +140,6 @@ endif
+ 
+ LOCAL_MODULE := libnqnfc_nci_jni
+ LOCAL_MODULE_TAGS := optional
+-LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_MODULE_OWNER := nxp
+ LOCAL_OVERRIDES_PACKAGES := libnfc_nci_jni
+ 
+diff --git a/nci/jni/NativeNfcAla.cpp b/nci/jni/NativeNfcAla.cpp
+index 2b79ae2..1378b1b 100644
+--- a/nci/jni/NativeNfcAla.cpp
++++ b/nci/jni/NativeNfcAla.cpp
+@@ -74,7 +74,7 @@ int nfcManager_GetAppletsList(JNIEnv* e, jobject o, jobjectArray list)
+     (void)e;
+     (void)o;
+     (void)list;
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     char *name[10];
+     UINT8 num =0, xx=0;
+     UINT8 list_len = e->GetArrayLength(list);
+@@ -135,7 +135,7 @@ int nfcManager_doAppletLoadApplet(JNIEnv* e, jobject o, jstring name, jbyteArray
+     (void)e;
+     (void)o;
+     (void)name;
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus, status;
+     IChannel_t Dwp;
+@@ -208,7 +208,7 @@ jbyteArray nfcManager_lsExecuteScript(JNIEnv* e, jobject o, jstring name, jstrin
+     const UINT8 lsExecuteResponseSize = 4;
+     uint8_t resSW [4]={0x4e,0x02,0x69,0x87};
+     jbyteArray result = e->NewByteArray(0);
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == TRUE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == TRUE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus, status;
+     IChannel_t Dwp;
+@@ -305,7 +305,7 @@ jbyteArray nfcManager_lsExecuteScript(JNIEnv* e, jobject o, jstring name, jstrin
+ 
+ jbyteArray nfcManager_GetCertificateKey(JNIEnv* e, jobject)
+ {
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == FALSE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == FALSE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus = NFA_STATUS_FAILED;
+     IChannel_t Dwp;
+@@ -364,7 +364,7 @@ jbyteArray nfcManager_GetCertificateKey(JNIEnv* e, jobject)
+ jbyteArray nfcManager_lsGetVersion(JNIEnv* e, jobject)
+ {
+ 
+-#if (NFC_NXP_ESE == TRUE && NXP_LDR_SVC_VER_2 == TRUE)
++#if ((NFC_NXP_ESE == TRUE) && (NXP_LDR_SVC_VER_2 == TRUE))
+     ALOGD ("%s: enter", __FUNCTION__);
+     tNFA_STATUS wStatus = NFA_STATUS_FAILED;
+     IChannel_t Dwp;
+diff --git a/nci/jni/NativeNfcManager.cpp b/nci/jni/NativeNfcManager.cpp
+index 94eb82e..7a70023 100644
+--- a/nci/jni/NativeNfcManager.cpp
++++ b/nci/jni/NativeNfcManager.cpp
+@@ -1610,7 +1610,7 @@ void nfaDeviceManagementCallback (UINT8 dmEvent, tNFA_DM_CBACK_DATA* eventData)
+                 ALOGE ("%s: NFA_DM_NFCC_TIMEOUT_EVT; abort", __FUNCTION__);
+             else if (dmEvent == NFA_DM_NFCC_TRANSPORT_ERR_EVT)
+                 ALOGE ("%s: NFA_DM_NFCC_TRANSPORT_ERR_EVT; abort", __FUNCTION__);
+-#if (JCOP_WA_ENABLE == TRUE)
++#if (JCOP_WA_ENABLE == FALSE)
+             NFA_HciW4eSETransaction_Complete(Wait);
+ #endif
+             nativeNfcTag_abortWaits();
+@@ -2102,7 +2102,7 @@ static jboolean nfcManager_doInitialize (JNIEnv* e, jobject o)
+         nfcManager_doPartialDeInitialize();
+     }
+ #endif
+-#if (JCOP_WA_ENABLE == TRUE)
++#if (JCOP_WA_ENABLE == FALSE)
+ if ((signal(SIGABRT, sig_handler) == SIG_ERR) &&
+         (signal(SIGSEGV, sig_handler) == SIG_ERR))
+     {
+@@ -2347,7 +2347,7 @@ static void nfcManager_doEnableDtaMode (JNIEnv* /* e */, jobject /* o */)
+     gIsDtaEnabled = true;
+ }
+ 
+-#if (NXP_EXTNS == TRUE)
++#if (NXP_EXTNS == FALSE)
+ /*******************************************************************************
+  **
+  ** Function:        nfcManager_checkNfcStateBusy()
+@@ -3237,7 +3237,7 @@ static jboolean nfcManager_doDeinitialize (JNIEnv* e, jobject obj)
+ #endif
+ #endif
+     doDwpChannel_ForceExit();
+-#if (JCOP_WA_ENABLE == TRUE)
++#if (JCOP_WA_ENABLE == FALSE)
+     NFA_HciW4eSETransaction_Complete(Wait);
+ #endif
+     pn544InteropAbortNow ();
+@@ -6090,7 +6090,7 @@ TheEnd:
+     pthread_exit(NULL);
+     return NULL;
+ }
+-#if (JCOP_WA_ENABLE == TRUE)
++#if (JCOP_WA_ENABLE == FALSE)
+ /*******************************************************************************
+ **
+ ** Function         sig_handler
+diff --git a/nci/jni/NativeSecureElement.cpp b/nci/jni/NativeSecureElement.cpp
+index 770685d..4a98c51 100644
+--- a/nci/jni/NativeSecureElement.cpp
++++ b/nci/jni/NativeSecureElement.cpp
+@@ -421,7 +421,7 @@ static jboolean nativeNfcSecureElement_doDisconnectSecureElementConnection (JNIE
+     /* if nothing is active after this, then tell the controller to power down */
+     if (! PowerSwitch::getInstance ().setModeOff (PowerSwitch::SE_CONNECTED))
+         PowerSwitch::getInstance ().setLevel (PowerSwitch::LOW_POWER);
+-#if((NFC_NXP_ESE == TRUE)&&(NXP_EXTNS == TRUE))
++#if(NFC_NXP_ESE == TRUE)
+     ret_val = NFC_RelWiredAccess ((void *)&status);
+     if (ret_val < 0)
+     {
+diff --git a/nci/jni/RoutingManager.cpp b/nci/jni/RoutingManager.cpp
+index 6f3af98..b9d0a73 100644
+--- a/nci/jni/RoutingManager.cpp
++++ b/nci/jni/RoutingManager.cpp
+@@ -3191,7 +3191,7 @@ int RoutingManager::com_android_nfc_cardemulation_doGetAidMatchingPlatform(JNIEn
+            :When ever the second removal request is also reached , it is handled.
+ 
+ */
+-#if((NFC_NXP_ESE == TRUE) && (NXP_EXTNS == TRUE) && (NXP_ESE_ETSI_READER_ENABLE == TRUE))
++#if((NFC_NXP_ESE == TRUE) && (NXP_EXTNS == TRUE) && (NXP_ESE_ETSI_READER_ENABLE == TRUE) && (NFC_NXP_CHIP_TYPE != PN547C2))
+ void reader_req_event_ntf (union sigval)
+ {
+     static const char fn [] = "RoutingManager::reader_req_event_ntf";
+diff --git a/nci/jni/SecureElement.cpp b/nci/jni/SecureElement.cpp
+index e02fe1c..24b74a9 100644
+--- a/nci/jni/SecureElement.cpp
++++ b/nci/jni/SecureElement.cpp
+@@ -133,7 +133,7 @@ SyncEvent sSPIPrioSessionEndEvent;
+     static void setSPIState(bool mState);
+ //////////////////////////////////////////////
+ //////////////////////////////////////////////
+-#if(NXP_EXTNS == TRUE)
++#if(NFC_NXP_ESE == TRUE)
+ #define NFC_NUM_INTERFACE_MAP 3
+ #define NFC_SWP_RD_NUM_INTERFACE_MAP 1
+ 
+-- 
+1.9.1
+
