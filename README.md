@@ -57,13 +57,13 @@ If there was no git response, the patch was succesful.
 
 ### Step 4: Building
 
-Turn off Ninja
+Turn off Ninja  
 Ninja is supposed to help make incremental updates more efficient but you aren't doing an incremental update; are you?
 ```bash
 export USE_NINJA=false
 ```
 
-Make sure there is enough memory for Jack(recommended).
+Make sure there is enough memory for Jack(recommended).  
 This may not be neccessary depending on your PC's specs. On my previous laptop ( only 4Gig of mem ), I could not build without this and I keep it just in case.
 ```bash
 export ANDROID_JACK_VM_ARGS="-Xmx2g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
