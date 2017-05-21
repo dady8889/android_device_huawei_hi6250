@@ -30,7 +30,7 @@ diff --git a/init/vendor_init.cpp b/init/vendor_init.cpp
 index d3fd5ffe2..34bba3bb3 100644
 --- a/init/vendor_init.cpp
 +++ b/init/vendor_init.cpp
-@@ -32,6 +32,12 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+@@ -32,6 +32,14 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  /* init vendor override stubs */
  
  __attribute__ ((weak))
@@ -44,6 +44,8 @@ index d3fd5ffe2..34bba3bb3 100644
 +}
 +__attribute__ ((weak))
 +void vendor_load_persist_properties()
++{
++}
 diff --git a/init/vendor_init.h b/init/vendor_init.h
 index 9afb449be..f86c65fda 100644
 --- a/init/vendor_init.h

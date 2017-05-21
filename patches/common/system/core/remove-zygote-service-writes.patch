@@ -1,20 +1,10 @@
-From f4f6a6fedc7604f23aa5c753bf4f8a6d4cee7c52 Mon Sep 17 00:00:00 2001
-From: Meticulus <theonejohnnyd@gmail.com>
-Date: Wed, 25 Jan 2017 14:49:12 -0600
-Subject: [PATCH] init: remove zygote service writes
-
-Change-Id: Id8f1dc435e44bf22a7d962672496d7550164481a
----
- rootdir/init.zygote64_32.rc | 4 ----
- 1 file changed, 4 deletions(-)
-
 diff --git a/rootdir/init.zygote64_32.rc b/rootdir/init.zygote64_32.rc
-index a422fcc..105e42e 100644
+index 4a3209728..42d9e414c 100644
 --- a/rootdir/init.zygote64_32.rc
 +++ b/rootdir/init.zygote64_32.rc
-@@ -1,16 +1,12 @@
- service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server --socket-name=zygote
+@@ -2,17 +2,13 @@ service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-s
      class main
+     priority -20
      socket zygote stream 660 root system
 -    onrestart write /sys/android_power/request_state wake
 -    onrestart write /sys/power/state on
@@ -26,9 +16,7 @@ index a422fcc..105e42e 100644
  
  service zygote_secondary /system/bin/app_process32 -Xzygote /system/bin --zygote --socket-name=zygote_secondary
      class main
+     priority -20
      socket zygote_secondary stream 660 root system
      onrestart restart zygote
 -    writepid /dev/cpuset/foreground/tasks
--- 
-1.9.1
-
