@@ -83,10 +83,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/bbInstaller:recovery/root/sbin/bbInstaller \
     $(LOCAL_PATH)/recovery/fstabSwitcher:recovery/root/sbin/fstabSwitcher \
     $(LOCAL_PATH)/recovery/fstab.hi6250.stock:recovery/root/fstab.hi6250.stock \
-    $(LOCAL_PATH)/recovery/fstab.hi6250.bootdevice:recovery/root/fstab.hi6250.bootdevice \
-    $(LOCAL_PATH)/recovery/stock-check.sh:install/bin/stock-check.sh \
-    $(LOCAL_PATH)/recovery/finalize.sh:install/bin/finalize.sh \
-    $(LOCAL_PATH)/recovery/data-formatter.sh:install/bin/data-formatter.sh
+    $(LOCAL_PATH)/recovery/fstab.hi6250.bootdevice:recovery/root/fstab.hi6250.bootdevice
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -124,9 +121,6 @@ PRODUCT_PACKAGES += \
 # Hack for adb
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/busybox:root/sbin/sh
-#    $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-#    $(LOCAL_PATH)/configs/etc/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
-#    $(LOCAL_PATH)/configs/etc/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
 # Bluetooth
 PRODUCT_COPY_FILES += \
@@ -151,7 +145,7 @@ PRODUCT_PACKAGES += \
     Tag
 
 
-# Recovery
+# Volume buttons input
 PRODUCT_PACKAGES += \
     volumeinput
 
@@ -159,7 +153,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/data_enc_resize:system/bin/data_enc_resize
 
-# Device Features
+# Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
