@@ -97,8 +97,8 @@
             32 - Camera
             64 - Volume rocker
          For example, a device with Home, Back and Menu keys would set this
-         config to 7. -->
-    <integer name="config_deviceHardwareKeys">64</integer>
+         config to 7.
+    <integer name="config_deviceHardwareKeys">64</integer>-->
 
     <!-- Hardware keys present on the device with the ability to wake, stored as a bit field.
          This integer should equal the sum of the corresponding value for each
@@ -111,8 +111,8 @@
             32 - Camera
             64 - Volume rocker
          For example, a device with Home, Back and Menu keys would set this
-         config to 7. -->
-    <integer name="config_deviceHardwareWakeKeys">64</integer>
+         config to 7.
+    <integer name="config_deviceHardwareWakeKeys">64</integer>-->
 
     <!-- Is the device capable of hot swapping an UICC Card -->
     <bool name="config_hotswapCapable">true</bool>
@@ -126,9 +126,9 @@
 
     <!-- Flag specifying whether VoLTE is available on device -->
     <bool name="config_device_volte_available">true</bool>
-    
-    <!-- Whether to persist the notification for when a usb drive device is plugged in -->
-    <bool name="config_persistUsbDriveNotification">true</bool>
+
+    <!-- Whether to persist the notification for when a usb drive device is plugged in
+    <bool name="config_persistUsbDriveNotification">true</bool>-->
 
     <!-- Does the battery LED support multiple colors?
          Used to decide if the user can change the colors -->
@@ -164,4 +164,5 @@
          correctly use them when installed on your device.  Otherwise, keep this disabled
          so that applications can still use their own mechanisms. -->
     <bool name="config_enableAutoPowerModes">true</bool>
+
 </resources>
