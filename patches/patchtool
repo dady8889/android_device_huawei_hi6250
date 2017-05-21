@@ -327,7 +327,6 @@ do
 		necho
 		clearpatchescommand
 		finishcommand
-		exit 0
 		;;
 		-h|--help)
 		ACTION=true
