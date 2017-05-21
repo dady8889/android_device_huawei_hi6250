@@ -22,12 +22,10 @@ LOCAL_SRC_FILES := power.c stock_power_interface.c
 LOCAL_SHARED_LIBRARIES := liblog libcutils
 LOCAL_MODULE_TAGS := optional
 
-ifneq ($(TARGET_PRODUCT), omni_hi6250)
-ifneq ($(TARGET_PRODUCT), aosp_hi6250)
+ifneq ($(TARGET_PRODUCT), pa_hi6250)
 LOCAL_CFLAGS += -DCMEXTRAS
 else
 LOCAL_CFLAGS += -DAOSP
-endif
 endif
 
 include $(BUILD_SHARED_LIBRARY)

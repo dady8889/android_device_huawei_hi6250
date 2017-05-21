@@ -171,12 +171,11 @@ static void set_blink(struct light_state_t const* state) {
 
 #ifdef DEBUG
 #ifdef LEDSMODE
-    ALOGD("flashMode=%d flashOnMS=%d flashOffMS=%d brightnessMode=%d ledsModes=%d",
+    ALOGD("flashMode=%d flashOnMS=%d flashOffMS=%d brightnessMode=%d",
 				state->flashMode,
 				state->flashOnMS,
 				state->flashOffMS,
-				state->brightnessMode,
-				state->ledsModes);
+				state->brightnessMode);
 #endif
 #endif 
     stop_blink();
