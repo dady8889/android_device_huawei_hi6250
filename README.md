@@ -63,10 +63,9 @@ Ninja is supposed to help make incremental updates more efficient but you aren't
 export USE_NINJA=false
 ```
 
-Make sure there is enough memory for Jack(recommended).  
-This may not be neccessary depending on your PC's specs. On my previous laptop ( only 4Gig of mem ), I could not build without this and I keep it just in case.
+Make sure there is enough memory for Jack (required). Without this you can get out-of-memory errors.
 ```bash
-export ANDROID_JACK_VM_ARGS="-Xmx2g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
+export ANDROID_JACK_VM_ARGS="-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
 ```
 
 Now we need to apply our patches. There is no autopatch at the moment.
