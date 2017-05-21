@@ -9,9 +9,9 @@ branch: master
 ### Vendor
 This device tree is intented to be used with this vendor repo
 
-https://github.com/Meticulus/android_vendor_huawei_hi6250
+https://github.com/dady8889/android_vendor_huawei_hi6250
 
-branch: master
+branch: aospa-mm
 # How To Build
 
 ### Step 1: Setting up the Build Environment.
