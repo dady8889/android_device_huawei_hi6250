@@ -57,7 +57,7 @@ If there was no git response, the patch was succesful.
 
 ### Step 4: Building
 
-Turn off Ninja  
+Turn off Ninja (optional)
 Ninja is supposed to help make incremental updates more efficient but you aren't doing an incremental update; are you?
 ```bash
 export USE_NINJA=false
@@ -70,6 +70,9 @@ export ANDROID_JACK_VM_ARGS="-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation
 
 Now we need to apply our patches. There is no autopatch at the moment.
 ```bash
+cd ~/Desktop/AOSPA-N
+./rom-build hi6250 -s
+# After syncing (after you see 'Starting compilation') press CTRL+C
 cd ~/Desktop/AOSPA-N/device/huawei/hi6250/patches
 ./patchtool -p
 ```
