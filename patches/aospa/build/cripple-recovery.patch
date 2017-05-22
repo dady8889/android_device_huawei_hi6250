@@ -1,0 +1,26 @@
+diff --git a/core/Makefile b/core/Makefile
+index fe28455a7..e239731fe 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -933,8 +933,8 @@ endif
+ 
+ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS_BOOT)))
+ # Named '.dat' so we don't attempt to use imgdiff for patching it.
+-RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
+-else
++#RECOVERY_RESOURCE_ZIP := $(TARGET_OUT)/etc/recovery-resource.dat
++#else
+ RECOVERY_RESOURCE_ZIP :=
+ endif
+ 
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1664,6 +1664,8 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
+   common.LoadInfoDict() on the input target_files.
+   """
+ 
++  return
++
+   if info_dict is None:
+     info_dict = OPTIONS.info_dict
+ 
