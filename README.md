@@ -28,7 +28,7 @@ NOTE: I recommend you use Ubuntu 15.04 to build. That's what I use.
 
 Now read this: http://source.android.com/source/initializing.html
 
-### Step 2: Downloading the Source.
+### Step 2: Downloading the Source
 
 NOTE: Some say that it is better to download the ROM source and put in your local manifest later. I don't know if that's best but that's what we are going to do.
 
@@ -43,7 +43,7 @@ repo sync -j4
 ```
 WARNING: There may be times, towards the end when it seem like, the download is stuck and not making any progress because there are no updates on the screen. BE PATIENT!, open a program that will show how much bandwidth you are using to be sure!
 
-### Step 3: Create device entry.
+### Step 3: Create device entry
 
 AOSPA does automatically download the needed repos, but we need to add the device entry first.
 
@@ -57,7 +57,7 @@ If there was no git response, the patch was succesful.
 
 ### Step 4: Building
 
-Turn off Ninja (optional)
+Turn off Ninja (optional)  
 Ninja is supposed to help make incremental updates more efficient but you aren't doing an incremental update; are you?
 ```bash
 export USE_NINJA=false
@@ -85,6 +85,7 @@ Execute the following commands in a linux terminal:
 cd ~/Desktop/AOSPA-N
 ./rom-build hi6250
 ```
+Sit back and relax...
 
 ### Step 5: Troubleshooting
 In case it won't download the needed repos in ./rom-build, you need to download them manually.
