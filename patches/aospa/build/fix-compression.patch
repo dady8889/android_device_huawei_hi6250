@@ -1,0 +1,13 @@
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 7f339809d..9db972f23 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -437,7 +437,7 @@ def CopyPartitionFiles(itemset, input_zip, output_zip=None, substitute=None):
+             data = substitute[fn]
+           else:
+             data = input_zip.read(info.filename)
+-          common.ZipWriteStr(output_zip, info2, data)
++          common.ZipWriteStr(output_zip, info2, data, perms=None, compress_type=zipfile.ZIP_DEFLATED)
+         if fn.endswith("/"):
+           itemset.Get(fn[:-1], is_dir=True)
+         else:
