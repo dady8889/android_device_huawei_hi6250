@@ -68,7 +68,7 @@ Make sure there is enough memory for Jack (required). Without this you can get o
 export ANDROID_JACK_VM_ARGS="-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
 ```
 
-NOTE: Build times depend on you PC performance specifications. It may take anywhere from 1 hours to 15 hours depending on system specs for a complete build.
+NOTE: Build times depend on your PC performance specifications. It may take anywhere from 1 hours to 15 hours depending on system specs for a complete build.
 
 We are going to build. If you want to use autopatch, execute following commands:
 ```bash
@@ -111,4 +111,4 @@ You can do
 while you are in target repository. You can add ~/Desktop/AOSPA-N/device/huawei/hi6250/patches to your PATH to shorten the command.
 Then you can copy the patch from your desktop and test it in the device tree. You can send the patch by making an "Issue".
 
-### Please let me know if there are mistakes, typos, mis/outdated - information in these instructions by creating an "issue".
+### Please let me know if there are mistakes, typos, mis/outdated - information in these instructions by creating an "Issue".
