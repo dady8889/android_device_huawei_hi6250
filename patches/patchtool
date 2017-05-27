@@ -166,6 +166,10 @@ function patchcommand() {
 
 		if [[ $(echo $RESULT | grep -c "Reversed (or previously applied) patch detected") -gt 0 ]] ; then
 			echo -e  " -> ${BI_BLUE}Already patched. Skipping...${NC}"
+			cd $REPO
+			find -name *.orig | while read LINE; do rm $LINE; done
+			find -name *.rej | while read LINE; do rm $LINE; done
+			cd $THISDIR
 			ALREADYPATCHEDNUM=$(($ALREADYPATCHEDNUM+1))
 			continue
 		fi

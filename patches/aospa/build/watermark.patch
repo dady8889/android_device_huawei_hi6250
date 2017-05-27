@@ -1,0 +1,111 @@
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index 7f339809d..3c43819c5 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -582,6 +582,17 @@ def CopyInstallTools(output_zip):
+       output_zip.write(p, p)
+   os.chdir(oldcwd)
+ 
++def PrintWatermark(script):
++  script.Print(" PARANOID ANDROID")
++  script.Print("   Brought to you by:")
++  script.Print("    ____            __      ____  ____  ____  ____  ")
++  script.Print("   / __ \____ _____/ /_  __( __ )( __ )( __ )/ __ \ ")
++  script.Print("  / / / / __ `/ __  / / / / __  / __  / __  / /_/ / ")
++  script.Print(" / /_/ / /_/ / /_/ / /_/ / /_/ / /_/ / /_/ /\__, /  ")
++  script.Print("/_____/\__,_/\__,_/\__, /\____/\____/\____//____/   ")
++  script.Print("                  /____/                            ")
++  script.Print("           https://github.com/dady8889")
++
+ def WriteFullOTAPackage(input_zip, output_zip):
+   # TODO: how to determine this?  We don't know what version it will
+   # be installed on top of. For now, we expect the API just won't
+
+@@ -589,6 +600,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
+   # in the target build.
+   script = edify_generator.EdifyGenerator(3, OPTIONS.info_dict)
+ 
++  PrintWatermark(script);
++
++  script.Print("INFO: You are flashing a Full OTA")
++
+   oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
+   recovery_mount_options = OPTIONS.info_dict.get("recovery_mount_options")
+   oem_dict = None
+@@ -680,6 +692,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   script.Print("Target: %s" % CalculateFingerprint(
+       oem_props, oem_dict, OPTIONS.info_dict))
+ 
++  script.Print("- Device OK")
++
+   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
+   device_specific.FullOTA_InstallBegin()
+ 
+@@ -689,6 +703,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0755, 0755, None, None)
+ 
+   if OPTIONS.backuptool:
++    script.Print("- Backing up")
+     script.Mount("/system")
+     script.RunBackup("backup")
+     script.Unmount("/system")
+@@ -720,12 +735,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+     system_diff = common.BlockDifference("system", system_tgt, src=None)
+     system_diff.WriteScript(script, output_zip)
+   else:
++    script.Print("- Formatting /system")
+     script.FormatPartition("/system")
++    script.Print("- Remounting /system")
+     script.Mount("/system", recovery_mount_options)
+-    if not has_recovery_patch:
+-      script.UnpackPackageDir("recovery", "/system")
++
++    # if not has_recovery_patch:
++    #   script.UnpackPackageDir("recovery", "/system")
++
++    script.Print("- Unpacking /system")
+     script.UnpackPackageDir("system", "/system")
+ 
++    script.Print("- Symlinking")
+     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
+     script.MakeSymlinks(symlinks)
+ 
+@@ -767,6 +791,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
+ 
+   if OPTIONS.backuptool:
++    script.Print("- Restoring backup")
+     script.ShowProgress(0.02, 10)
+     if block_based:
+       script.Mount("/system")
+@@ -774,6 +799,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+     if block_based:
+       script.Unmount("/system")
+ 
++  script.Print("- Flashing boot image")
+   script.ShowProgress(0.05, 5)
+   script.WriteRawImage("/boot", "boot.img")
+ 
+@@ -783,9 +806,11 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   if OPTIONS.extra_script is not None:
+     script.AppendExtra(OPTIONS.extra_script)
+ 
++  script.Print("- Unmounting")
+   script.UnmountAll()
+ 
+   if OPTIONS.wipe_user_data:
++    script.Print("- Wiping user data")
+     script.ShowProgress(0.1, 10)
+     script.FormatPartition("/data")
+ 
+@@ -1551,6 +1579,10 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
+   target_has_recovery_patch = HasRecoveryPatch(target_zip)
+   source_has_recovery_patch = HasRecoveryPatch(source_zip)
+ 
++  PrintWatermark(script);
++
++  script.Print("INFO: You are flashing an Incremental OTA")
++
+   if (OPTIONS.block_based and
+       target_has_recovery_patch and
+       source_has_recovery_patch):
