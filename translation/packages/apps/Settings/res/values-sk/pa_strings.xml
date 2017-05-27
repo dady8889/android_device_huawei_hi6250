@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2016-2017 The ParanoidAndroid Project
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pa_version">Verzia systému Paranoid Android</string>
+    <string name="pa_version_default">Neznáma</string>
+
+    <!-- Advanced reboot options -->
+    <string name="advanced_reboot_title">Rozšírený reštart</string>
+    <string name="advanced_reboot_summary">Pridá do menu reštartovania aj reštart do bootloaderu alebo recovery</string>
+
+    <string name="reset_all_settings">VYMAZAŤ VŠETKY</string>
+    <string name="reset_selected_settings">VYMAZAŤ VYBRANÉ</string>
+    <string name="reset_settings_title">Nastavenia funkcií</string>
+    <string name="reset_settings_summary">Vymazanie nastavení funkcií Paranoid Android</string>
+    <string name="keywords_settings_reset">reset</string>
+
+    <string name="volbtn_music_controls_title">Ovládanie prehrávania</string>
+    <string name="volbtn_music_controls_summary">Podržanie tlačidiel hlasitosti pri vypnutej obrazovke posúva aktuálnu skladbu</string>
+
+    <!-- Status bar - Battery -->
+    <string name="battery_style_title">Štýl batérie</string>
+    <string name="battery_style_icon">Ikona</string>
+    <string name="battery_style_circle">Kruh</string>
+    <string name="battery_style_text">Text</string>
+    <string name="battery_style_hidden">Skryté</string>
+
+    <!-- Status bar - Battery percentage -->
+    <string name="battery_percentage_title">Percento batérie</string>
+    <string name="battery_percentage_default">Skryté (predvolené)</string>
+    <string name="battery_percentage_text_inside">Vo vnútri ikony</string>
+    <string name="battery_percentage_text_next">Vedľa ikony</string>
+
+    <!-- sRGB -->
+    <string name="srgb_title">sRGB</string>
+    <string name="srgb_summary">Zapne kalibráciu sRGB displeja</string>
+
+    <!-- Night Display -->
+    <string name="night_display_warning">Nočný režim môže spôsobiť rýchlejšie vybitie batérie</string>
+    <string name="night_display_hide">Nezobrazovať toto upozornenie</string>
+    <string name="night_display_ok">Ok</string>
+
+    <!-- Gestures Settings -->
+    <string name="gestures_settings_title">Gestá</string>
+    <string name="offscreen_gestures_title">Pri vypnutej obrazovke</string>
+    <string name="system_gestures_title">Systémové</string>
+    <string name="keywords_gestures">screen touchscreen draw swipe finger gesto displej potiahnutie kreslenie</string>
+
+    <string name="gestures_double_tap">Dvojité poklepkanie</string>
+    <string name="gestures_draw_v">Nakreslenie V</string>
+    <string name="gestures_draw_inverse_v">Nakreslenie opačného V</string>
+    <string name="gestures_draw_o">Nakreslenie O</string>
+    <string name="gestures_draw_m">Nakreslenie M</string>
+    <string name="gestures_draw_w">Nakreslenie W</string>
+    <string name="gestures_draw_arrow_left">Nakreslenie &lt;</string>
+    <string name="gestures_draw_arrow_right">Nakreslenie &gt;</string>
+    <string name="gestures_one_finger_swipe_up">Potiahnutie prstom nahor</string>
+    <string name="gestures_one_finger_swipe_right">Potiahnutie prstom doprava</string>
+    <string name="gestures_one_finger_swipe_down">Potiahnutie prstom nadol</string>
+    <string name="gestures_one_finger_swipe_left">Potiahnutie prstom doľava</string>
+    <string name="gestures_two_finger_swipe">Potiahnutie dvoma prstami</string>
+
+    <string name="gestures_disabled">Vypnuté</string>
+    <string name="gestures_wake_device">Zobudiť zariadenie</string>
+    <string name="gestures_toggle_flashlight">Zapnúť baterku</string>
+    <string name="gestures_toggle_airplane_mode">Zapnúť režim v lietadle</string>
+    <string name="gestures_play_pause_music">Zastaviť/spustiť hudbu</string>
+    <string name="gestures_next_music">Ďaľšia skladba</string>
+    <string name="gestures_previous_music">Predchádzajúca skladba</string>
+    <string name="gestures_open_camera">Otvoriť fotoaparát</string>
+    <string name="gestures_open_dialer">Otvoriť telefón</string>
+
+    <!-- Buttons -->
+    <string name="buttons_pref_title">Tlačidlá</string>
+    <string name="buttons_pref_summary">Upravte tlačidlá a klávesy</string>
+    <string name="enable_navigation_bar_title">Softvérové tlačidlá</string>
+    <string name="enable_navigation_bar_summary">Zapnúť systémový navigačný riadok</string>
+    <string name="swap_navigation_keys_title">Výmena tlačidiel</string>
+    <string name="swap_navigation_keys_summary">Vymeniť tlačidlá späť a nedávne aplikácie</string>
+    <string name="swap_slider_order_title">Výmena posúvača</string>
+    <string name="swap_slider_order_summary">Vymeniť poradnie režimov v posúvači výstrah</string>
+    <string name="hardware_brightness_keys_title">Podsvietenie</string>
+    <string name="hardware_brightness_keys_summary">Zapnúť podsvietenie navigačných tlačidiel</string>
+    <string name="home_key_title">Tlačidlo domov</string>
+    <string name="back_key_title">Tlačidlo späť</string>
+    <string name="menu_key_title">Tlačidlo ponuky</string>
+    <string name="assist_key_title">Tlačidlo asistencie</string>
+    <string name="app_switch_key_title">Tlačidlo nedávnych aplikácií</string>
+    <string name="camera_key_title">Tlačidlo fotoaparátu</string>
+    <string name="short_press_title">Pri krátkom podržaní</string>
+    <string name="long_press_title">Pri dlhom podržaní</string>
+    <string name="double_tap_title">Pri dvojitom poklepkaní</string>
+    <string name="action_nothing">Žiadna akcia</string>
+    <string name="action_menu">Otvoriť/zavrieť menu</string>
+    <string name="action_app_switch">Nedávne aplikácie</string>
+    <string name="action_search">Asistnent vyhľadávania</string>
+    <string name="action_voice_search">Hlasové vyhľadávanie</string>
+    <string name="action_in_app_search">Vyhľadávanie v aplikácii</string>
+    <string name="action_launch_camera">Otvoriť fotoaparát</string>
+    <string name="action_last_app">Otvoriť poslednú aplikáciu</string>
+    <string name="action_splitscreen">Rozdeliť obrazovku</string>
+
+    <!-- Screenshot shutter sound -->
+    <string name="screenshot_shutter_sound_title">Zvuk po odfotení obrazovky</string>
+
+    <!-- Heads-up notifications -->
+    <string name="heads_up_notifications_title">Notifikácie heads-up</string>
+
+    <!-- LED notifications -->
+    <string name="battery_light_settings">Svetlo nabíjania</string>
+    <string name="leds">Svetlo LED</string>
+    <string name="notification_light_settings">Svetlo notifikácie</string>
+    <string name="reset">Reset</string>
+    <string name="batterylight_title">Nastavenie svetla nabíjania</string>
+    <string name="battery_light_enable">Zapnuté</string>
+    <string name="battery_low_pulse_title">Blikať pri nízkej batérii</string>
+    <string name="battery_light_list_title">Farby</string>
+    <string name="battery_light_low_color_title">Nízka batéria</string>
+    <string name="battery_light_medium_color_title">Nabíjanie</string>
+    <string name="battery_light_full_color_title">Nabité (90%)</string>
+    <string name="battery_light_really_full_color_title">Nabité (100%)</string>
+    <string name="profile_choose_app">Vyberte aplikáciu</string>
+    <string name="edit_battery_settings">Upraviť nastavenia batérie</string>
+    <string name="led_color_green">Zelená</string>
+    <string name="led_color_red">Červená</string>
+    <string name="led_color_blue">Modrá</string>
+    <string name="advanced">Rozšírené</string>
+    <string name="profiles_add">Pridať...</string>
+
+    <!-- Notification light dialogs -->
+    <string name="default_time">Normálne</string>
+    <string name="custom_time">Vlastné</string>
+    <string name="dialog_delete_title">Vymazať</string>
+    <string name="dialog_delete_message">Vymazať vybrané?</string>
+
+    <!-- Values for the notification light pulse spinners -->
+    <string name="pulse_length_always_on">Vždy zapnuté</string>
+    <string name="pulse_length_very_short">Veľmi krátke</string>
+    <string name="pulse_length_short">Krátke</string>
+    <string name="pulse_length_normal">Normálne</string>
+    <string name="pulse_length_long">Dlhé</string>
+    <string name="pulse_length_very_long">Veľmi dlhé</string>
+    <string name="pulse_speed_very_fast">Veľmi rýchle</string>
+    <string name="pulse_speed_fast">Rýchle</string>
+    <string name="pulse_speed_normal">Normálne</string>
+    <string name="pulse_speed_slow">Pomalé</string>
+    <string name="pulse_speed_very_slow">Veľmi pomalé</string>
+
+    <!-- Lights settings screen, notification light settings -->
+    <string name="notification_light_applist_title">Aplikácie</string>
+    <string name="notification_light_phonelist_title">Telefón</string>
+    <string name="notification_light_use_custom">Pre každú aplikáciu zvlašť</string>
+    <string name="notification_light_default_value">Predvolené</string>
+    <string name="notification_light_missed_call_title">Zmeškaný hovor</string>
+    <string name="notification_light_voicemail_title">Hlasová schránka</string>
+    <!-- <string name="notification_light_brightness" translatable="false">@string/brightness</string> -->
+    <string name="notification_light_screen_on">Svietiť pri zapnutej obrazovke</string>
+    <string name="notification_light_zen_mode">Svietiť v režime nerušiť</string>
+    <string name="notification_light_use_multiple_leds">Viac LED</string>
+    <string name="notification_light_dialog_text">Vyberte farbu, dĺžku blikania a rýchlosť</string>
+
+    <!-- Lights settings, LED notification -->
+    <string name="led_notification_title">Nastavenie svetla LED</string>
+    <string name="led_notification_text">Otvorené v nastaveniach</string>
+    <string name="notification_light_no_apps_summary">Pre pridanie nastavenia pre každú aplikáciu zvlášť, aktivujte \'%1$s\' a v menu stlačte \'\u002b\'</string>
+    <string name="font_sample_text">11:57</string>
+</resources>

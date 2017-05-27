@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2015-2017, The ParanoidAndroid Project Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
+    <string name="keyguard_indication_dash_charging_time">Nabíjanie Dash (<xliff:g id="charging_time_left" example="4 hodiny and 2 minúty">%s</xliff:g> do plného nabitia)</string>
+    <string name="keyguard_plugged_in_dash_charging">Nabíjanie Dash</string>
+
+    <!-- OnTheSpot: Action denial button text. [CHAR LIMIT=NONE] -->
+    <string name="on_the_spot_deny">NIE</string>
+    <!-- OnTheSpot: Action confirmation button text. [CHAR LIMIT=NONE] -->
+    <string name="on_the_spot_confirm">ÁNO</string>
+
+    <!-- OnTheSpot: Quick Settings quick pull-down feature description message. [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_quick_pull_down">Chcete pri potiahnutí pravého okraja stavového riadka vysunúť Rýchle Nastavenie?</string>
+    <!-- OnTheSpot: Title of the Quick Settings quick pull-down feature for the reset dialog. [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_quick_pull_down_name">Vysunutie Rýchleho Nastavenia</string>
+    <string name="quick_settings_quick_pull_down_summary">Autmaticky vysunie Rýchle Nastavenie pri potiahnutí pravého okraja</string>
+
+    <!-- Content description of the immersive mode tile -->
+    <string name="accessibility_quick_settings_immersive_mode_off">Imerzívny režim vypnutý</string>
+    <string name="accessibility_quick_settings_immersive_mode_full">Imerzívny režim na celú obrazovku</string>
+    <string name="accessibility_quick_settings_immersive_mode_hide_status_bar">Imerzívny režim skrytý stavový riadok</string>
+    <string name="accessibility_quick_settings_immersive_mode_hide_nav_bar">Imerzívny režim skrytý navigačný riadok</string>
+
+    <!-- Announcement made when immersive mode is toggled on/off -->
+    <string name="accessibility_quick_settings_immersive_mode_changed_on">Imerzívny režim zapnutý</string>
+    <string name="accessibility_quick_settings_immersive_mode_changed_off">Imerzívny režim vypnutý</string>
+
+    <!-- QuickSettings: Immersive tile -->
+    <string name="quick_settings_immersive_mode_label">Imerzívny režim</string>
+    <string name="quick_settings_immersive_mode_label_hide_all">Úplne imerzívny</string>
+    <string name="quick_settings_immersive_mode_label_hide_all_twoline">Úplne\nimerzívny</string>
+    <string name="quick_settings_immersive_mode_label_hide_status">Iba navigačný riadok</string>
+    <string name="quick_settings_immersive_mode_label_hide_status_twoline">Iba navigačný\nriadok</string>
+    <string name="quick_settings_immersive_mode_label_hide_nav">Iba stavový riadok</string>
+    <string name="quick_settings_immersive_mode_label_hide_nav_twoline">Iba stavový\nriadok</string>
+    <string name="quick_settings_immersive_mode_detail_hide_all">Úplne imerzívny zážitok</string>
+    <string name="quick_settings_immersive_mode_detail_hide_status">Iba navigačný riadok</string>
+    <string name="quick_settings_immersive_mode_detail_hide_nav">Iba stavový riadok</string>
+    <string name="quick_settings_immersive_introduce_hide_all">Skryje navigačný aj stavový riadok.</string>
+    <string name="quick_settings_immersive_introduce_hide_nav">Skryje iba stavový riadok.</string>
+    <string name="quick_settings_immersive_introduce_hide_status">Skryje iba navigačný riadok.</string>
+
+    <!-- QuickSettings: Night Display -->
+    <string name="quick_settings_night_display_warning">Nočný režim môže spôsobiť rýchlejšie vybitie batérie</string>
+    <string name="quick_settings_night_display_hide">Nezobrazovať toto upozornenie</string>
+
+    <!-- Path data for portrait battery
+    <string name="battery_portrait_path_full" translatable="false">M 5 2 H 19 V 21 H 5 V 2 Z</string>
+    <string name="battery_portrait_path_empty" translatable="false">M 5 21 H 19 V 21 H 5 V 21 Z</string>
+    <string name="battery_portrait_clip_path" translatable="false">M6,21V4h3V2h6v2h3v17H6z</string>-->
+
+    <!-- Path data for circle battery
+    <string name="battery_circle_full" translatable="false">M12,12m-10,0a10,10 0,1 1,20 0a10,10 0,1 1,-20 0</string>
+    <string name="battery_circle_empty" translatable="false">M12,12m0,0a0,0 0,1 1,0 0a0,0 0,1 1,0 0</string>-->
+
+    <!-- Content description of the location tile in quick settings when on, battery saving mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_battery_saving">Zisťovanie polohy: úsporný režim.</string>
+    <!-- Content description of the location tile in quick settings when on, sensors only mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_gps_only">Zisťovanie polohy: len senzory zariadenia.</string>
+    <!-- Content description of the location tile in quick settings when on, high accuracy mode (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_location_high_accuracy">Zisťovanie polohy: režim vysokej presnosti.</string>
+
+    <!-- QuickSettings: Location (On, low-power) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_battery_saving_label">Úsporný režim</string>
+    <string name="quick_settings_location_battery_saving_label_twoline">Úsporný\nrežim</string>
+    <!-- QuickSettings: Location (On, gps-only) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_gps_only_label">Iba GPS</string>
+    <string name="quick_settings_location_gps_only_label_twoline">Iba GPS</string>
+    <!-- QuickSettings: Location (On, high-accuracy) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_high_accuracy_label">Vysoká presnosť</string>
+    <string name="quick_settings_location_high_accuracy_label_twoline">Vysoká\npresnosť</string>
+
+    <!-- QuickSettings: Location detail panel title [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_location_detail_title">Poloha</string>
+    <!-- QuickSettings: Location detail panel menu title [CHAR LIMIT=NONE] -->
+
+    <string name="quick_settings_location_detail_menu_title">Vyberte režim:</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, high accuracy location mode -->
+    <string name="quick_settings_location_detail_mode_high_accuracy_title">Vysoká presnosť</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, battery saving location mode -->
+    <string name="quick_settings_location_detail_mode_battery_saving_title">Úsporný režim</string>
+    <!-- [CHAR LIMIT=30] Location detail panel, device only location mode -->
+    <string name="quick_settings_location_detail_mode_sensors_only_title">Iba senzory</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for high accuracy mode -->
+    <string name="quick_settings_location_detail_mode_high_accuracy_description">Na zistenie polohy sa použije GPS, Wi\u2011Fi, Bluetooth, alebo mobilný internet</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for battery saving mode -->
+    <string name="quick_settings_location_detail_mode_battery_saving_description">Na zistenie polohy sa použije Wi\u2011Fi, Bluetooth, alebo mobilný internet</string>
+    <!-- [CHAR LIMIT=130] Location detail panel, description for sensors only mode -->
+    <string name="quick_settings_location_detail_mode_sensors_only_description">Na zistenie polohy sa použije iba GPS</string>
+
+    <!-- QuickSettings: Alert slider tile related strings (re-using some of the do not disturb ones) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_alert_slider_unavailable">Posúvač výstrah nie je dostupný</string>
+    <string name="quick_settings_alert_slider_detail_alarms_only_description">Zablokuje VŠETKY zvuky a vibrácie okrem alarmov a hudby.</string>
+    <string name="quick_settings_alert_slider_none_label">Všetky notifikácie</string>
+    <string name="quick_settings_alert_slider_detail_disabled_message_description">Ďaľšie nastavenia nie sú pri vypnutom režime nerušiť dostupné.</string>
+
+    <string name="zen_footer_alert_slider_priority_only_summary">Iba vybrané notifikácie</string>
+    <string name="zen_footer_alert_slider_alarms_only_summary">Iba alarmy a hudba</string>
+    <string name="zen_footer_alert_slider_no_interruptions_summary">Žiadne zvuky alebo vibrácie</string>
+
+    <string name="quick_settings_alert_slider_detail_priority_events_title">Udalosti</string>
+    <string name="quick_settings_alert_slider_detail_priority_reminders_title">Pripomienky</string>
+</resources>
