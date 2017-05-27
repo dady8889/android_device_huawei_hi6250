@@ -49,11 +49,11 @@ AOSPA does automatically download the needed repos, but we need to add the devic
 
 Execute the following commands in a linux terminal:
 ```bash
-cd ~/Desktop/AOSPA-N/vendor/pa
-curl https://gist.githubusercontent.com/dady8889/a4c9456432788faa12a065bf181e4d71/raw | git apply -
+cd ~/Desktop/AOSPA-N/
+bash <(curl -s https://gist.githubusercontent.com/dady8889/07d8bdcffceb0538b4774fe5ca37c9ab/raw)
 ```
 
-If there was no git response, the patch was succesful.
+Notice the output of this command, if you see only OK, we can continue.
 
 ### Step 4: Building
 
@@ -68,24 +68,29 @@ Make sure there is enough memory for Jack (required). Without this you can get o
 export ANDROID_JACK_VM_ARGS="-Xmx4g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
 ```
 
-Now we need to apply our patches. There is no autopatch at the moment.
+NOTE: Build times depend on your PC performance specifications. It may take anywhere from 1 hours to 15 hours depending on system specs for a complete build.
+
+We are going to build. If you want to use autopatch, execute following commands:
 ```bash
 cd ~/Desktop/AOSPA-N
+export AUTOPATCH=true && ./rom-build hi6250 -s
+```
+
+If you want to apply patches manually:
+```bash
+# If you tried autopatcher before, execute command below
+unset AUTOPATCH
+# If not, continue
+cd ~/Desktop/AOSPA-N
 ./rom-build hi6250 -s
-# After syncing (after you see 'Starting compilation') press CTRL+C
+# After syncing (after you see 'Starting compilation') press CTRL+C (few times, maybe)
 cd ~/Desktop/AOSPA-N/device/huawei/hi6250/patches
 ./patchtool -p
-```
-If there were no errors, we can continue.
-
-NOTE: Build times depend on you PC performance specifications. It may take anywhere from 1 hours to 15 hours depending on system specs for a complete build.
-
-Execute the following commands in a linux terminal:
-```bash
 cd ~/Desktop/AOSPA-N
 ./rom-build hi6250
 ```
-Sit back and relax...
+
+Wait™ ...
 
 ### Step 5: Troubleshooting
 In case it won't download the needed repos in ./rom-build, you need to download them manually.
@@ -106,4 +111,4 @@ You can do
 while you are in target repository. You can add ~/Desktop/AOSPA-N/device/huawei/hi6250/patches to your PATH to shorten the command.
 Then you can copy the patch from your desktop and test it in the device tree. You can send the patch by making an "Issue".
 
-### Please let me know if there are mistakes, typos, mis/outdated - information in these instructions by creating an "issue".
+### Please let me know if there are mistakes, typos, mis/outdated - information in these instructions by creating an "Issue".
