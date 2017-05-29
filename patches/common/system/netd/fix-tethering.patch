@@ -1,0 +1,81 @@
+diff --git a/server/NatController.cpp b/server/NatController.cpp
+index 81909c2f..de9a6e7b 100644
+--- a/server/NatController.cpp
++++ b/server/NatController.cpp
+@@ -362,26 +362,28 @@ int NatController::setForwardRules(bool add, const char *intIface, const char *e
+             LOCAL_TETHER_COUNTERS_CHAIN
+     };
+ 
+-    const char *cmd4[] = {
+-            IP6TABLES_PATH,
+-            "-w",
+-            "-W",
+-            IPTABLES_RETRY_INTERVAL,
+-            "-t",
+-            "raw",
+-            add ? "-A" : "-D",
+-            LOCAL_RAW_PREROUTING,
+-            "-i",
+-            intIface,
+-            "-m",
+-            "rpfilter",
+-            "--invert",
+-            "!",
+-            "-s",
+-            "fe80::/64",
+-            "-j",
+-            "DROP"
+-    };
++    // Meticulus: avoid Werror by not creating this cmd.
++    // Comment long way so we can see in patch.
++    // const char *cmd4[] = {
++    //         IP6TABLES_PATH,
++    //         "-w",
++    //         "-W",
++    //         IPTABLES_RETRY_INTERVAL,
++    //         "-t",
++    //         "raw",
++    //         add ? "-A" : "-D",
++    //         LOCAL_RAW_PREROUTING,
++    //         "-i",
++    //         intIface,
++    //         "-m",
++    //         "rpfilter",
++    //         "--invert",
++    //         "!",
++    //         "-s",
++    //         "fe80::/64",
++    //         "-j",
++    //         "DROP"
++    // };
+ 
+     if (runCmd(ARRAY_SIZE(cmd2), cmd2) && add) {
+         // bail on error, but only if adding
+@@ -395,10 +397,10 @@ int NatController::setForwardRules(bool add, const char *intIface, const char *e
+         goto err_return;
+     }
+ 
+-    if (runCmd(ARRAY_SIZE(cmd4), cmd4) && add) {
+-        rc = -1;
+-        goto err_rpfilter;
+-    }
++    // if (runCmd(ARRAY_SIZE(cmd4), cmd4) && add) {
++    //     rc = -1;
++    //     goto err_rpfilter;
++    // }
+ 
+     if (setTetherCountingRules(add, intIface, extIface) && add) {
+         rc = -1;
+@@ -407,9 +409,9 @@ int NatController::setForwardRules(bool add, const char *intIface, const char *e
+ 
+     return 0;
+ 
+-err_rpfilter:
+-    cmd3[4] = "-D";
+-    runCmd(ARRAY_SIZE(cmd3), cmd3);
++// err_rpfilter:
++//     cmd3[4] = "-D";
++//     runCmd(ARRAY_SIZE(cmd3), cmd3);
+ err_return:
+     cmd2[4] = "-D";
+     runCmd(ARRAY_SIZE(cmd2), cmd2);
