@@ -1,0 +1,235 @@
+diff --git a/res/values/colors.xml b/res/values/colors.xml
+index 75a8101dc..886db63bd 100644
+--- a/res/values/colors.xml
++++ b/res/values/colors.xml
+@@ -17,11 +17,11 @@
+ <resources>
+     <color name="black">#000</color>
+     <color name="red">#F00</color>
+-    <color name="blue">#00F</color>
+     <color name="yellow">#FF0</color>
+-    <color name="orange">#FFA500</color>
+-    <color name="purple">#800080</color>
+     <color name="green">#0F0</color>
++    <color name="cyan">#00FFFF</color>
++    <color name="blue">#00F</color>
++    <color name="magenta">#FF00FF</color>
+ 
+     <color name="material_empty_color_light">#FFCED7DB</color>
+ 
+diff --git a/res/values/pa_arrays.xml b/res/values/pa_arrays.xml
+index 7e2eea797..ce67a874c 100644
+--- a/res/values/pa_arrays.xml
++++ b/res/values/pa_arrays.xml
+@@ -81,7 +81,7 @@
+ 
+     <!-- Values for the notification light pulse spinners -->
+     <string-array name="notification_pulse_length_entries" translatable="false">
+-        <item>@string/pulse_length_always_on</item>
++        <!--<item>@string/pulse_length_always_on</item>-->
+         <item>@string/pulse_length_very_short</item>
+         <item>@string/pulse_length_short</item>
+         <item>@string/pulse_length_normal</item>
+@@ -90,7 +90,7 @@
+     </string-array>
+ 
+     <string-array name="notification_pulse_length_values" translatable="false">
+-        <item>1</item>
++        <!--<item>1</item>-->
+         <item>250</item>
+         <item>500</item>
+         <item>1000</item>
+@@ -120,10 +120,9 @@
+         <item>@color/red</item>
+         <item>@color/yellow</item>
+         <item>@color/green</item>
++        <item>@color/cyan</item>
+         <item>@color/blue</item>
+-        <item>@color/orange</item>
+-        <item>@color/purple</item>
+-        <item>@color/material_empty_color_light</item>
++        <item>@color/magenta</item>
+     </integer-array>
+ 
+     <!-- Gestures Settings -->
+diff --git a/src/com/android/settings/batterylight/BatteryLightPreference.java b/src/com/android/settings/batterylight/BatteryLightPreference.java
+index 4f15427e4..9f700f20e 100644
+--- a/src/com/android/settings/batterylight/BatteryLightPreference.java
++++ b/src/com/android/settings/batterylight/BatteryLightPreference.java
+@@ -35,9 +35,13 @@ import com.android.settings.R;
+ import com.android.settingslib.ColorPickerDialog;
+ import com.android.settingslib.ColorPickerDialogAdapter;
+ 
++import android.util.Log;
++import android.graphics.Color;
++
+ public class BatteryLightPreference extends Preference implements DialogInterface.OnDismissListener {
+ 
+     private static String TAG = "BatteryLightPreference";
++    private final static String TAG_DADY = "Dady BatteryLight";
+     public static final int DEFAULT_COLOR = 0xFFFFFF; //White
+ 
+     private ImageView mLightColorView;
+@@ -123,7 +127,12 @@ public class BatteryLightPreference extends Preference implements DialogInterfac
+         dialog.setOnOkListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                mColorValue =  dialog.getSelectedColor();
++                int selectedColor = dialog.getSelectedColor();
++                int red = Color.red(selectedColor);
++                int green = Color.green(selectedColor);
++                int blue = Color.blue(selectedColor);
++                Log.d(TAG_DADY, "red=" + red + " green=" + green + " blue=" + blue);
++                mColorValue = Color.argb(255, red, green, blue);
+                 updatePreferenceViews();
+                 callChangeListener(this);
+                 dialog.dismiss();
+diff --git a/src/com/android/settings/batterylight/NotificationLightDialog.java b/src/com/android/settings/batterylight/NotificationLightDialog.java
+index b8d8ba4b4..a13fb1cb4 100644
+--- a/src/com/android/settings/batterylight/NotificationLightDialog.java
++++ b/src/com/android/settings/batterylight/NotificationLightDialog.java
+@@ -41,10 +41,14 @@ import java.util.ArrayList;
+ import com.android.settingslib.ColorPickerDialog;
+ import com.android.settingslib.ColorPickerDialogAdapter;
+ 
++import android.util.Log;
++import android.graphics.Color;
++
+ public class NotificationLightDialog extends ColorPickerDialog
+         implements ColorPickerDialog.OnColorSelectedListener {
+ 
+     private final static String TAG = "NotificationLightDialog";
++    private final static String TAG_DADY = "Dady NotificationLight";
+     private final static String STATE_KEY_COLOR = "NotificationLightDialog:color";
+     private final static long LED_UPDATE_DELAY_MS = 250;
+     private final static int LAYOUT_INDEX = 1;
+@@ -126,7 +130,7 @@ public class NotificationLightDialog extends ColorPickerDialog
+         }
+ 
+         mPulseSpeedOn.setEnabled(mOnOffChangeable);
+-        mPulseSpeedOff.setEnabled((mSpeedOn != 1) && mOnOffChangeable);
++        mPulseSpeedOff.setEnabled(mOnOffChangeable);
+ 
+         mReadyForLed = true;
+         updateLed();
+@@ -167,7 +171,7 @@ public class NotificationLightDialog extends ColorPickerDialog
+         @Override
+         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+             if (parent == mPulseSpeedOn) {
+-                mPulseSpeedOff.setEnabled(mPulseSpeedOn.isEnabled() && getPulseSpeedOn() != 1);
++                mPulseSpeedOff.setEnabled(mPulseSpeedOn.isEnabled());
+             }
+             updateLed();
+         }
+@@ -179,17 +183,12 @@ public class NotificationLightDialog extends ColorPickerDialog
+ 
+     @SuppressWarnings("unchecked")
+     public int getPulseSpeedOn() {
+-        if (mPulseSpeedOn.isEnabled()) {
+-            return ((Pair<String, Integer>) mPulseSpeedOn.getSelectedItem()).second;
+-        } else {
+-            return 1;
+-        }
++        return ((Pair<String, Integer>) mPulseSpeedOn.getSelectedItem()).second;
+     }
+ 
+     @SuppressWarnings("unchecked")
+     public int getPulseSpeedOff() {
+-        // return 0 if 'Always on' is selected
+-        return getPulseSpeedOn() == 1 ? 0 : ((Pair<String, Integer>) mPulseSpeedOff.getSelectedItem()).second;
++        return ((Pair<String, Integer>) mPulseSpeedOff.getSelectedItem()).second;
+     }
+ 
+     private Handler mLedHandler = new Handler() {
+@@ -203,15 +202,18 @@ public class NotificationLightDialog extends ColorPickerDialog
+             return;
+         }
+ 
+-        final int color = getSelectedColor() & 0xFFFFFF;
++        int selectedColor = getSelectedColor();
++        int red = Color.red(selectedColor);
++        int green = Color.green(selectedColor);
++        int blue = Color.blue(selectedColor);
++
++        final int color = Color.argb(255, red, green, blue);
++
+         final int speedOn, speedOff;
+-        if (mPulseSpeedOn.isEnabled()) {
+-            speedOn = getPulseSpeedOn();
+-            speedOff = getPulseSpeedOff();
+-        } else {
+-            speedOn = 1;
+-            speedOff = 0;
+-        }
++        speedOn = getPulseSpeedOn();
++        speedOff = getPulseSpeedOff();
++
++        Log.d(TAG_DADY, "red=" + red + " green=" + green + " blue=" + blue + " speedOn=" + speedOn + " speedOff=" + speedOff);
+ 
+         if (mLedLastColor == color && mLedLastSpeedOn == speedOn
+                 && mLedLastSpeedOff == speedOff) {
+diff --git a/src/com/android/settings/batterylight/NotificationLightPreference.java b/src/com/android/settings/batterylight/NotificationLightPreference.java
+index 6b4843478..648863ffd 100644
+--- a/src/com/android/settings/batterylight/NotificationLightPreference.java
++++ b/src/com/android/settings/batterylight/NotificationLightPreference.java
+@@ -209,24 +209,27 @@ public class NotificationLightPreference extends Preference implements DialogInt
+ 
+         int[] colors = getContext().getResources().getIntArray(
+                 R.array.led_color_picker_dialog_colors);
+-        final int initialPackageColor = getInitialColor();
++        //final int initialPackageColor = getInitialColor();
+ 
+         // Check if the set package color (mColorValue) is still allowed. This
+         // is the case if will be one of the selectable colors in the dialog,
+         // in other words if it one of the material colors or the current
+         // initial package color.
+-        boolean setPackageColorAllowed = mColorValue == initialPackageColor;
+-        for(int i = 0; !setPackageColorAllowed && i < colors.length - 1; i++) {
+-            setPackageColorAllowed = (colors[i] == mColorValue);
+-        }
++        //boolean setPackageColorAllowed = mColorValue == initialPackageColor;
++        //for(int i = 0; !setPackageColorAllowed && i < colors.length - 1; i++) {
++        //    setPackageColorAllowed = (colors[i] == mColorValue);
++        //}
+ 
+-        if (!setPackageColorAllowed) { // Happens when the application icon changes
+-            mColorValue = initialPackageColor;
+-            updatePreferenceViews();
+-        }
++        //if (!setPackageColorAllowed) { // Happens when the application icon changes
++        //    mColorValue = initialPackageColor;
++        //    updatePreferenceViews();
++        //}
++
++        // Always update the view
++        updatePreferenceViews();
+ 
+         // Inject the initial package color
+-        colors[colors.length - 1] = initialPackageColor;
++        // colors[colors.length - 1] = initialPackageColor;
+         adapter.setColors(colors);
+ 
+         dialog.setSelectedColor(mColorValue);
+diff --git a/src/com/android/settings/batterylight/NotificationLightSettings.java b/src/com/android/settings/batterylight/NotificationLightSettings.java
+index 927a67175..2705a9515 100644
+--- a/src/com/android/settings/batterylight/NotificationLightSettings.java
++++ b/src/com/android/settings/batterylight/NotificationLightSettings.java
+@@ -60,6 +60,7 @@ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
++import java.util.Random;
+ 
+ public class NotificationLightSettings extends SettingsPreferenceFragment implements
+         Preference.OnPreferenceChangeListener, NotificationLightPreference.ItemLongClickListener, Indexable {
+@@ -270,7 +271,9 @@ public class NotificationLightSettings extends SettingsPreferenceFragment implem
+     private void addCustomApplicationPref(String packageName) {
+         Package pkg = mPackages.get(packageName);
+         if (pkg == null) {
+-            int color = getInitialColorForPackage(packageName);
++            int[] colors = getContext().getResources().getIntArray(
++                R.array.led_color_picker_dialog_colors);
++            int color = colors[new Random().nextInt(colors.length)];
+             pkg = new Package(packageName, color, mDefaultLedOn, mDefaultLedOff);
+             mPackages.put(packageName, pkg);
+             savePackageList(false);
