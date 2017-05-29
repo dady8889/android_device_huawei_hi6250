@@ -28,7 +28,9 @@ LOCAL_MODULE := lights.hi6250
 
 ifneq ($(TARGET_PRODUCT),omni_hi6250)
 ifneq ($(TARGET_PRODUCT),aosp_hi6250)
+ifneq ($(TARGET_PRODUCT),pa_hi6250)
 LOCAL_CFLAGS += -DLEDSMODE
+endif
 endif
 endif
 
