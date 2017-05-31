@@ -88,15 +88,15 @@ ro.config.twrp=cm_hi6250
 # purple = 0xffff00ff
 # teal = 0xff00ffff
 persist.sys.stock_lights_HAL=false
-persist.sys.lights_HAL_lp=0xffff0000
-persist.sys.lights_HAL_c=0xffffff00
-persist.sys.lights_HAL_fp=0xff00ff00
-persist.sys.lights_HAL_n=0xff0000ff
+#persist.sys.lights_HAL_lp=0xffff0000
+#persist.sys.lights_HAL_c=0xffffff00
+#persist.sys.lights_HAL_fp=0xff00ff00
+#persist.sys.lights_HAL_n=0xff0000ff
 #
 # Meticulus Power HAL
 #
 persist.sys.stock_power_HAL=false
 #
 #
-#i
+#
 persist.sys.strictmode.disable=true
