@@ -23,7 +23,7 @@ import time
 
 LOCAL_DIR = os.path.dirname(os.path.abspath(__file__))
 TARGET_DIR = os.getenv('OUT')
-UTILITIES_DIR = os.path.join(TARGET_DIR, 'symbols')
+#UTILITIES_DIR = os.path.join(TARGET_DIR, 'symbols')
 
 def addFolderToZip(info, directory, basedir):
     list = os.listdir(directory)

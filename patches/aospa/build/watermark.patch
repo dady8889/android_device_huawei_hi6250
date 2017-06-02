@@ -24,7 +24,7 @@ index 7f339809d..3c43819c5 100755
    # in the target build.
    script = edify_generator.EdifyGenerator(3, OPTIONS.info_dict)
  
-+  PrintWatermark(script);
++  PrintWatermark(script)
 +
 +  script.Print("INFO: You are flashing a Full OTA")
 +
@@ -97,14 +97,13 @@ index 7f339809d..3c43819c5 100755
      script.ShowProgress(0.1, 10)
      script.FormatPartition("/data")
  
-@@ -1551,6 +1579,10 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
-   target_has_recovery_patch = HasRecoveryPatch(target_zip)
-   source_has_recovery_patch = HasRecoveryPatch(source_zip)
+@@ -1566,6 +1594,9 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
+       source_version, OPTIONS.target_info_dict,
+       fstab=OPTIONS.source_info_dict["fstab"])
  
-+  PrintWatermark(script);
-+
++  PrintWatermark(script)
 +  script.Print("INFO: You are flashing an Incremental OTA")
 +
-   if (OPTIONS.block_based and
-       target_has_recovery_patch and
-       source_has_recovery_patch):
+   oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
+   recovery_mount_options = OPTIONS.source_info_dict.get(
+       "recovery_mount_options")
