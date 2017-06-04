@@ -44,7 +44,6 @@ extern int load_stock_power(char *path, hw_module_t **pHmi);
 
 static int stock_power = 0;
 static int low_power = 0;
-static int dt2w = 0;
 static struct power_profile * profile = &performance; 
 static struct power_profile * sel_profile = &performance;
 
@@ -108,7 +107,6 @@ static void power_set_interactive(struct power_module *module, int on) {
 	    write_string(DDR_FREQ_MIN_PATH,(* profile).gpu_freq_low);
 	    write_string(GPU_FREQ_POLL_PATH,"12000\n");
 	    write_string(DDR_FREQ_POLL_PATH,"12000\n");
-            if(dt2w) write_string(WAKE_ENABLE_PATH,"1\n");
 	}
 }
 
@@ -278,23 +276,12 @@ static void power_hint(struct power_module *module, power_hint_t hint,
     }
 }
 
-static void set_dt2w(int on) {
-    dt2w = on;
-    if(on)
-	write_string(WAKE_CONF_PATH,"1\n");
-    else 
-	write_string(WAKE_CONF_PATH,"0\n");
-}
-
 static int get_feature(struct power_module *module, feature_t feature) {
 
     if(stock_power) return -1;
 
     int retval = 0;
     switch(feature) {
-	case POWER_FEATURE_DOUBLE_TAP_TO_WAKE:
-	    retval = 1;
-	    break;
 #ifdef CMEXTRAS
 	case POWER_FEATURE_SUPPORTED_PROFILES:
 	    retval = 3;
@@ -312,9 +299,6 @@ static void set_feature(struct power_module *module, feature_t feature, int stat
     if(stock_power) return;
 
     switch(feature) {
-	case POWER_FEATURE_DOUBLE_TAP_TO_WAKE:
-	    set_dt2w(state);
-	    break;
 #ifdef CMEXTRAS
 	case POWER_FEATURE_SUPPORTED_PROFILES:
 	    ALOGI("POWER_FEATURE_SUPPORTED_PROFILES: %d",state);

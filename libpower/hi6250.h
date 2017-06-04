@@ -40,9 +40,6 @@
 #define CPU4_FREQ_MIN_PATH	"/sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq"
 #define CPU4_FREQ_MAX_PATH	"/sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq"
 
-#define WAKE_CONF_PATH		"/sys/touchscreen/easy_wakeup_gesture"
-#define WAKE_ENABLE_PATH	"/sys/touchscreen/wakeup_gesture_enable"
-
 /* Start profile power_save  */
 
 #define DDR_FREQ_MAX_0	 	"360000000\n"
