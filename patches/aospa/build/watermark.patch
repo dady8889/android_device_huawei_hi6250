@@ -107,3 +107,22 @@ index 7f339809d..3c43819c5 100755
    oem_props = OPTIONS.info_dict.get("oem_fingerprint_properties")
    recovery_mount_options = OPTIONS.source_info_dict.get(
        "recovery_mount_options")
+@@ -1631,12 +1662,12 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
+   source_fp = CalculateFingerprint(oem_props, oem_dict,
+                                    OPTIONS.source_info_dict)
+ 
+-  if oem_props is None:
+-    script.AssertSomeFingerprint(source_fp, target_fp)
+-  else:
+-    script.AssertSomeThumbprint(
+-        GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict),
+-        GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
++  #if oem_props is None:
++  #  script.AssertSomeFingerprint(source_fp, target_fp)
++  #else:
++  #  script.AssertSomeThumbprint(
++  #      GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict),
++  #      GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
+ 
+   metadata["pre-build"] = source_fp
+   metadata["post-build"] = target_fp
