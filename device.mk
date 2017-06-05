@@ -192,3 +192,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Browser
 PRODUCT_PACKAGES += \
     ChromiumSWE
+
+
+# Device specific preferences
+PRODUCT_PACKAGES += \
+    HuaweiSettings
