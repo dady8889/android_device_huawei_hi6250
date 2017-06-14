@@ -1,5 +1,8 @@
 # Android O for the Huawei P9 Lite (hi6250)
 
+###
+This is EXPERIMENTAL device tree that is not intended to make some real progress.
+
 ### Build status
 Not building at the moment.
 
