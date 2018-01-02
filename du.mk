@@ -14,12 +14,18 @@
 # limitations under the License.
 #
 
-PRODUCT_MAKEFILES := \
-    omni_hi6250:$(LOCAL_DIR)/omni.mk \
-    cm_hi6250:$(LOCAL_DIR)/cm.mk \
-    slim_hi6250:$(LOCAL_DIR)/slim.mk \
-    lineage_hi6250:$(LOCAL_DIR)/lineage.mk \
-    validus_hi6250:$(LOCAL_DIR)/validus.mk \
-    du_hi6250:$(LOCAL_DIR)/du.mk \
-    aosp_hi6250:$(LOCAL_DIR)/aosp.mk
+# AOSP overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay/aosp
+
+# Inherit cm
+$(call inherit-product, device/huawei/hi6250/cm.mk)
+
+# Inherit du custom product configuration with complete APNs
+$(call inherit-product, vendor/du/config/common_full_phone.mk)
+
+PRODUCT_NAME := du_hi6250
+
+PRODUCT_PACKAGES += \
+    messaging \
+    charger_res_images
 
