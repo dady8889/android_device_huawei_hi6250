@@ -57,6 +57,7 @@ TARGET_USERIMAGES_USE_F2FS := true
 # Kernel
 TARGET_KERNEL_CONFIG := merge_hi6250_defconfig
 TARGET_KERNEL_SOURCE := kernel/huawei/hi6250
+BOARD_KERNEL_IMAGE_NAME := Image.gz
 BOARD_KERNEL_CMDLINE := loglevel=4 coherent_pool=512K page_tracker=on slub_min_objects=12 androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00478000
 BOARD_KERNEL_PAGESIZE := 2048
