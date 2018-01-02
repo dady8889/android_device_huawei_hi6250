@@ -1,0 +1,89 @@
+From e58d8afd9f67e3c25c19a1ce80523c1168a6525d Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Fri, 1 Dec 2017 16:13:30 -0600
+Subject: [PATCH] "0002-init-vendor-stubs-boot-critical
+ _______________________________
+
+*Previous From 8cc098b8871224f85f38cf23a38efd8e1dbda7c4 Mon Sep 17 00:00:00 2001
+*Previous From: Meticulus <theonejohnnyd@gmail.com>
+*Previous Date: Sun, 30 Apr 2017 10:44:21 -0500
+*Previous Subject: [PATCH] 0002-init-vendor-stubs-boot-critical
+*"
+
+Change-Id: I25f937ec8f7683f833a4d366579d5a7add154987
+---
+ init/property_service.cpp |  6 ++++--
+ init/vendor_init.cpp      | 12 +++++++++++-
+ init/vendor_init.h        |  4 +++-
+ 3 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/init/property_service.cpp b/init/property_service.cpp
+index 0a5aee5..4563309 100644
+--- a/init/property_service.cpp
++++ b/init/property_service.cpp
+@@ -458,6 +458,7 @@ static void load_persistent_properties() {
+ 
+ void property_load_boot_defaults() {
+     load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, NULL);
++    vendor_load_default_properties();
+ }
+ 
+ static void load_override_properties() {
+@@ -478,6 +479,7 @@ void load_persist_props(void) {
+     load_override_properties();
+     /* Read persistent properties after all default values have been loaded. */
+     load_persistent_properties();
++    vendor_load_persist_properties();
+ }
+ 
+ void load_recovery_id_prop() {
+@@ -526,9 +528,9 @@ void load_system_props() {
+     /* update with vendor-specific property runtime
+      * overrides
+      */
+-    vendor_load_properties();
+-
++    vendor_load_system_properties();
+     load_recovery_id_prop();
++
+ }
+ 
+ void start_property_service() {
+diff --git a/init/vendor_init.cpp b/init/vendor_init.cpp
+index d3fd5ff..a30c2f1 100644
+--- a/init/vendor_init.cpp
++++ b/init/vendor_init.cpp
+@@ -32,6 +32,16 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ /* init vendor override stubs */
+ 
+ __attribute__ ((weak))
+-void vendor_load_properties()
++void vendor_load_default_properties()
++{
++}
++
++__attribute__ ((weak))
++void vendor_load_system_properties()
++{
++}
++
++__attribute__ ((weak))
++void vendor_load_persist_properties()
+ {
+ }
+diff --git a/init/vendor_init.h b/init/vendor_init.h
+index 9afb449..f86c65f 100644
+--- a/init/vendor_init.h
++++ b/init/vendor_init.h
+@@ -29,5 +29,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ #ifndef __INIT_VENDOR__H__
+ #define __INIT_VENDOR__H__
+-extern void vendor_load_properties(void);
++extern void vendor_load_default_properties(void);
++extern void vendor_load_system_properties(void);
++extern void vendor_load_persist_properties(void);
+ #endif /* __INIT_VENDOR__H__ */
+-- 
+2.7.4
+

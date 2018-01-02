@@ -1,0 +1,43 @@
+From e5b02132d5e0e75d95b3ca53e518451cd1e2798f Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Thu, 23 Nov 2017 08:32:01 -0600
+Subject: [PATCH] "0001-wpa_supplicant-don-t-build-wpa_cli
+ _______________________________
+
+*Previous From 4e93c77ed0589ac6e323aa2cf9c26bb9494cc5b3 Mon Sep 17 00:00:00 2001
+*Previous From: Meticulus <theonejohnnyd@gmail.com>
+*Previous Date: Fri, 17 Nov 2017 18:39:09 -0600
+*Previous Subject: [PATCH] wpa_supplicant: don't build wpa_cli
+*
+*Change-Id: I13c54ef64e7d6dea2f5c4c369ac9fac770567e5e"
+
+Change-Id: I47f4551db1ef52f169087d24396fc32b9fed0cf0
+---
+ wpa_supplicant/Android.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wpa_supplicant/Android.mk b/wpa_supplicant/Android.mk
+index 71236a5..45653e8 100644
+--- a/wpa_supplicant/Android.mk
++++ b/wpa_supplicant/Android.mk
+@@ -1538,7 +1538,7 @@ LDO=$(CC)
+ endif
+ 
+ ########################
+-
++ifeq (0,1)
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := wpa_cli
+ LOCAL_MODULE_TAGS := debug
+@@ -1547,7 +1547,7 @@ LOCAL_CFLAGS := $(L_CFLAGS)
+ LOCAL_SRC_FILES := $(OBJS_c)
+ LOCAL_C_INCLUDES := $(INCLUDES)
+ include $(BUILD_EXECUTABLE)
+-
++endif
+ ########################
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := wpa_supplicant
+-- 
+2.7.4
+

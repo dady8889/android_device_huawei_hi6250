@@ -1,0 +1,30 @@
+From 50b31e1d0a67cf59edfa930f351c6c44ee33c455 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Fri, 10 Mar 2017 06:59:52 -0600
+Subject: [PATCH] Runtime: compat don't for absolute path
+
+Change-Id: I084d3cabeabad470f0ecd75e03f185e30f69a2f5
+---
+ ojluni/src/main/java/java/lang/Runtime.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ojluni/src/main/java/java/lang/Runtime.java b/ojluni/src/main/java/java/lang/Runtime.java
+index 5e63dd8..f3c2a53 100755
+--- a/ojluni/src/main/java/java/lang/Runtime.java
++++ b/ojluni/src/main/java/java/lang/Runtime.java
+@@ -896,10 +896,10 @@ public class Runtime {
+     }
+ 
+     synchronized void load0(Class fromClass, String filename) {
+-        if (!(new File(filename).isAbsolute())) {
++        /*if (!(new File(filename).isAbsolute())) {
+             throw new UnsatisfiedLinkError(
+                 "Expecting an absolute path of the library: " + filename);
+-        }
++        }*/
+         if (filename == null) {
+             throw new NullPointerException("filename == null");
+         }
+-- 
+1.9.1
+
