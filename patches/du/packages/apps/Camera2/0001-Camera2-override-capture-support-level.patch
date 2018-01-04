@@ -1,41 +1,17 @@
-From 95c1b1fd6d4ca9486cc39fc3e30378f9f4711c02 Mon Sep 17 00:00:00 2001
+From c852f3ec6b7867e0153118045ba60b5892517568 Mon Sep 17 00:00:00 2001
 From: Meticulus <theonejohnnyd@gmail.com>
-Date: Mon, 5 Dec 2016 17:27:53 -0600
-Subject: [PATCH] Camera2: override capture support level
+Date: Mon, 1 May 2017 12:09:33 -0500
+Subject: [PATCH] 0001-Camera2-override-capture-support-level
 
--The capture support level detected for our Camera is
-LIMITED_YUV which leads to incorrect picture sizes. Well,
-they might be for YUV but our Cameras are capable of
-LIMITED_JPEG which corrects the camera issues. GservicesHelper
-seems to be a place where this detection can be overriden using
-a ContentResolver. I thought it would be simpler to just set
-a property.
-
--CaptureSupportLevel is an enum with these values:
-ZSL = 1
-LEGACY_JPEG = 2
-LIMITED_JPEG = 3
-LIMITED_YUV = 4
-and you can use -1 for unused. The property should correspond
-to one of these values.
-
-Change-Id: I72ad06572ecc6fbc7b016f53d2e8a0f50cbe3b6a
 ---
- src_pd/com/android/camera/util/GservicesHelper.java | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ src_pd/com/android/camera/util/GservicesHelper.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src_pd/com/android/camera/util/GservicesHelper.java b/src_pd/com/android/camera/util/GservicesHelper.java
-index 12ae56a..2d951f4 100644
+index 12ae56a..94b8e04 100644
 --- a/src_pd/com/android/camera/util/GservicesHelper.java
 +++ b/src_pd/com/android/camera/util/GservicesHelper.java
-@@ -18,6 +18,6 @@ package com.android.camera.util;
- 
- import android.content.ContentResolver;
- import android.content.Context;
- 
- public class GservicesHelper {
- 
-@@ -38,11 +39,11 @@ public class GservicesHelper {
+@@ -38,11 +38,11 @@ public class GservicesHelper {
      }
  
      public static int getCaptureSupportLevelOverrideBack(ContentResolver contentResolver) {
@@ -45,7 +21,7 @@ index 12ae56a..2d951f4 100644
  
      public static int getCaptureSupportLevelOverrideFront(ContentResolver contentResolver) {
 -        return -1;
-+        return 3;
++        return 3; 
      }
  
      public static int getMaxAllowedNativeMemoryMb(ContentResolver contentResolver) {
