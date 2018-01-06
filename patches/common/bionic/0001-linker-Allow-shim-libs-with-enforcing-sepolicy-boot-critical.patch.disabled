@@ -42,10 +42,10 @@ index 24ae070..3abf7a3 100644
  # We need to access Bionic private headers in the linker.
  LOCAL_CFLAGS += -I$(LOCAL_PATH)/../libc/
  
-diff --git a/linker/linker.cpp b/linker/linker.cpp
+diff --git a/linker/linker_main.cpp b/linker/linker_main.cpp
 index ef31dae..53cda0a 100644
---- a/linker/linker.cpp
-+++ b/linker/linker.cpp
+--- a/linker/linker_main.cpp
++++ b/linker/linker_main.cpp
 @@ -1616,8 +1616,8 @@ static int open_library_in_zipfile(ZipArchiveCache* zip_archive_cache,
    if (realpath_fd(fd, realpath)) {
      *realpath += separator;

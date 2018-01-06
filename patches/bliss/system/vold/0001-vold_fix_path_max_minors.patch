@@ -1,0 +1,26 @@
+From 1aa6c09532bcaac95d9c5f7ecfa685c556daab25 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sat, 5 Nov 2016 11:19:26 -0500
+Subject: [PATCH] vold_fix_path_max_minors
+
+Change-Id: I5af71df3370959047c9bde1d5f66e9c5a37ec0eb
+---
+ Disk.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Disk.cpp b/Disk.cpp
+index 357342b..f957b3a 100644
+--- a/Disk.cpp
++++ b/Disk.cpp
+@@ -50,7 +50,7 @@ static const char* kSgdiskPath = "/system/bin/sgdisk";
+ #endif
+ static const char* kSgdiskToken = " \t\n";
+ 
+-static const char* kSysfsMmcMaxMinors = "/sys/module/mmcblk/parameters/perdev_minors";
++static const char* kSysfsMmcMaxMinors = "/sys/module/mmc_block/parameters/perdev_minors";
+ 
+ static const unsigned int kMajorBlockScsiA = 8;
+ static const unsigned int kMajorBlockScsiB = 65;
+-- 
+1.9.1
+

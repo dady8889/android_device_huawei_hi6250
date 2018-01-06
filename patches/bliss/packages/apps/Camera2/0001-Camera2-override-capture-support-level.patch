@@ -1,0 +1,29 @@
+From c852f3ec6b7867e0153118045ba60b5892517568 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Mon, 1 May 2017 12:09:33 -0500
+Subject: [PATCH] 0001-Camera2-override-capture-support-level
+
+---
+ src_pd/com/android/camera/util/GservicesHelper.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src_pd/com/android/camera/util/GservicesHelper.java b/src_pd/com/android/camera/util/GservicesHelper.java
+index 12ae56a..94b8e04 100644
+--- a/src_pd/com/android/camera/util/GservicesHelper.java
++++ b/src_pd/com/android/camera/util/GservicesHelper.java
+@@ -38,11 +38,11 @@ public class GservicesHelper {
+     }
+ 
+     public static int getCaptureSupportLevelOverrideBack(ContentResolver contentResolver) {
+-        return -1;
++        return 3;
+     }
+ 
+     public static int getCaptureSupportLevelOverrideFront(ContentResolver contentResolver) {
+-        return -1;
++        return 3; 
+     }
+ 
+     public static int getMaxAllowedNativeMemoryMb(ContentResolver contentResolver) {
+-- 
+1.9.1

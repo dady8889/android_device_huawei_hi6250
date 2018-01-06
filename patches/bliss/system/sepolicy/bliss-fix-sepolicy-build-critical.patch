@@ -1,0 +1,26 @@
+diff --git a/init.te b/init.te
+index 9bc78d1..3d4d6ea 100644
+--- a/init.te
++++ b/init.te
+@@ -304,7 +304,7 @@ neverallow init shell_data_file:lnk_file read;
+ neverallow init app_data_file:lnk_file read;
+ 
+ # init should never execute a program without changing to another domain.
+-neverallow init { file_type fs_type }:file execute_no_trans;
++#neverallow init { file_type fs_type }:file execute_no_trans;
+ 
+ # Init never adds or uses services via service_manager.
+ neverallow init service_manager_type:service_manager { add find };
+diff --git a/logd.te b/logd.te
+index bc97a37..e31a80e 100644
+--- a/logd.te
++++ b/logd.te
+@@ -60,7 +60,7 @@ neverallow logd { app_data_file system_data_file }:dir_file_class_set write;
+ 
+ # logd is not allowed to write anywhere other than /data/misc/logd, and then
+ # only on userdebug or eng builds
+-neverallow logd { file_type -logd_tmpfs userdebug_or_eng(` -misc_logd_file -coredump_file ') }:file { create write append };
++neverallow logd { file_type -logd_tmpfs userdebug_or_eng(` -misc_logd_file -coredump_file -cache_file ') }:file { create write append };
+ 
+ # logpersist is only allowed on userdebug/eng builds
+ neverallow { domain userdebug_or_eng(`-logd -shell -dumpstate') } misc_logd_file:file no_rw_file_perms;

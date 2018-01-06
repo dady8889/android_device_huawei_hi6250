@@ -1,0 +1,34 @@
+From b3227c6518b58001930a63e2943fadd9cfafaf98 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Tue, 13 Sep 2016 14:15:19 -0500
+Subject: [PATCH] fix_mtp
+
+Change-Id: I1e7937a05bf92e43b3856134d3aaa1eaee90ef3d
+---
+ src/com/android/providers/media/MtpService.java | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/com/android/providers/media/MtpService.java b/src/com/android/providers/media/MtpService.java
+index ca9c811..b9c73ce 100644
+--- a/src/com/android/providers/media/MtpService.java
++++ b/src/com/android/providers/media/MtpService.java
+@@ -216,12 +216,12 @@ public class MtpService extends Service {
+             StorageVolume volume = mVolumes[i];
+             if (volume.getPath().equals(path)) {
+                 mVolumeMap.put(path, volume);
+-                if (!mMtpDisabled) {
++                /*if (!mMtpDisabled) {
+                     // In PTP mode we support only primary storage
+-                    if (volume.isPrimary() || !mPtpMode) {
++                    if (volume.isPrimary() || !mPtpMode) {*/
+                         addStorageLocked(volume);
+-                    }
+-                }
++                    /*}
++                }*/
+                 break;
+             }
+         }
+-- 
+1.9.1
+

@@ -1,0 +1,51 @@
+From debb7c88764398776d3f43d86abefe847ab9c6cc Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Mon, 5 Dec 2016 08:18:00 -0600
+Subject: [PATCH] screenrecorder: force use google avc encoder
+
+-There is some sort of issue with the hw encoder.
+
+Change-Id: Ifb04ec243a2810f113169d73b9cf4b1d43a8735b
+---
+ cmds/screenrecord/screenrecord.cpp | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/screenrecord/screenrecord.cpp b/cmds/screenrecord/screenrecord.cpp
+index 36a7e73..dbb554e 100644
+--- a/cmds/screenrecord/screenrecord.cpp
++++ b/cmds/screenrecord/screenrecord.cpp
+@@ -34,6 +34,7 @@
+ #define ATRACE_TAG ATRACE_TAG_GRAPHICS
+ //#define LOG_NDEBUG 0
+ #include <utils/Log.h>
++#include <cutils/properties.h>
+ 
+ #include <binder/IPCThreadState.h>
+ #include <utils/Errors.h>
+@@ -64,6 +65,7 @@ static const uint32_t kMaxTimeLimitSec = 180;       // 3 minutes
+ static const uint32_t kFallbackWidth = 1280;        // 720p
+ static const uint32_t kFallbackHeight = 720;
+ static const char* kMimeTypeAvc = "video/avc";
++static const char* kGoogleH264Encoder = "OMX.google.h264.encoder";
+ 
+ // Command-line parameters.
+ static bool gVerbose = false;           // chatty on stdout
+@@ -167,7 +169,14 @@ static status_t prepareEncoder(float displayFps, sp<MediaCodec>* pCodec,
+     looper->setName("screenrecord_looper");
+     looper->start();
+     ALOGV("Creating codec");
+-    sp<MediaCodec> codec = MediaCodec::CreateByType(looper, kMimeTypeAvc, true);
++
++    sp<MediaCodec> codec = NULL;
++    if(!strcmp(kMimeTypeAvc,"video/avc") && property_get_bool("persist.sys.sr_google_avc_enc", 0)) {
++	ALOGI("persist.sys.sr_google_avc_enc is set");
++    	codec = MediaCodec::CreateByComponentName(looper, kGoogleH264Encoder);
++    } else
++    	codec = MediaCodec::CreateByType(looper, kMimeTypeAvc, true);
++
+     if (codec == NULL) {
+         fprintf(stderr, "ERROR: unable to create %s codec instance\n",
+                 kMimeTypeAvc);
+-- 
+1.9.1
+

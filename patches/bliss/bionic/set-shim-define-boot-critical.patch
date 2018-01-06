@@ -1,0 +1,31 @@
+diff --git a/linker/Android.mk b/linker/Android.mk
+index 4a4ca5c..cf60237 100644
+--- a/linker/Android.mk
++++ b/linker/Android.mk
+@@ -54,6 +54,10 @@ ifeq ($(TARGET_IS_64_BIT),true)
+ LOCAL_CPPFLAGS += -DTARGET_IS_64_BIT
+ endif
+ 
++ifneq ($(LD_SHIM_LIBS),)
++LOCAL_CPPFLAGS += -DLD_SHIM_LIBS=\"$(LD_SHIM_LIBS)\"
++endif
++
+ # We need to access Bionic private headers in the linker.
+ LOCAL_CFLAGS += -I$(LOCAL_PATH)/../libc/
+ 
+diff --git a/linker/linker.cpp b/linker/linker.cpp
+index a8e45c5..87045c3 100644
+--- a/linker/linker.cpp
++++ b/linker/linker.cpp
+@@ -4304,7 +4304,11 @@ static ElfW(Addr) __linker_init_post_relocation(KernelArgumentBlock& args, ElfW(
+     if (ldpreload_env != nullptr) {
+       INFO("[ LD_PRELOAD set to \"%s\" ]", ldpreload_env);
+     }
++#ifdef LD_SHIM_LIBS
++    ldshim_libs_env = LD_SHIM_LIBS;
++#else
+     ldshim_libs_env = getenv("LD_SHIM_LIBS");
++#endif
+   }
+ 
+   struct stat file_stat;

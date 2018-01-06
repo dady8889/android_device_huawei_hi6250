@@ -1,0 +1,67 @@
+From 1552b99fb04085fb259413af4efa900dbf64b090 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Sun, 7 May 2017 06:14:35 -0500
+Subject: [PATCH] 0001-MediaCodec-use-google-h264-encoder
+
+Change-Id: I55b4c62f1ee5db7299284306613ea5d168b2adc2
+---
+ media/libstagefright/MediaCodec.cpp | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/media/libstagefright/MediaCodec.cpp b/media/libstagefright/MediaCodec.cpp
+index a8e801f..3a95702 100644
+--- a/media/libstagefright/MediaCodec.cpp
++++ b/media/libstagefright/MediaCodec.cpp
+@@ -52,6 +52,9 @@
+ #include <utils/Singleton.h>
+ #include <stagefright/AVExtensions.h>
+ 
++#include <cutils/properties.h>
++#include <string.h>
++
+ namespace android {
+ 
+ static int64_t getId(sp<IResourceManagerClient> client) {
+@@ -174,7 +177,22 @@ sp<MediaCodec> MediaCodec::CreateByType(
+         const sp<ALooper> &looper, const AString &mime, bool encoder, status_t *err, pid_t pid) {
+     sp<MediaCodec> codec = new MediaCodec(looper, pid);
+ 
+-    const status_t ret = codec->init(mime, true /* nameIsType */, encoder);
++    /* Meticulus:
++     * The hw video encoder does not do well with screenrecording
++     * and the google decoder does not do well with 1080p video
++     * playback. So here we are forcing the use of the google
++     * encoder for video/avc for recording While retaining the
++     * default behavior for video playback.
++     * UPDATE: Lets make this switchable.
++     */
++    status_t ret = -1;
++    //ALOGD("Meticulus: mime = %s",mime.c_str());
++    if(!strcmp(mime.c_str(),"video/avc") && encoder && property_get_bool("persist.sys.google_avc_enc",0)) {
++	ret = codec->init("OMX.google.h264.encoder",false,encoder);
++	ALOGI("persist.sys.google_avc_enc is set.");
++    }
++    else
++	ret = codec->init(mime, true /* nameIsType */, encoder);
+     if (err != NULL) {
+         *err = ret;
+     }
+@@ -186,7 +204,14 @@ sp<MediaCodec> MediaCodec::CreateByComponentName(
+         const sp<ALooper> &looper, const AString &name, status_t *err, pid_t pid) {
+     sp<MediaCodec> codec = new MediaCodec(looper, pid);
+ 
+-    const status_t ret = codec->init(name, false /* nameIsType */, false /* encoder */);
++    status_t ret = -1;
++    //ALOGD("Meticulus: name = %s",name.c_str());
++    if(!strcmp(name.c_str(),"OMX.IMG.TOPAZ.VIDEO.Encoder") && property_get_bool("persist.sys.google_avc_enc",0)) {
++	ret = codec->init("OMX.google.h264.encoder",false,true);
++	ALOGI("persist.sys.google_avc_enc is set.");
++    }
++    else
++	ret = codec->init(name, false /* nameIsType */, false /* encoder */);
+     if (err != NULL) {
+         *err = ret;
+     }
+-- 
+1.9.1
+
