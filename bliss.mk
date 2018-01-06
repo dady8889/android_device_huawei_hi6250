@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2016 Jonathan Jason Dennis (theonejohnnyd@gmail.com)
+# Copyright (C) 2018 Daniel Múčka (dady8889@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
 # limitations under the License.
 #
 
-PRODUCT_MAKEFILES := \
-    omni_hi6250:$(LOCAL_DIR)/omni.mk \
-    cm_hi6250:$(LOCAL_DIR)/cm.mk \
-    slim_hi6250:$(LOCAL_DIR)/slim.mk \
-    lineage_hi6250:$(LOCAL_DIR)/lineage.mk \
-    validus_hi6250:$(LOCAL_DIR)/validus.mk \
-    aosp_hi6250:$(LOCAL_DIR)/aosp.mk \
-    bliss_hi6250:$(LOCAL_DIR)/bliss.mk
+# Common overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay/aosp
 
+# Inherit cm
+$(call inherit-product, device/huawei/hi6250/cm.mk)
+
+# Inherit bliss
+$(call inherit-product, vendor/bliss/config/common.mk)
+
+PRODUCT_NAME := bliss_hi6250
+
+#PRODUCT_PACKAGES += 
