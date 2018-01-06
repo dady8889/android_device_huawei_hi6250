@@ -81,7 +81,7 @@ COMMON_SHIMS := '/hwvendor/lib/hw/audio.primary.hisi.so|libshim.so:/hwvendor/lib
 LD_SHIM_LIBS := $(COMMON_SHIMS):$(BERLIN_SHIMS):$(DALLAS_SHIMS):$(NEMO_SHIMS):$(PRAGUE_SHIMS):$(VENUS_SHIMS):$(WARSAW_SHIMS)
 
 ## Uncomment to see LD_SHIM_LIBS var
-#$(shell echo $(LD_SHIM_LIBS) >&2)
+$(shell echo $(LD_SHIM_LIBS) >&2)
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/huawei/hi6250/ril/
