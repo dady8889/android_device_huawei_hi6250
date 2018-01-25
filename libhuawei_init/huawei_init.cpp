@@ -91,18 +91,10 @@ void vendor_load_default_properties() {
     /* All Prague needs this */
     } else if(!strncmp(model, "PRA", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "61285");
+	set_property("media.settings.xml", "/etc/media_profiles_was.xml");
     /* All Warsaw needs this */
     } else if(!strncmp(model, "WAS", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "61457");
-	/* Meticulus:
-	 * For some odd reason the camera reports that it can
-	 * not set a preview frame rato of 30. A frame rate of 25
-	 * works but mysteriously, the media_profiles.xml which
-	 * defines what framerates are supported all show 30. So
-	 * I modified it to 25 on the rear camera and specify
-	 * this prop to load this one instead of the one at
-	 * /vendor/etc
-	 */
 	set_property("media.settings.xml", "/etc/media_profiles_was.xml");
     /* All Honor 5c/Honor 7 lite needs this */
     } else if(!strncmp(model, "NEM", 3) || !strncmp(model, "NMO", 3)) {
