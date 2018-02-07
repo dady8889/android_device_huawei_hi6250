@@ -1,32 +1,61 @@
-From b91cacf32a457165a13fd5a1b9ad1f9a0373ec16 Mon Sep 17 00:00:00 2001
+From 3d3f35b1f835645c8433578fc610e539ca310933 Mon Sep 17 00:00:00 2001
 From: Meticulus <theonejohnnyd@gmail.com>
-Date: Tue, 31 Oct 2017 06:52:52 -0500
+Date: Tue, 2 Jan 2018 04:30:52 -0600
 Subject: [PATCH] "0001-bt-fix-bluetooth _______________________________
 
-*Previous From 8a4b912a5af499f6c733514dd917220bff819725 Mon Sep 17 00:00:00 2001
+*Previous From b91cacf32a457165a13fd5a1b9ad1f9a0373ec16 Mon Sep 17 00:00:00 2001
 *Previous From: Meticulus <theonejohnnyd@gmail.com>
-*Previous Date: Sat, 7 Jan 2017 09:40:46 -0600
-*Previous Subject: [PATCH] bt: fix bluetooth.
+*Previous Date: Tue, 31 Oct 2017 06:52:52 -0500
+*Previous Subject: [PATCH] "0001-bt-fix-bluetooth _______________________________
 *
-*-Don't ask me why this works, I have no idea but somehow blocking
-*opcode 0x40f fixes pairing.
+**Previous From 8a4b912a5af499f6c733514dd917220bff819725 Mon Sep 17 00:00:00 2001
+**Previous From: Meticulus <theonejohnnyd@gmail.com>
+**Previous Date: Sat, 7 Jan 2017 09:40:46 -0600
+**Previous Subject: [PATCH] bt: fix bluetooth.
+**
+**-Don't ask me why this works, I have no idea but somehow blocking
+**opcode 0x40f fixes pairing.
+**
+**Change-Id: I4baa809355c388dddec1ceeda9df3e0d1ccec305"
 *
-*Change-Id: I4baa809355c388dddec1ceeda9df3e0d1ccec305"
+*Change-Id: Id0252ebf5eaea00c69359f245282e30664f92ace"
 
-Change-Id: Id0252ebf5eaea00c69359f245282e30664f92ace
+Change-Id: I08181da328f7309aae52ecb40b18ab31bae7d57b
 ---
- hci/src/hci_layer.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ hci/Android.mk      | 1 +
+ hci/src/hci_layer.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
+diff --git a/hci/Android.mk b/hci/Android.mk
+index b299465..80997f3 100644
+--- a/hci/Android.mk
++++ b/hci/Android.mk
+@@ -33,6 +33,7 @@ LOCAL_C_INCLUDES += \
+     $(bluetooth_C_INCLUDES)
+ 
+ LOCAL_MODULE := libbt-hci
++LOCAL_STATIC_LIBRARIES := libcutils
+ 
+ ifeq ($(TARGET_BUILD_VARIANT), eng)
+     LOCAL_CFLAGS += -DBTSNOOP_DEFAULT=TRUE
 diff --git a/hci/src/hci_layer.c b/hci/src/hci_layer.c
-index 10172d4..8f5b64e 100644
+index 10172d4..a9ef609 100644
 --- a/hci/src/hci_layer.c
 +++ b/hci/src/hci_layer.c
-@@ -419,6 +419,10 @@ static void transmit_command(
+@@ -44,6 +44,8 @@
+ #include "packet_fragmenter.h"
+ #include "vendor.h"
+ 
++#include <cutils/properties.h>
++
+ // TODO(zachoverflow): remove this hack extern
+ #include <hardware/bluetooth.h>
+ bt_bdaddr_t btif_local_bd_addr;
+@@ -419,6 +421,10 @@ static void transmit_command(
  
    uint8_t *stream = command->data + command->offset;
    STREAM_TO_UINT16(wait_entry->opcode, stream);
-+  if(wait_entry->opcode == 0x40f) {
++  if(wait_entry->opcode == 0x40f && property_get_bool("persist.sys.noble", true)) {
 +	osi_free(wait_entry);
 +	return;
 +  }

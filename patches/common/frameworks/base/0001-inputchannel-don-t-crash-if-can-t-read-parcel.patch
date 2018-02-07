@@ -1,0 +1,27 @@
+From 5d437f732754cdbf171f28ab09d5e254c21d20b8 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Thu, 21 Dec 2017 03:52:38 -0600
+Subject: [PATCH] inputchannel: don't crash if can't read parcel
+
+---
+ core/jni/android_view_InputChannel.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/core/jni/android_view_InputChannel.cpp b/core/jni/android_view_InputChannel.cpp
+index 092ac27..46eb8c4 100644
+--- a/core/jni/android_view_InputChannel.cpp
++++ b/core/jni/android_view_InputChannel.cpp
+@@ -206,8 +206,8 @@ static void android_view_InputChannel_nativeReadFromParcel(JNIEnv* env, jobject
+             int dupFd = dup(rawFd);
+             if (dupFd < 0) {
+                 ALOGE("Error %d dup channel fd %d.", errno, rawFd);
+-                jniThrowRuntimeException(env,
+-                        "Could not read input channel file descriptors from parcel.");
++                //jniThrowRuntimeException(env,
++                //        "Could not read input channel file descriptors from parcel.");
+                 return;
+             }
+ 
+-- 
+2.7.4
+

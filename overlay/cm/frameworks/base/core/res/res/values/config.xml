@@ -117,16 +117,12 @@
     <!-- Is the device capable of hot swapping an UICC Card -->
     <bool name="config_hotswapCapable">true</bool>
 
-    <!-- If Voice Radio Technology is RIL_RADIO_TECHNOLOGY_LTE:14 or
-         RIL_RADIO_TECHNOLOGY_UNKNOWN:0 this is the value that should be used instead.
-         A configuration value of RIL_RADIO_TECHNOLOGY_UNKNOWN:0 means
-         there is no replacement value and that the default assumption
-         for phone type (GSM) should be used. -->
-    <integer name="config_volte_replacement_rat">14</integer>
-
     <!-- Flag specifying whether VoLTE is available on device -->
     <bool name="config_device_volte_available">true</bool>
     
+    <!-- Flag specifying whether VoLTE availability is based on provisioning -->
+    <bool name="config_carrier_volte_provisioned">false</bool>
+
     <!-- Whether to persist the notification for when a usb drive device is plugged in -->
     <bool name="config_persistUsbDriveNotification">true</bool>
 

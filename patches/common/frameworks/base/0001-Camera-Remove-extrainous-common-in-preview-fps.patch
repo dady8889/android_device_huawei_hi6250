@@ -1,0 +1,38 @@
+From 7c7425c846c3ddfd9907f2fff89532b2fc21f955 Mon Sep 17 00:00:00 2001
+From: Meticulus <theonejohnnyd@gmail.com>
+Date: Mon, 11 Dec 2017 08:43:37 -0600
+Subject: [PATCH] Camera: Remove extrainous common in preview fps
+
+-For some reason, a common starts the preview fps string which
+comes ultimately from the camera blob. The code in 'splitRange'
+indicated that this is invalid and the string should start
+with '('. So I'm trimming it off. Unless some intermediatry
+modifies the string incorrectly. I assume this is some sort
+of typo from Huawei.
+
+-Fixes built in snap camera app in RR for PRA-LXX and WAS-LXX
+---
+ core/java/android/hardware/Camera.java | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/core/java/android/hardware/Camera.java b/core/java/android/hardware/Camera.java
+index ef73a50..7be40f5 100644
+--- a/core/java/android/hardware/Camera.java
++++ b/core/java/android/hardware/Camera.java
+@@ -3214,6 +3214,13 @@ public class Camera {
+          */
+         public List<int[]> getSupportedPreviewFpsRange() {
+             String str = get(KEY_PREVIEW_FPS_RANGE + SUPPORTED_VALUES_SUFFIX);
++	    /* Meticulus:
++	     * For some reason the range starts with a ',' which is invalid
++	     */
++	    if(str.charAt(0) == ',') {
++		str = str.substring(1, str.length());
++		Log.i(TAG, String.format("Meticulus remove ',' from %s", str));
++	    }
+             return splitRange(str);
+         }
+ 
+-- 
+2.7.4
+

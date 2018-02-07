@@ -83,36 +83,69 @@ void vendor_load_default_properties() {
 	return;
 
     /* All P9-Lite needs this */
-    if(!strncmp(model,"VNS", 3)) 
+    if(!strncmp(model,"VNS", 3)) {
 	set_property(BOARDID_PRODUCT_PROP,"51316");
     /* All Berlin needs this */
-    if(!strncmp(model, "BLN", 3))
+    } else if(!strncmp(model, "BLN", 3) || !strncmp(model, "BLL", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "61202");
     /* All Prague needs this */
-    if(!strncmp(model, "PRA", 3))
+    } else if(!strncmp(model, "PRA", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "61285");
+	set_property("media.settings.xml", "/etc/media_profiles_was.xml");
     /* All Warsaw needs this */
-    if(!strncmp(model, "WAS", 3))
+    } else if(!strncmp(model, "WAS", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "61457");
+	set_property("media.settings.xml", "/etc/media_profiles_was.xml");
     /* All Honor 5c/Honor 7 lite needs this */
-    if(!strncmp(model, "NEM", 3) || !strncmp(model, "NMO", 3))
+    } else if(!strncmp(model, "NEM", 3) || !strncmp(model, "NMO", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "4873");
     /* Dallas? */
-    if(!strncmp(model, "DAL", 3))
+    } else if(!strncmp(model, "DAL", 3)) {
 	set_property(BOARDID_PRODUCT_PROP, "6198");
-
+    } else if(!strncmp(model, "BND", 3)) {
+	set_property(BOARDID_PRODUCT_PROP, "4753");
+    }
     /* if a match is not found the values in the build.prop will be used.
      * ro.boardid.product will not be set so the camera will not work.
      */
+}
+
+static int find_product_path(char *path) {
+    char *tmodel = strdup(model);
+    char *thex = strstr(tmodel, "X");
+    char *post;
+    int i = 0, ret = -1;
+    if(thex) {
+        thex[0] = '\0';
+        post = thex + 1;
+        for(i = 0; i < 10;i ++) {
+            sprintf(path, "/product/hw_oem/%s%d%s/prop/local.prop",tmodel,i,post);
+	    if(!access(path, O_RDONLY)) {
+		ret = 0;
+		goto end;
+	    }
+        }
+	ret = -1;
+    } else {
+        sprintf(path, "/product/hw_oem/%s/prop/local.prop",tmodel);
+	ret = 0;
+    }
+end:
+    return ret;
 }
 
 static void load_product_props() {
     char prod_prop_path[255];
     char *linebuf = NULL;
     size_t size = PROP_NAME_MAX + PROP_VALUE_MAX + 2;
-    if(!strcmp(model, "WAS-LX3"))
-	model = "WAS-L23";
-    sprintf(prod_prop_path, "/product/hw_oem/%s/prop/local.prop",model);
+
+    if(find_product_path(prod_prop_path)) {
+	klog_write(0, "huawei_init: Couldn't find product prop path.");
+	return;
+    } else {
+	klog_write(0, "huawei_init: product path: %s\n", prod_prop_path);
+    }
+
     FILE *fd = fopen(prod_prop_path, "r");
     if(!fd) {
 	klog_write(0, "huawei_init: Couldn't read %s?\n", prod_prop_path);
@@ -148,8 +181,8 @@ static void load_product_props() {
 static void load_modem_props() {
     int fd = -1,retval = 0,on = 0;
     FILE * pf;
-    char buff[255];
-    char modemid[255];
+    char buff[255] = {0};
+    char modemid[255] = {0};
     fd = open(MODEM_ID_PATH, O_RDONLY);
     if(fd < 0 ) {
 	klog_write(0, "huawei_init: Couldn't get modem id?\n");
@@ -161,12 +194,6 @@ static void load_modem_props() {
     size_t size = read(fd, buff, 254);
     sprintf(modemid, "0X%X%X%X%X%X", buff[0], buff[1],buff[2],buff[3],buff[4]);
     close(fd);
-    /* Meticulus:
-     * Strange, my modem id is not in phone.prop?
-     */
-    if(!strcmp(modemid, "0X3B412004"))
-	sprintf(modemid, "%s", "0X3B412000");
-
     klog_write(0,"huawei_init: modemid = %s\n", modemid);
     sprintf(buff, "[%s]:\n",modemid);
     sprintf(modemid, "%s", buff);

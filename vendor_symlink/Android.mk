@@ -46,6 +46,19 @@ etclinks := \
     cfg_berlin_tl00a_hisi.ini \
     cfg_berlin_tl00_hisi.ini \
     cfg_berlin_tl10_hisi.ini \
+    cfg_bnd_al10_hisi.ini \
+    cfg_bnd_al20_hisi.ini \
+    cfg_bnd_al30_hisi.ini \
+    cfg_bnd_al40_hisi.ini \
+    cfg_bnd_dl00_hisi.ini \
+    cfg_bnd_l21_hisi.ini \
+    cfg_bnd_l21l_hisi.ini \
+    cfg_bnd_l22_hisi.ini \
+    cfg_bnd_l23l_hisi.ini \
+    cfg_bnd_l24_hisi.ini \
+    cfg_bnd_tl00a_hisi.ini \
+    cfg_bnd_tl00_hisi.ini \
+    cfg_bnd_tl10_hisi.ini \
     cfg_nemo_al10_hisi.ini \
     cfg_nemo_al30_hisi.ini \
     cfg_nemo_al60_hisi.ini \
@@ -417,8 +430,7 @@ liblinks := \
     libwmv8.so \
     libwmv9.so \
     libxmodemgpsrpc.so \
-    egl \
-    hwcam \
+    hwcam
 
 lib64links := \
     libAntiTheftService.so \
@@ -631,7 +643,6 @@ lib64links := \
     libwifi_wapi_hisi.so \
     libwpa_client_hisi.so \
     libxmodemgpsrpc.so \
-    egl \
     hwcam
 
 hw := \
@@ -659,6 +670,7 @@ hw := \
     vibrator.default.so
 
 hw64 := \
+    activity_reconition.default.so \
     audio.primary.default.so \
     audio.primary.hisi.so \
     audio.r_submix.default.so \
@@ -703,6 +715,8 @@ symlinks := \
     $(shell ln -s /hwvendor/etc/$(link) $(PRODUCT_OUT)/system/vendor/etc/$(link) 2> /dev/null)) \
     $(shell mkdir -p $(PRODUCT_OUT)/system/bin) \
     $(shell mkdir -p $(PRODUCT_OUT)/system/etc) \
+    $(shell ln -s ../egl/libGLES_mali.so $(PRODUCT_OUT)/system/vendor/lib64/hw/vulkan.hi6250.so 2> /dev/null) \
+    $(shell ln -s ../egl/libGLES_mali.so $(PRODUCT_OUT)/system/vendor/lib/hw/vulkan.hi6250.so 2> /dev/null) \
     $(shell ln -s /hwvendor/lib64/hw/gps.hisi.default.so $(PRODUCT_OUT)/system/vendor/lib64/hw/gps.hisi.so 2> /dev/null) \
     $(shell ln -s /hwvendor/lib64/hw/copybit.hi6250.so $(PRODUCT_OUT)/system/vendor/lib64/hw/copybit.real.so 2> /dev/null) \
     $(shell ln -s /hwvendor/lib/hw/copybit.hi6250.so $(PRODUCT_OUT)/system/vendor/lib/hw/copybit.real.so 2> /dev/null) \

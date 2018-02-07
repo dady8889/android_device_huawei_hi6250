@@ -15,7 +15,7 @@
 #
 
 TARGET_SPECIFIC_HEADER_PATH := device/huawei/hi6250/include
-TARGET_OTA_ASSERT_DEVICE := hi6250,VNS,nemo,berlin,venus
+TARGET_OTA_ASSERT_DEVICE := hi6250,VNS,nemo,berlin,venus,prague,bond
 
 # Board
 TARGET_BOOTLOADER_BOARD_NAME := hisi
@@ -69,6 +69,7 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 TARGET_INIT_VENDOR_LIB := libhuawei_init
 
 BERLIN_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.BERLIN.so|libshim_libui.so:/hwvendor/lib64/hwcam/hwcam.hi6250.m.BERLIN.so|libshim.so'
+BOND_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.BOND.so|libshim_libui.so:/hwvendor/lib64/hwcam/hwcam.hi6250.m.BOND.so|libshim.so'
 DALLAS_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.DALLAS.so|libshim_libui.so:/hwvendor/lib64/hwcam/hwcam.hi6250.m.DALLAS.so|libshim.so'
 NEMO_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.NEMO.so|libshim_libui.so:/hwvendor/lib64/hwcam/hwcam.hi6250.m.NEMO.so|libshim.so'
 PRAGUE_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.PRAGUE.so|libshim_libui.so:/hwvendor/lib64/hwcam/hwcam.hi6250.m.PRAGUE.so|libshim.so'
@@ -78,7 +79,7 @@ WARSAW_SHIMS := '/hwvendor/lib64/hwcam/hwcam.hi6250.m.WARSAW.so|libshim_libui.so
 COMMON_SHIMS := '/hwvendor/lib/hw/audio.primary.hisi.so|libshim.so:/hwvendor/lib64/libcamera_algo.so|libshim_libui.so:/hwvendor/lib64/hw/fingerprint.hi6250.so|libshim.so'
 
 # Linker
-LD_SHIM_LIBS := $(COMMON_SHIMS):$(BERLIN_SHIMS):$(DALLAS_SHIMS):$(NEMO_SHIMS):$(PRAGUE_SHIMS):$(VENUS_SHIMS):$(WARSAW_SHIMS)
+LD_SHIM_LIBS := $(COMMON_SHIMS):$(BERLIN_SHIMS):$(BOND_SHIMS):$(DALLAS_SHIMS):$(NEMO_SHIMS):$(PRAGUE_SHIMS):$(VENUS_SHIMS):$(WARSAW_SHIMS)
 
 ## Uncomment to see LD_SHIM_LIBS var
 #$(shell echo $(LD_SHIM_LIBS) >&2)
