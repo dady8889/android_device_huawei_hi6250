@@ -22,15 +22,17 @@ $(call inherit-product, device/huawei/hi6250/cm.mk)
 
 PRODUCT_NAME := lineage_hi6250
 
-ifeq ($(AUTOPATCH),true)
-    $(shell cd device/huawei/hi6250/patches 2>&1 > /dev/null && ./patch.sh lineage >&2)
-else
-    $(shell echo ---------------------------------------------------------------- >&2)
-    $(shell echo AUTOPATCH not enabled... >&2)
-    $(shell echo lineage: run manually: \"cd device/huawei/hi6250/patches \&\& ./patch.sh lineage\">&2)
-    $(shell echo resurrection remix: run manually: \"cd device/huawei/hi6250/patches \&\& ./patch.sh rr\">&2)
-    $(shell echo OR: >&2)
-    $(shell echo enable autopatch: \"export AUTOPATCH=true \&\& lunch $(PRODUCT_NAME)-userdebug\">&2)
-    $(shell echo ---------------------------------------------------------------- >&2)
-endif
+PRODUCT_PACKAGES += HuaweiSettings
+
+#ifeq ($(AUTOPATCH),true)
+#    $(shell cd device/huawei/hi6250/patches 2>&1 > /dev/null && ./patch.sh lineage >&2)
+#else
+#    $(shell echo ---------------------------------------------------------------- >&2)
+#    $(shell echo AUTOPATCH not enabled... >&2)
+#    $(shell echo lineage: run manually: \"cd device/huawei/hi6250/patches \&\& ./patch.sh lineage\">&2)
+#    $(shell echo resurrection remix: run manually: \"cd device/huawei/hi6250/patches \&\& ./patch.sh rr\">&2)
+#    $(shell echo OR: >&2)
+#    $(shell echo enable autopatch: \"export AUTOPATCH=true \&\& lunch $(PRODUCT_NAME)-userdebug\">&2)
+#    $(shell echo ---------------------------------------------------------------- >&2)
+#endif
 

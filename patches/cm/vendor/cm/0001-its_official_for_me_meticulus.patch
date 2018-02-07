@@ -17,12 +17,12 @@ index ea5dcaa..3eb1b95 100644
  else
      # If CM_BUILDTYPE is not defined, set to UNOFFICIAL
 -    CM_BUILDTYPE := UNOFFICIAL
-+    CM_BUILDTYPE := METICULUS
++    CM_BUILDTYPE := DADY8889
      CM_EXTRAVERSION :=
  endif
  
 -ifeq ($(CM_BUILDTYPE), UNOFFICIAL)
-+ifeq ($(CM_BUILDTYPE), METICULUS)
++ifeq ($(CM_BUILDTYPE), DADY8889)
      ifneq ($(TARGET_UNOFFICIAL_BUILD_ID),)
          CM_EXTRAVERSION := -$(TARGET_UNOFFICIAL_BUILD_ID)
      endif
