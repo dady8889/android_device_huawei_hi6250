@@ -42,14 +42,7 @@ wait_umounted() {
 switch_fstab() {
 	cp /etc/stock.twrp.fstab /etc/twrp.fstab
 	checkerror $? "Could not overwrite stab!" -fatal
-
-	MODEL=$(cat /sys/firmware/devicetree/base/hisi,product_name)
-	mecho "Model is $MODEL"
-	if [[ "$MODEL" == "NEM-AL60" ]]; then
-		cp /fstab.hi6250.bootdevice /fstab.hi6250
-	else
     	cp /fstab.hi6250.stock /fstab.hi6250
-	fi
 	checkerror $? "Could not overwrite stab!" -fatal
 }
 
@@ -74,17 +67,22 @@ is_cyanogen() {
 		wait_unmounted /system
 		/sbin/setprop sys.stock 0
 	else
+		MODEL=$(cat /sys/firmware/devicetree/base/hisi,product_name)
 		mecho "Fstab Mode Stock"
-		switch_fstab
 		sed 's/0090CA/CA0026/g' < /twres/splash.xml > /twres/nsplash.xml
 		cp /twres/nsplash.xml /twres/splash.xml
 		sed 's/0090CA/CA0026/g' < /twres/ui.xml > /twres/nui.xml
 		cp /twres/nui.xml /twres/ui.xml
-		/sbin/setprop ro.crypto.fs_crypto_blkdev /dev/block/dm-0
-		/sbin/setprop ro.crypto.state encrypted
-		/sbin/setprop ro.crypto.type block
-		wait_umounted /system
-		ln -s /system/etc/native_packages.bin /res/native_packages.xml
+
+		mecho "Model is $MODEL"
+		if [[ $(echo "$MODEL" | grep -c "WAS") -eq 0 ]]; then
+			switch_fstab
+			/sbin/setprop ro.crypto.fs_crypto_blkdev /dev/block/dm-0
+			/sbin/setprop ro.crypto.state encrypted
+			/sbin/setprop ro.crypto.type block
+			wait_umounted /system
+			ln -s /system/etc/native_packages.bin /res/native_packages.xml
+		fi
 		/sbin/setprop sys.stock 1
 	fi
 }

@@ -57,7 +57,7 @@ static struct power_profile balanced;
 static struct power_profile performance;
 static struct power_profile * profile = &performance; 
 static struct power_profile * sel_profile = &performance;
-
+static int init = 0;
 static void write_string(const char * path, const char * value) {
     int fd = open(path, O_WRONLY);
 	if(fd == -1 ) { ALOGE("Unable to open to %s", path); return;}
@@ -111,8 +111,11 @@ static void power_init(struct power_module *module)
         balanced = venus_balanced;
         performance = venus_performance;
     }
-    profile = &performance;
-    sel_profile = &performance;
+    if(!init) {
+	sel_profile = &performance;
+	profile = &performance;
+	init = 1;
+    }
 
     write_string(CPU0_FREQ_MAX_PATH,(*profile).cpu0_freq_max);
     write_string(CPU0_FREQ_MIN_PATH,(* profile).cpu0_freq_low);
@@ -135,7 +138,10 @@ static void power_set_interactive(struct power_module *module, int on) {
     } 
 
     ALOGI("setInteractive %d", on);
-    if(on && !low_power) {
+    if (low_power)
+	return;
+
+    if (!on) {
 	profile = &power_save;
 	power_init(module);
     } else {
