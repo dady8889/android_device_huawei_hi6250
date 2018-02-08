@@ -670,7 +670,7 @@ hw := \
     vibrator.default.so
 
 hw64 := \
-    activity_reconition.default.so \
+    activity_recognition.default.so \
     audio.primary.default.so \
     audio.primary.hisi.so \
     audio.r_submix.default.so \
