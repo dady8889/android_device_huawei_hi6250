@@ -1,0 +1,31 @@
+From be9ca4a6a2fe97142a2dfa12e230967ca3f9dc50 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Daniel=20M=C3=BA=C4=8Dka?= <dady8889@gmail.com>
+Date: Fri, 9 Feb 2018 17:29:22 +0100
+Subject: [PATCH] Patch
+
+Change-Id: I2cc0a7a5c53df697ebce1ebd89294296e2021abd
+---
+ .../src/com/android/systemui/statusbar/phone/PhoneStatusBar.java   | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+index 41fbc7d..46d4a0e 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+@@ -2378,6 +2378,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+      * Refresh or remove lockscreen artwork from media metadata or the lockscreen wallpaper.
+      */
+     public void updateMediaMetaData(boolean metaDataChanged, boolean allowEnterAnimation) {
++
++        
++        // dady8889: Add system property which is used to force disable album art on lockscreen
++        if (SystemProperties.getBoolean("persist.d.hidealbumart", false)) {
++            return;
++        }
++
+         Trace.beginSection("PhoneStatusBar#updateMediaMetaData");
+         if (!SHOW_LOCKSCREEN_MEDIA_ARTWORK) {
+             Trace.endSection();
+-- 
+2.7.4
+
